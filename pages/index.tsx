@@ -1,19 +1,19 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
-import Link from 'next/link'
-import styled from '@emotion/styled'
 import Splash from '../component/splash'
 import { useEffect, useRef, useState } from 'react'
 import GlobalStyle from '../styles/GlobalStyle'
 
 export default function Home() {
-  const [isSplash, setIsSplash] = useState(true)
+  const [visibleSplash, setVisibleSplash] = useState(true)
+  const [removeSplash, setRemoveSplash] = useState(false)
   const timeoutId = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     timeoutId.current = setTimeout(() => {
-      setIsSplash(false)
+      setVisibleSplash(false)
+      setTimeout(() => {
+        setRemoveSplash(true)
+      }, 300)
     }, 1000 * 2)
     return () => {
       clearTimeout(timeoutId.current)
@@ -28,13 +28,8 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <GlobalStyle />
-      {isSplash ? <Splash /> : <main>Hello world!</main>}
+      {!removeSplash && <Splash visible={visibleSplash} />}
+      <main>Hello world!</main>
     </div>
   )
 }
-
-const StyledLink = styled(Link)`
-  color: red;
-  background: white;
-  text-decoration: underline;
-`
