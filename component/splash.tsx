@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import oc from 'open-color'
+import OpenColor from 'open-color'
 
 export default function Splash({ visible }: { visible: boolean }) {
   return (
@@ -16,7 +16,7 @@ const SplashWrapper = styled.div<{ visible: boolean }>`
   bottom: 0;
   left: 0;
   right: 0;
-  background: ${oc.blue[2]};
+  background: ${OpenColor.blue[2]};
   font-size: 20px;
   transition: opacity 0.3s;
   z-index: 9999;
