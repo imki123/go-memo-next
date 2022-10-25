@@ -6,12 +6,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ```bash
 npm run dev
-Open [http://localhost:3000](http://localhost:3000)
+Open http://localhost:3000
 ```
 
 ### How to deploy
 
-This project deploy using gh-pages.
+This project use gh-pages.
 
 ```
 npm run deploy
