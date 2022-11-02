@@ -11,7 +11,9 @@ export default function MemoGrid() {
   const dummy = [
     {
       memoId: 1,
-      text: `메모1`,
+      text: `1행:메모1
+2행: Hello!
+3행: World!`,
       createdAt: '2022-10-25T23:10:20',
       editedAt: '2022-10-25T23:30:10',
     },
@@ -43,7 +45,7 @@ export default function MemoGrid() {
 
   return (
     <Grid>
-      {React.Children.toArray(dummy.map(({ ...props }) => <Memo {...props} />))}
+      {React.Children.toArray(dummy.map(({ ...props }) => <Memo {...props} gridMode={true} />))}
     </Grid>
   )
 }

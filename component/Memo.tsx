@@ -2,20 +2,24 @@ import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import moment from 'moment-mini'
 import { ChangeEvent, useState } from 'react'
+import { useRouter } from 'next/router'
 
 export interface MemoInterface {
   memoId: number
   text?: string
   createdAt?: string
   editedAt?: string
+  gridMode?: boolean
 }
 
 export default function Memo({
-  // memoId,
+  memoId,
   text = '',
   createdAt,
   editedAt,
+  gridMode,
 }: MemoInterface) {
+  const router = useRouter()
   const [value, setValue] = useState(text)
   const [time, setTime] = useState(
     moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
@@ -24,21 +28,33 @@ export default function Memo({
     setValue(e.target.value)
     setTime(moment().format('YYYY-MM-DD HH:mm'))
   }
+
+  const clickMemo = (memoId: number) => {
+    if (gridMode) {
+      router.push(`/memo/${memoId}`)
+    }
+  }
   return (
-    <MemoWrapper>
+    <MemoWrapper onClick={() => clickMemo(memoId)} gridMode={gridMode}>
       <MemoHeader>{`${time}`}</MemoHeader>
-      <StyledTextarea value={value} onChange={changeText} />
+      <StyledTextarea value={value} onChange={changeText} disabled={gridMode} />
     </MemoWrapper>
   )
 }
 
-const MemoWrapper = styled.div`
+const MemoWrapper = styled.div<{ gridMode?: boolean }>`
   position: relative;
   flex: 1 0 250px;
+  height: 100%;
   min-height: 200px;
   background: ${OpenColor.yellow[0]};
-  border: 2px solid ${OpenColor.yellow[2]};
+  border: 2px solid ${OpenColor.yellow[3]};
   border-radius: 8px;
+  padding-left: 10px;
+  ${({ gridMode }) => gridMode && `padding-left: 10px;
+    height: auto;
+    cursor: pointer;
+  `}
 `
 const MemoHeader = styled.div`
   position: absolute;
@@ -61,4 +77,10 @@ const StyledTextarea = styled.textarea`
   outline: none;
   overflow: auto;
   word-break: break-all;
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-thumb{
+    background: ${OpenColor.yellow[5]};
+  }
 `
