@@ -34,6 +34,7 @@ export default function Memo({
       router.push(`/memo/${memoId}`)
     }
   }
+
   return (
     <MemoWrapper onClick={() => clickMemo(memoId)} gridMode={gridMode}>
       <MemoHeader>{`${time}`}</MemoHeader>
@@ -51,9 +52,16 @@ const MemoWrapper = styled.div<{ gridMode?: boolean }>`
   border: 2px solid ${OpenColor.yellow[3]};
   border-radius: 8px;
   padding-left: 10px;
-  ${({ gridMode }) => gridMode && `padding-left: 10px;
+
+  ${({ gridMode }) =>
+    gridMode &&
+    `
+    padding-left: 10px;
     height: auto;
     cursor: pointer;
+    :hover{
+      border: 2px solid ${OpenColor.yellow[9]};
+    }
   `}
 `
 const MemoHeader = styled.div`
@@ -80,7 +88,8 @@ const StyledTextarea = styled.textarea`
   ::-webkit-scrollbar {
     width: 5px;
   }
-  ::-webkit-scrollbar-thumb{
+  ::-webkit-scrollbar-thumb {
     background: ${OpenColor.yellow[5]};
   }
+  ${({ disabled }) => disabled && `cursor: pointer;`}
 `

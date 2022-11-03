@@ -3,7 +3,7 @@ import OpenColor from 'open-color'
 
 export default function Splash({ visible }: { visible: boolean }) {
   return (
-    <SplashWrapper visible={visible}>잔짜잔! 고영이 메모장 🐱</SplashWrapper>
+    <SplashWrapper visible={visible}>잔짜잔! 고영이 메모장 🐈</SplashWrapper>
   )
 }
 

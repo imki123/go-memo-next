@@ -2,10 +2,6 @@ import Head from 'next/head'
 import Splash from '../component/Splash'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import GlobalStyle from '../styles/GlobalStyle'
-import MemoGrid from '../component/MemoGrid'
-
-
 
 export default function IndexPage() {
   const router = useRouter()
@@ -23,7 +19,7 @@ export default function IndexPage() {
     return () => {
       clearTimeout(timeoutId.current)
     }
-  }, [])
+  }, [router])
 
   return (
     <div>

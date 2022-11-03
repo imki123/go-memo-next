@@ -13,6 +13,7 @@ export default function GlobalStyle() {
         body {
           margin: 0;
           padding: 0;
+          position: relative;
         }
         html {
           @media (min-width: 800px) {
