@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
 import Header from '../../component/Header'
 import Memo from '../../component/Memo'
-import { dummyMemo } from '../../component/MemoGrid'
+import { dummyMemo } from '../../dummy/dummyMemo'
 
 export default function MemoIdPage() {
   const router = useRouter()
@@ -11,10 +11,11 @@ export default function MemoIdPage() {
   } = router
 
   const memoData = dummyMemo.find((item) => item.memoId === Number(memoId))
+  const title = memoData?.text?.split('\n')[0].slice(0, 50)
 
   return (
     <>
-      <Header title={memoId as string} />
+      <Header title={title} />
       <MemoWrapper>{memoData && <Memo {...memoData} />}</MemoWrapper>
     </>
   )
@@ -22,6 +23,6 @@ export default function MemoIdPage() {
 
 const MemoWrapper = styled.div`
   height: calc(100vh - 40px);
-  padding: 0 20px 20px;
-  border-radius: 20px; ;
+  padding: 0 10px 10px;
+  border-radius: 10px; ;
 `

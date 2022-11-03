@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
-import Memo, { MemoInterface } from './Memo'
+import { dummyMemo } from '../dummy/dummyMemo'
+import Memo from './Memo'
 
 /**
  * 메모 리스트
@@ -8,40 +9,6 @@ import Memo, { MemoInterface } from './Memo'
  * @returns
  */
 
-export const dummyMemo = [
-  {
-    memoId: 1,
-    text: `1행:메모1
-2행: Hello!
-3행: World!`,
-    createdAt: '2022-10-25T23:10:20',
-    editedAt: '2022-10-25T23:30:10',
-  },
-  {
-    memoId: 2,
-    text: `메모2`,
-    createdAt: '2022-10-25T23:10:20',
-    editedAt: '2022-10-25T23:30:10',
-  },
-  {
-    memoId: 3,
-    text: `메모3`,
-    createdAt: '2022-10-25T23:10:20',
-    editedAt: '2022-10-25T23:30:10',
-  },
-  {
-    memoId: 4,
-    text: `메모4`,
-    createdAt: '2022-10-25T23:10:20',
-    editedAt: '2022-10-25T23:30:10',
-  },
-  {
-    memoId: 5,
-    text: `메모5`,
-    createdAt: '2022-10-25T23:10:20',
-    editedAt: '2022-10-25T23:30:10',
-  },
-] as MemoInterface[]
 export default function MemoGrid() {
   return (
     <Grid>
@@ -57,5 +24,5 @@ const Grid = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 10px;
-  padding: 10px;
+  padding: 0 10px 10px;
 `
