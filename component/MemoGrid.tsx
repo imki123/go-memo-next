@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import React from 'react'
-import { dummyMemo } from '../dummy/dummyMemo'
-import Memo from './Memo'
+import Memo, { MemoInterface } from './Memo'
 
 /**
  * 메모 리스트
@@ -9,11 +8,15 @@ import Memo from './Memo'
  * @returns
  */
 
-export default function MemoGrid() {
+interface MemoGridModel {
+  memoData: MemoInterface[]
+}
+
+export default function MemoGrid({ memoData }: MemoGridModel) {
   return (
     <Grid>
       {React.Children.toArray(
-        dummyMemo.map(({ ...props }) => <Memo {...props} gridMode={true} />)
+        memoData.map(({ ...props }) => <Memo {...props} gridMode={true} />)
       )}
     </Grid>
   )

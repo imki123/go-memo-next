@@ -13,7 +13,7 @@ export default function IndexPage() {
     timeoutId.current = setTimeout(() => {
       setVisibleSplash(false)
       setTimeout(() => {
-        router.replace('/home')
+        router.replace('/home') // home으로 이동
       }, 300)
     }, 1000 * 2)
     return () => {
@@ -24,7 +24,7 @@ export default function IndexPage() {
   return (
     <div>
       <Head>
-        <title>고영이메모장</title>
+        <title>고영이메모장🐈</title>
         <meta name='description' content='next.js로 만들어진 간단한 메모장' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
