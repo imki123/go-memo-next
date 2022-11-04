@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Splash from '../component/Splash'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -23,11 +22,6 @@ export default function IndexPage() {
 
   return (
     <div>
-      <Head>
-        <title>고영이메모장🐈</title>
-        <meta name='description' content='next.js로 만들어진 간단한 메모장' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
       <Splash visible={visibleSplash} />
     </div>
   )
