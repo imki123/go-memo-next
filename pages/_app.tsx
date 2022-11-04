@@ -4,22 +4,24 @@ import styled from '@emotion/styled'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { login } from '../api/account'
 import Script from 'next/script'
 import Head from 'next/head'
+import { initGoogle } from '../util/googleLogin'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
 
   useEffect(() => {
-    console.log('>>> MyApp:', router.pathname)
-    //login()
+    console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
   return (
     <>
       <GlobalStyle />
-      <Script src='https://accounts.google.com/gsi/client'></Script>
+      <Script
+        src='https://accounts.google.com/gsi/client'
+        onLoad={() => initGoogle()}
+      ></Script>
       <Head>
         <title>고영이메모장🐈</title>
         <meta name='description' content='next.js로 만들어진 간단한 메모장' />

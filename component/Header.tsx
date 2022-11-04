@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import styled from '@emotion/styled'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { useRouter } from 'next/router'
@@ -5,8 +6,13 @@ import { useRouter } from 'next/router'
 interface HeaderModel {
   title?: string | number
   backButton?: boolean
+  rightItems?: ReactNode[]
 }
-export default function Header({ title, backButton = true }: HeaderModel) {
+export default function Header({
+  title,
+  backButton = true,
+  rightItems,
+}: HeaderModel) {
   const router = useRouter()
   return (
     <HeaderWrapper>
@@ -20,6 +26,9 @@ export default function Header({ title, backButton = true }: HeaderModel) {
           )}
           {title}
         </LeftItems>
+        <RightItems>
+          {React.Children.toArray(rightItems?.map((item) => item))}
+        </RightItems>
       </HeaderFixed>
     </HeaderWrapper>
   )
@@ -42,6 +51,11 @@ const HeaderFixed = styled.div`
   font-weight: bold;
 `
 const LeftItems = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+const RightItems = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;

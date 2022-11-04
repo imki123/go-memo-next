@@ -28,6 +28,11 @@ export default function GlobalStyle() {
             background: white;
           }
         }
+        a {
+          text-decoration: underline;
+          color: ${OpenColor.blue[7]};
+          font-size: inherit;
+        }
       `}
     />
   )
