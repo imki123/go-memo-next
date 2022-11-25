@@ -1,10 +1,10 @@
-export const initGoogle = (callback) => {
+export const initGoogle = (login, afterLogin) => {
   const google = window.google
   google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
     callback: (response) => {
       // 로그인 완료후 토큰 제공
-      callback?.(response.credential)
+      login?.(response.credential, afterLogin)
     },
   })
   window.isInitGoogle = true

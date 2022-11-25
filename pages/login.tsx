@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { useEffect } from 'react'
+import Header from '../component/Header'
 import { renderGoogleButton } from '../util/googleLogin'
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
 
   return (
     <LoginPageWrapper>
+      <Header title='고영이 메모장 🐈' backButton={true} />
       <div id='googleLoginDiv'></div>
     </LoginPageWrapper>
   )

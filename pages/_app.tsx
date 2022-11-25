@@ -8,20 +8,23 @@ import Script from 'next/script'
 import Head from 'next/head'
 import { initGoogle } from '../util/googleLogin'
 import { login } from '../api/user'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '../queryClient'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  // Create a client
 
   useEffect(() => {
     console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <GlobalStyle />
       <Script
         src='https://accounts.google.com/gsi/client'
-        onLoad={() => initGoogle(login)}
+        onLoad={() => initGoogle(login, () => router.replace('/home'))}
       ></Script>
       <Head>
         <title>고영이메모장🐈</title>
@@ -41,7 +44,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         imki123
       </Copyright>
-    </>
+    </QueryClientProvider>
   )
 }
 
