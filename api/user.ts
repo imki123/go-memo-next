@@ -7,6 +7,7 @@ export const BE_URL =
 
 export const axiosWithCredentials = Axios.create({
   baseURL: BE_URL + '/memo/user',
+  withCredentials: true,
 })
 
 const urls = {
