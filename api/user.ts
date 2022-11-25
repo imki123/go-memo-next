@@ -13,8 +13,15 @@ export const axiosWithCredentials = Axios.create({
 const urls = {
   root: '/',
   login: '/login',
+  checkLogin: '/checkLogin',
 }
 
-export const login = (jwt: string) => {
-  return axiosWithCredentials.post(urls.login, { jwt }).then((res) => res.data)
+export const login = (credential: string) => {
+  return axiosWithCredentials
+    .post(urls.login, { credential })
+    .then((res) => res.data)
+}
+
+export const checkLogin = () => {
+  return axiosWithCredentials.post(urls.checkLogin).then((res) => res.data)
 }
