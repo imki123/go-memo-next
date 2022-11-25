@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import Script from 'next/script'
 import Head from 'next/head'
 import { initGoogle } from '../util/googleLogin'
-import { login } from '../api'
+import { login } from '../api/user'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
