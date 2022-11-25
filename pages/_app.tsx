@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import Script from 'next/script'
 import Head from 'next/head'
 import { initGoogle } from '../util/googleLogin'
+import { login } from '../api'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -20,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <Script
         src='https://accounts.google.com/gsi/client'
-        onLoad={() => initGoogle()}
+        onLoad={() => initGoogle(login)}
       ></Script>
       <Head>
         <title>고영이메모장🐈</title>
