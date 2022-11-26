@@ -7,7 +7,7 @@ export default function GlobalStyle() {
       styles={css`
         * {
           box-sizing: border-box;
-          font-size: 16px;
+          font-size: 14px;
         }
         html,
         body {
