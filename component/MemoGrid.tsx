@@ -1,6 +1,9 @@
 import styled from '@emotion/styled'
-import React from 'react'
-import Memo, { MemoInterface } from './Memo'
+import { AxiosError } from 'axios'
+import React, { useState } from 'react'
+import { postMemo } from '../api/memo'
+import useModal from '../hook/useModal'
+import Memo, { MemoModel } from './Memo'
 
 /**
  * 메모 리스트
@@ -9,18 +12,62 @@ import Memo, { MemoInterface } from './Memo'
  */
 
 interface MemoGridModel {
-  memoData: MemoInterface[]
+  memoData?: MemoModel[]
+  refetch?: () => void
 }
 
-export default function MemoGrid({ memoData }: MemoGridModel) {
+export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
+  const { openModal, Modal } = useModal()
+  const [noSession, setNoSession] = useState(false)
   return (
-    <Grid>
-      {React.Children.toArray(
-        memoData.map(({ ...props }) => <Memo {...props} gridMode={true} />)
-      )}
-    </Grid>
+    <>
+      <ButtonDiv>
+        <button
+          onClick={async () => {
+            postMemo()
+              .then(() => {
+                refetch?.()
+              })
+              .catch((err: AxiosError) => {
+                console.error(err)
+                if (err.response?.data === 'no session') {
+                  setNoSession(true)
+                } else {
+                  setNoSession(false)
+                }
+                openModal()
+              })
+          }}
+        >
+          메모추가
+        </button>
+      </ButtonDiv>
+      <Grid>
+        {React.Children.toArray(
+          memoData?.map(({ ...props }) => <Memo {...props} gridMode={true} />)
+        )}
+      </Grid>
+      <Modal
+        title={
+          <>
+            메모 추가에 실패했습니다. 😥
+            {noSession ? (
+              <>
+                <br />
+                로그인이 필요합니다.
+              </>
+            ) : null}
+          </>
+        }
+      />
+    </>
   )
 }
+
+const ButtonDiv = styled.div`
+  text-align: center;
+  margin: 10px;
+`
 
 const Grid = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 export interface ModalButtonModel {
   text: string
@@ -8,8 +8,8 @@ export interface ModalButtonModel {
 }
 
 export interface ModalModel {
-  title: string
-  text?: string
+  title: ReactNode
+  text?: ReactNode
   buttons?: ModalButtonModel[]
 }
 
@@ -35,14 +35,16 @@ const useModal = () => {
           >
             <ModalContent onClick={(e) => e.stopPropagation()}>
               <TitleDiv>{title}</TitleDiv>
-              <TextDiv>{text || `  `}</TextDiv>
-              <ButtonDiv>
-                {React.Children.toArray(
-                  buttons?.map(({ text, onClick }) => (
-                    <button onClick={onClick}>{text}</button>
-                  ))
-                )}
-              </ButtonDiv>
+              {text && <TextDiv>{text}</TextDiv>}
+              {buttons && (
+                <ButtonDiv>
+                  {React.Children.toArray(
+                    buttons?.map(({ text, onClick }) => (
+                      <button onClick={onClick}>{text}</button>
+                    ))
+                  )}
+                </ButtonDiv>
+              )}
             </ModalContent>
           </ModalWrapper>
         )}

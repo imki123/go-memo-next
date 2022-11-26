@@ -1,4 +1,4 @@
-import { MemoInterface } from "../component/Memo";
+import { MemoModel } from '../component/Memo'
 
 export const dummyMemo = [
   {
@@ -45,4 +45,4 @@ export const dummyMemo = [
     createdAt: '2022-10-25T23:10:20',
     editedAt: '2022-10-25T23:30:10',
   },
-] as MemoInterface[]
+] as MemoModel[]

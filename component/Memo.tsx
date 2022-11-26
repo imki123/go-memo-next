@@ -1,15 +1,15 @@
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import moment from 'moment-mini'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
+import { patchMemo } from '../api/memo'
 
-export interface MemoInterface {
+export interface MemoModel {
   memoId: number
   text?: string
   createdAt?: string
   editedAt?: string
-  gridMode?: boolean
 }
 
 export default function Memo({
@@ -18,15 +18,40 @@ export default function Memo({
   createdAt,
   editedAt,
   gridMode,
-}: MemoInterface) {
+  setMemoData,
+}: MemoModel & {
+  gridMode?: boolean
+  setMemoData?: Dispatch<SetStateAction<MemoModel>>
+}) {
+  const isChanged = useRef(false)
+  const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
   const [value, setValue] = useState(text)
   const [time, setTime] = useState(
     moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
   )
+
+  const updateMemo = (memo: MemoModel) => {
+    console.log('수정완료:', memo)
+    patchMemo(memo)
+  }
+
   const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    isChanged.current = true
     setValue(e.target.value)
     setTime(moment().format('YYYY-MM-DD HH:mm'))
+    setMemoData?.((state) => ({
+      ...state,
+      text: e.target.value,
+    }))
+
+    clearTimeout(timeoutId.current)
+    timeoutId.current = setTimeout(() => {
+      updateMemo({
+        memoId,
+        text: e.target.value,
+      })
+    }, 1000 * 2)
   }
 
   const clickMemo = (memoId: number) => {
