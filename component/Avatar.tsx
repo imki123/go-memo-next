@@ -5,6 +5,7 @@ import useModal, { ModalButtonModel } from '../hook/useModal'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '../queryClient'
+import OpenColor from 'open-color'
 
 const Avatar = ({
   avatar,
@@ -13,6 +14,7 @@ const Avatar = ({
   avatar: loginResponse
   onClick?: () => void
 }) => {
+  const [defaultImage, setDefaultImage] = useState(false)
   const { openModal, closeModal, Modal } = useModal()
   const [modalTitle, setModalTitle] = useState('')
   const [modalButtons, setModalButtons] = useState<ModalButtonModel[]>()
@@ -58,11 +60,23 @@ const Avatar = ({
     })
 
   return (
-    <AvatarWrapper onClick={click}>
-      <AvatarSpan>{avatar.name}</AvatarSpan>
-      <Image src={avatar.picture || ''} width='30' height='30' alt='avatar' />
+    <>
+      <AvatarWrapper onClick={click}>
+        <AvatarSpan>{avatar.name}</AvatarSpan>
+        {defaultImage ? (
+          <DefaultImage />
+        ) : (
+          <Image
+            src={avatar.picture || ''}
+            width='30'
+            height='30'
+            alt='avatar'
+            onError={() => setDefaultImage(true)}
+          />
+        )}
+      </AvatarWrapper>
       <Modal title={modalTitle} buttons={modalButtons} />
-    </AvatarWrapper>
+    </>
   )
 }
 
@@ -79,4 +93,11 @@ const AvatarWrapper = styled.div`
 const AvatarSpan = styled.span`
   font-size: 12px;
   margin-right: 8px;
+`
+const DefaultImage = styled.span`
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background: ${OpenColor.gray[3]};
+  border-radius: 50%;
 `

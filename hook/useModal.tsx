@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export interface ModalButtonModel {
   text: string
@@ -16,9 +16,11 @@ export interface ModalModel {
 const useModal = () => {
   const [visible, setVisible] = useState(false)
   const openModal = () => {
+    document.body.style.overflow = 'hidden'
     setVisible(true)
   }
   const closeModal = () => {
+    document.body.removeAttribute('style')
     setVisible(false)
   }
   const Modal = ({ title, text, buttons }: ModalModel) => {
@@ -31,7 +33,7 @@ const useModal = () => {
               closeModal()
             }}
           >
-            <ModalContent>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
               <TitleDiv>{title}</TitleDiv>
               <TextDiv>{text || `  `}</TextDiv>
               <ButtonDiv>
@@ -47,6 +49,13 @@ const useModal = () => {
       </>
     )
   }
+
+  useEffect(() => {
+    return () => {
+      closeModal()
+    }
+  }, [])
+
   return {
     openModal,
     closeModal,
