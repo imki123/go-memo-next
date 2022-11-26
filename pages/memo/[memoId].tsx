@@ -23,6 +23,6 @@ export default function MemoIdPage() {
 
 const MemoWrapper = styled.div`
   height: calc(100vh - 40px);
-  padding: 0 10px 10px;
-  border-radius: 10px; ;
+  padding: 0 15px 15px;
+  border-radius: 15px; ;
 `

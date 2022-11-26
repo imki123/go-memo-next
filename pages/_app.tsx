@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>고영이메모장🐈</title>
         <meta name='description' content='next.js로 만들어진 간단한 메모장' />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
 
       <Component {...pageProps} />
