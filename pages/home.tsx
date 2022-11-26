@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Header from '../component/Header'
 import MemoGrid from '../component/MemoGrid'
