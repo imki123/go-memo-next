@@ -2,9 +2,10 @@ export const initGoogle = (login, afterLogin) => {
   const google = window.google
   google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    // 로그인 콜백
     callback: (response) => {
-      // 로그인 완료후 토큰 제공
-      window.alert('response.credential:', response.credential)
+      console.info('login succeess', response)
+      window.alert('login succeess: ' + JSON.stringify(response))
       login?.(response.credential, afterLogin)
     },
   })
