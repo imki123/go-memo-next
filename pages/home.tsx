@@ -11,7 +11,13 @@ import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 
 export default function HomePage() {
-  const { data: isLogin, refetch } = useQuery(queryKeys.checkLogin, checkLogin)
+  const { data: isLogin, refetch } = useQuery(
+    queryKeys.checkLogin,
+    checkLogin,
+    {
+      staleTime: 0,
+    }
+  )
   const clickAvatar = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       logout()

@@ -4,6 +4,7 @@ export const initGoogle = (login, afterLogin) => {
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
     callback: (response) => {
       // 로그인 완료후 토큰 제공
+      window.alert('response.credential:', response.credential)
       login?.(response.credential, afterLogin)
     },
   })
