@@ -2,6 +2,12 @@ import React, { ReactNode } from 'react'
 import styled from '@emotion/styled'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { useRouter } from 'next/router'
+import Avatar from './Avatar'
+import OpenColor from 'open-color'
+import { useQuery } from '@tanstack/react-query'
+import { queryKeys } from '../queryClient'
+import { checkLogin } from '../api/user'
+import Link from 'next/link'
 
 interface HeaderModel {
   title?: string | number
@@ -14,6 +20,18 @@ export default function Header({
   rightItems,
 }: HeaderModel) {
   const router = useRouter()
+  const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
+  const right = rightItems || [
+    isLogin ? (
+      <Avatar avatar={isLogin} />
+    ) : (
+      <LinkWrapper>
+        <Link href='/login' key='login'>
+          로그인
+        </Link>
+      </LinkWrapper>
+    ),
+  ]
   return (
     <HeaderWrapper>
       <HeaderFixed>
@@ -27,7 +45,7 @@ export default function Header({
           {title}
         </LeftItems>
         <RightItems>
-          {React.Children.toArray(rightItems?.map((item) => item))}
+          {React.Children.toArray(right?.map((item) => item))}
         </RightItems>
       </HeaderFixed>
     </HeaderWrapper>
@@ -63,5 +81,13 @@ const RightItems = styled.div`
 const StyledArrowBackIosNewIcon = styled(ArrowBackIosNewIcon)`
   :hover {
     cursor: pointer;
+  }
+`
+export const LinkWrapper = styled.span`
+  a {
+    color: ${OpenColor.indigo[6]};
+    text-decoration: none;
+    font: inherit;
+    font-size: 14px;
   }
 `
