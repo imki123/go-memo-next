@@ -10,10 +10,14 @@ import { initGoogle } from '../util/googleLogin'
 import { login } from '../api/user'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '../queryClient'
+import { BE_URL } from './../api/user'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  // Create a client
+
+  useEffect(() => {
+    console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)
+  }, [])
 
   useEffect(() => {
     console.info('>>> MyApp:', router.pathname)
