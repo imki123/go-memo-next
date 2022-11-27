@@ -28,7 +28,7 @@ export default function Memo({
   const router = useRouter()
   const [value, setValue] = useState(text)
   const [time, setTime] = useState(
-    moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
+    moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm:ss')
   )
 
   const updateMemo = (memo: MemoModel) => {
@@ -39,10 +39,12 @@ export default function Memo({
   const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
     isChanged.current = true
     setValue(e.target.value)
-    setTime(moment().format('YYYY-MM-DD HH:mm'))
+    const now = moment().format('YYYY-MM-DD HH:mm:ss')
+    setTime(now)
     setMemoData?.((state) => ({
       ...state,
       text: e.target.value,
+      editedAt: now,
     }))
 
     clearTimeout(timeoutId.current)
@@ -50,6 +52,7 @@ export default function Memo({
       updateMemo({
         memoId,
         text: e.target.value,
+        editedAt: now,
       })
     }, 1000 * 2)
   }
