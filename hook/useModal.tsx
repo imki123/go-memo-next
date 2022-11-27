@@ -38,11 +38,11 @@ const useModal = () => {
               {text && <TextDiv>{text}</TextDiv>}
               {buttons && (
                 <ButtonDiv>
-                  {React.Children.toArray(
-                    buttons?.map(({ text, onClick }) => (
-                      <button onClick={onClick}>{text}</button>
-                    ))
-                  )}
+                  {buttons?.map(({ text, onClick }) => (
+                    <button key={text} onClick={onClick}>
+                      {text}
+                    </button>
+                  ))}
                 </ButtonDiv>
               )}
             </ModalContent>

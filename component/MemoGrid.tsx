@@ -43,9 +43,9 @@ export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
         </button>
       </ButtonDiv>
       <Grid>
-        {React.Children.toArray(
-          memoData?.map(({ ...props }) => <Memo {...props} gridMode={true} />)
-        )}
+        {memoData?.map(({ ...props }) => (
+          <Memo key={props.memoId} {...props} gridMode={true} />
+        ))}
       </Grid>
       <Modal
         title={
