@@ -13,7 +13,7 @@ import { useGetCheckLogin } from '../hook/useGetCheckLogin'
 import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useStore } from '../pages/zustand'
+import { useStore } from '../util/zustand'
 
 export interface MemoModel {
   memoId: number

@@ -14,7 +14,7 @@ import styled from '@emotion/styled'
 import { useGetCheckLogin } from '../hook/useGetCheckLogin'
 import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
-import { useStore } from './zustand'
+import { useStore } from '../util/zustand'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()

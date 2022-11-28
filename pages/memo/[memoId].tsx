@@ -9,7 +9,7 @@ import styled from '@emotion/styled'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useStore } from '../zustand'
+import { useStore } from '../../util/zustand'
 
 /* // This function gets called at build time
 export async function getStaticPaths() {

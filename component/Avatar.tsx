@@ -11,7 +11,7 @@ import { useGetCheckLogin } from '../hook/useGetCheckLogin'
 import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useStore } from '../pages/zustand'
+import { useStore } from '../util/zustand'
 
 const Avatar = ({
   avatar,

@@ -5,7 +5,7 @@ import MemoGrid from '../component/MemoGrid'
 import { checkLogin } from '../api/user'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
 import { useQuery } from '@tanstack/react-query'
-import { useStore } from './zustand'
+import { useStore } from '../util/zustand'
 
 export default function HomePage() {
   const { memos, setMemos } = useStore()
