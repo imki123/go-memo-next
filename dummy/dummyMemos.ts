@@ -1,6 +1,6 @@
 import { MemoModel } from '../component/Memo'
 
-export const dummyMemo = [
+export const dummyMemos = [
   {
     memoId: 1,
     text: `1행: 메모1

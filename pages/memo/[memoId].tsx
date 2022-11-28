@@ -1,12 +1,14 @@
 import styled from '@emotion/styled'
 import { useQuery } from '@tanstack/react-query'
+import produce from 'immer'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { getMemo } from '../../api/memo'
 import Header from '../../component/Header'
 import Memo, { MemoModel } from '../../component/Memo'
-import { dummyMemo } from '../../dummy/dummyMemo'
+import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import { queryKeys } from '../../queryClient'
+import { useStore } from '../zustand'
 
 /* // This function gets called at build time
 export async function getStaticPaths() {
@@ -43,19 +45,60 @@ export async function getStaticProps({
   }
 } */
 
-export default function MemoIdPage({ memo }: { memo: MemoModel }) {
+export default function MemoIdPage() {
   const router = useRouter()
   const memoId = Number(router.query.memoId)
 
-  const { data, isError } = useQuery(queryKeys.getMemo, () => getMemo(memoId), {
-    staleTime: 0,
-    cacheTime: 0,
-  })
-  const [memoData, setMemoData] = useState(memo)
+  const { memos, setMemos } = useStore()
+  const { data: isLogin } = useGetCheckLogin()
+  const { data, refetch, isError } = useQuery(
+    queryKeys.getMemo,
+    () => getMemo(memoId),
+    {
+      staleTime: 0,
+      cacheTime: 0,
+      enabled: false,
+    }
+  )
+  const [memoData, setMemoData] = useState<MemoModel>()
+
+  const updateMemoData = (memo: MemoModel) => {
+    if (isLogin) {
+      setMemoData((state) => ({
+        ...state,
+        ...memo,
+      }))
+    } else {
+      // 스토어의 더미데이터 업데이트
+      const result = produce(memos, (draft) => {
+        let index = 0
+        draft?.forEach((item, i) => {
+          if (item.memoId === memoId) {
+            index = i
+          }
+        })
+        if (draft?.[index]) {
+          draft[index] = memo
+        }
+        return draft
+      })
+      setMemos(result)
+    }
+  }
+
+  // 로그인 되어있으면 메모 불러오고, 안되어있으면 더미메모 수정
+  useEffect(() => {
+    if (isLogin) {
+      refetch()
+    } else {
+      // 더미메모
+      setMemoData(memos?.find((item) => item.memoId === memoId))
+    }
+  }, [isLogin, memoId, memos, refetch])
 
   useEffect(() => {
-    setMemoData(() => data || memo || dummyMemo)
-  }, [data, memo])
+    if (data) setMemoData(data)
+  }, [data])
 
   const title = memoData?.text?.split('\n')[0].slice(0, 50)
 
@@ -64,9 +107,9 @@ export default function MemoIdPage({ memo }: { memo: MemoModel }) {
       <Header title={title} />
       <MemoWrapper>
         {isError ? (
-          <div>메모 불러오기 실패</div>
+          <div>메모 불러오기 실패 😥</div>
         ) : (
-          memoData && <Memo {...memoData} setMemoData={setMemoData} />
+          memoData && <Memo {...memoData} setMemoData={updateMemoData} />
         )}
       </MemoWrapper>
     </>

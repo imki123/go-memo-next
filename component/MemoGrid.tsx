@@ -14,10 +14,10 @@ import Memo, { MemoModel } from './Memo'
 
 interface MemoGridModel {
   memoData?: MemoModel[]
-  refetch?: () => void
+  refetchAllMemo?: () => void
 }
 
-export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
+export default function MemoGrid({ memoData, refetchAllMemo }: MemoGridModel) {
   const { openModal, Modal } = useModal()
   const [noSession, setNoSession] = useState(false)
   return (
@@ -27,7 +27,7 @@ export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
           onClick={async () => {
             postMemo()
               .then(() => {
-                refetch?.()
+                refetchAllMemo?.()
               })
               .catch((err: AxiosError) => {
                 console.error(err)

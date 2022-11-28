@@ -11,9 +11,28 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '../queryClient'
 import { BE_URL, checkLogin, login } from './../api/user'
 import useModal from '../hook/useModal'
+import { useStore } from './zustand'
+import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { dummyMemos } from '../dummy/dummyMemos'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  const globalStore = useStore()
+  const { setMemos } = useStore()
+
+  // 로그인 안되어있으면 더미메모 저장
+  useEffect(() => {
+    checkLogin().then((res) => {
+      if (!res) {
+        setMemos(dummyMemos)
+      }
+    })
+  }, [setMemos])
+
+  // 글로벌 스토어 로깅
+  useEffect(() => {
+    console.info('globalStore:', globalStore)
+  }, [globalStore])
 
   useEffect(() => {
     console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)

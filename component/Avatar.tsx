@@ -6,6 +6,11 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { queryClient, queryKeys } from '../queryClient'
 import OpenColor from 'open-color'
+import { useStore } from '../pages/zustand'
+import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { useGetAllMemo } from '../hook/useGetAllMemo'
+import Router, { useRouter } from 'next/router'
+import { dummyMemos } from '../dummy/dummyMemos'
 
 const Avatar = ({
   avatar,
@@ -16,9 +21,15 @@ const Avatar = ({
 }) => {
   const [defaultImage, setDefaultImage] = useState(false)
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { refetch } = useQuery(queryKeys.checkLogin, checkLogin, {
+  const { setMemos } = useStore()
+  const { refetch } = useGetCheckLogin({
     enabled: false,
   })
+  const { refetch: refetchAllMemo } = useGetAllMemo({
+    staleTime: 0,
+    enabled: false,
+  })
+  const router = useRouter()
 
   const click =
     onClick ||
@@ -39,10 +50,10 @@ const Avatar = ({
             // 로그아웃
             logout()
               .then(() => {
-                // checkLogin
-                refetch()
-                // 메모 데이터 초기화
-                queryClient.setQueryData(queryKeys.getAllMemo, undefined)
+                refetch() // checkLogin
+                refetchAllMemo()
+                setMemos(dummyMemos)
+                router.replace('/home')
               })
               .catch(() => {
                 closeModal()

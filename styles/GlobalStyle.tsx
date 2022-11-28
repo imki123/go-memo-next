@@ -21,6 +21,7 @@ export default function GlobalStyle() {
           }
         }
         body {
+          scroll-behavior: smooth;
           width: 100vw;
           @media (min-width: 800px) {
             min-height: 100vh;

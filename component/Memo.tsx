@@ -1,9 +1,18 @@
+import { MouseEvent } from 'react'
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import moment from 'moment-mini'
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import { patchMemo } from '../api/memo'
+import { deleteMemo, patchMemo } from '../api/memo'
+import ClearIcon from '@mui/icons-material/Clear'
+import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import useModal from '../hook/useModal'
+import { useStore } from '../pages/zustand'
+import produce from 'immer'
+import { useQuery } from '@tanstack/react-query'
+import { queryKeys } from '../queryClient'
+import { useGetAllMemo } from '../hook/useGetAllMemo'
 
 export interface MemoModel {
   memoId: number
@@ -21,7 +30,7 @@ export default function Memo({
   setMemoData,
 }: MemoModel & {
   gridMode?: boolean
-  setMemoData?: Dispatch<SetStateAction<MemoModel>>
+  setMemoData?: (memo: MemoModel) => void
 }) {
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
@@ -30,10 +39,14 @@ export default function Memo({
   const [time, setTime] = useState(
     moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm:ss')
   )
+  const { data: isLogin } = useGetCheckLogin()
+  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
+  const { memos, setMemos } = useStore()
+  const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
 
   const updateMemo = (memo: MemoModel) => {
-    console.log('수정완료:', memo)
-    patchMemo(memo)
+    console.info('수정완료:', memo)
+    if (isLogin) patchMemo(memo)
   }
 
   const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,11 +54,12 @@ export default function Memo({
     setValue(e.target.value)
     const now = moment().format('YYYY-MM-DD HH:mm:ss')
     setTime(now)
-    setMemoData?.((state) => ({
-      ...state,
+    setMemoData?.({
       text: e.target.value,
       editedAt: now,
-    }))
+      memoId,
+      createdAt,
+    })
 
     clearTimeout(timeoutId.current)
     timeoutId.current = setTimeout(() => {
@@ -54,7 +68,7 @@ export default function Memo({
         text: e.target.value,
         editedAt: now,
       })
-    }, 1000 * 2)
+    }, 1000 * 1.5)
   }
 
   const clickMemo = (memoId: number) => {
@@ -63,11 +77,56 @@ export default function Memo({
     }
   }
 
+  const deleteMemoAction = (e: MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation()
+    openModal()
+    setTitle(`메모를 삭제하시겠습니까?`)
+    setButtons([
+      {
+        text: '취소',
+        onClick: closeModal,
+      },
+      {
+        text: '삭제',
+        onClick: () => {
+          closeModal()
+          if (isLogin) {
+            deleteMemo(memoId)
+              .then(() => {
+                refetch()
+                router.replace('/home')
+              })
+              .catch((err) => {
+                openModal()
+                setTitle(`메모 삭제 실패: ${JSON.stringify(err)}`)
+                setButtons([])
+              })
+          } else {
+            const result = produce(memos, (draft) => {
+              return draft?.filter((item) => item.memoId !== memoId)
+            })
+            setMemos(result)
+          }
+        },
+      },
+    ])
+  }
+
   return (
-    <MemoWrapper onClick={() => clickMemo(memoId)} gridMode={gridMode}>
-      <MemoHeader>{`${time}`}</MemoHeader>
-      <StyledTextarea value={value} onChange={changeText} disabled={gridMode} />
-    </MemoWrapper>
+    <>
+      <MemoWrapper onClick={() => clickMemo(memoId)} gridMode={gridMode}>
+        <MemoHeader>
+          {`${time}`}
+          <StyledClearIcon onClick={deleteMemoAction} />
+        </MemoHeader>
+        <StyledTextarea
+          value={value}
+          onChange={changeText}
+          disabled={gridMode}
+        />
+      </MemoWrapper>
+      <Modal />
+    </>
   )
 }
 
@@ -97,14 +156,19 @@ const MemoHeader = styled.div`
   position: absolute;
   top: 0;
   right: 4px;
-  height: 12px;
+  display: flex;
+  align-items: center;
   font-size: 12px;
   color: ${OpenColor.gray[5]};
   text-align: right;
 `
+const StyledClearIcon = styled(ClearIcon)`
+  color: ${OpenColor.red[8]};
+  margin-left: 10px;
+`
 const StyledTextarea = styled.textarea`
   height: 100%;
-  padding-top: 12px;
+  padding-top: 18px;
   width: 100%;
   border: 0;
   border-radius: 8px;

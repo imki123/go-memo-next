@@ -37,6 +37,6 @@ export const patchMemo = (memo: MemoModel) => {
 
 export const deleteMemo = (memoId: number) => {
   return axiosWithCredentials
-    .delete<MemoModel>(`${urls.root}/${memoId}`)
+    .delete<MemoModel>(`${urls.root}${memoId}`)
     .then((res) => res.data)
 }

@@ -105,10 +105,12 @@ const ModalContent = styled.div`
 
 const TitleDiv = styled.div`
   font-weight: bold;
+  word-break: break-all;
 `
 
 const TextDiv = styled.div`
   margin-top: 8px;
+  word-break: break-all;
 `
 
 const ButtonDiv = styled.div`
