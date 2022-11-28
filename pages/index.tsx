@@ -1,5 +1,6 @@
-import Splash from '../component/Splash'
 import { useEffect, useRef, useState } from 'react'
+
+import Splash from '../component/Splash'
 import { useRouter } from 'next/router'
 
 export default function IndexPage() {

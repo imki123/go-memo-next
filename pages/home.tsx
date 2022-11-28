@@ -1,11 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
-import { checkLogin } from '../api/user'
+import { queryClient, queryKeys } from '../queryClient'
+
 import Header from '../component/Header'
 import MemoGrid from '../component/MemoGrid'
-import { dummyMemos } from '../dummy/dummyMemos'
+import { checkLogin } from '../api/user'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
-import { queryClient, queryKeys } from '../queryClient'
+import { useQuery } from '@tanstack/react-query'
 import { useStore } from './zustand'
 
 export default function HomePage() {

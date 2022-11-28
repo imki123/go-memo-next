@@ -1,16 +1,17 @@
-import Image from 'next/image'
-import { checkLogin, loginResponse, logout } from '../api/user'
-import styled from '@emotion/styled'
-import useModal from '../hook/useModal'
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { queryClient, queryKeys } from '../queryClient'
-import OpenColor from 'open-color'
-import { useStore } from '../pages/zustand'
-import { useGetCheckLogin } from '../hook/useGetCheckLogin'
-import { useGetAllMemo } from '../hook/useGetAllMemo'
 import Router, { useRouter } from 'next/router'
+import { checkLogin, loginResponse, logout } from '../api/user'
+import { queryClient, queryKeys } from '../queryClient'
+
+import Image from 'next/image'
+import OpenColor from 'open-color'
 import { dummyMemos } from '../dummy/dummyMemos'
+import styled from '@emotion/styled'
+import { useGetAllMemo } from '../hook/useGetAllMemo'
+import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import useModal from '../hook/useModal'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useStore } from '../pages/zustand'
 
 const Avatar = ({
   avatar,

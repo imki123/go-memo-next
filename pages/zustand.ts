@@ -1,5 +1,5 @@
-import create from 'zustand'
 import { MemoModel } from '../component/Memo'
+import create from 'zustand'
 import { dummyMemos } from '../dummy/dummyMemos'
 
 export interface StoreModel {

@@ -1,6 +1,6 @@
 import Axios from 'axios'
-import { MemoModel } from '../component/Memo'
 import { BE_URL } from './user'
+import { MemoModel } from '../component/Memo'
 
 const axiosWithCredentials = Axios.create({
   baseURL: BE_URL + '/memo/memo',

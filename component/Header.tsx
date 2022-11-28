@@ -1,13 +1,14 @@
 import React, { ReactNode } from 'react'
-import styled from '@emotion/styled'
+
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import { useRouter } from 'next/router'
 import Avatar from './Avatar'
-import OpenColor from 'open-color'
-import { useQuery } from '@tanstack/react-query'
-import { queryKeys } from '../queryClient'
-import { checkLogin } from '../api/user'
 import Link from 'next/link'
+import OpenColor from 'open-color'
+import { checkLogin } from '../api/user'
+import { queryKeys } from '../queryClient'
+import styled from '@emotion/styled'
+import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 
 interface HeaderModel {
   title?: string | number

@@ -1,5 +1,5 @@
-import styled from '@emotion/styled'
 import OpenColor from 'open-color'
+import styled from '@emotion/styled'
 
 export default function Splash({ visible }: { visible: boolean }) {
   return (
