@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { getMemo } from '../../api/memo'
 import Header from '../../component/Header'
 import Memo, { MemoModel } from '../../component/Memo'
+import { dummyMemo } from '../../dummy/dummyMemo'
 import { queryKeys } from '../../queryClient'
 
 /* // This function gets called at build time
@@ -53,7 +54,7 @@ export default function MemoIdPage({ memo }: { memo: MemoModel }) {
   const [memoData, setMemoData] = useState(memo)
 
   useEffect(() => {
-    setMemoData(() => data || memo)
+    setMemoData(() => data || memo || dummyMemo)
   }, [data, memo])
 
   const title = memoData?.text?.split('\n')[0].slice(0, 50)

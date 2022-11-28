@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import { checkLogin, loginResponse, logout } from '../api/user'
 import styled from '@emotion/styled'
-import useModal, { ModalButtonModel } from '../hook/useModal'
+import useModal from '../hook/useModal'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { queryKeys } from '../queryClient'
+import { queryClient, queryKeys } from '../queryClient'
 import OpenColor from 'open-color'
 
 const Avatar = ({
@@ -15,9 +15,7 @@ const Avatar = ({
   onClick?: () => void
 }) => {
   const [defaultImage, setDefaultImage] = useState(false)
-  const { openModal, closeModal, Modal } = useModal()
-  const [modalTitle, setModalTitle] = useState('')
-  const [modalButtons, setModalButtons] = useState<ModalButtonModel[]>()
+  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
   const { refetch } = useQuery(queryKeys.checkLogin, checkLogin, {
     enabled: false,
   })
@@ -26,8 +24,8 @@ const Avatar = ({
     onClick ||
     (() => {
       openModal()
-      setModalTitle('로그아웃 하시겠습니까?')
-      setModalButtons([
+      setTitle('로그아웃 하시겠습니까?')
+      setButtons([
         {
           text: '취소',
           onClick: () => {
@@ -38,14 +36,18 @@ const Avatar = ({
           text: '확인',
           onClick: () => {
             closeModal()
+            // 로그아웃
             logout()
               .then(() => {
+                // checkLogin
                 refetch()
+                // 메모 데이터 초기화
+                queryClient.setQueryData(queryKeys.getAllMemo, undefined)
               })
               .catch(() => {
                 closeModal()
-                setModalTitle('로그아웃에 실패했습니다. 😥')
-                setModalButtons([
+                setTitle('로그아웃에 실패했습니다. 😥')
+                setButtons([
                   {
                     text: '확인',
                     onClick: () => {
@@ -75,7 +77,7 @@ const Avatar = ({
           />
         )}
       </AvatarWrapper>
-      <Modal title={modalTitle} buttons={modalButtons} />
+      <Modal />
     </>
   )
 }
@@ -86,6 +88,7 @@ const AvatarWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   img {
     border-radius: 50%;
   }

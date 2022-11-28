@@ -21,6 +21,7 @@ export default function GlobalStyle() {
           }
         }
         body {
+          width: 100vw;
           @media (min-width: 800px) {
             min-height: 100vh;
             max-width: 800px;

@@ -23,18 +23,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
-  const { openModal, closeModal, Modal } = useModal()
-  const [modalTitle, setModalTitle] = useState('')
+  const { openModal, closeModal, Modal, setTitle } = useModal()
   const [clickModal, setClickModal] = useState(() => {
     return () => {}
   })
 
+  // 로그인 로직
   const afterLogin = () => {
     checkLogin()
       .then((res) => {
         openModal()
         if (res) {
-          setModalTitle('로그인 성공 😁')
+          setTitle('로그인 성공 😄')
           setClickModal(() => {
             return () => {
               router.replace('/home')
@@ -42,13 +42,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             }
           })
         } else {
-          setModalTitle('로그인 실패 😥')
+          setTitle('로그인 실패 😥')
           setClickModal(closeModal)
         }
       })
       .catch((err) => {
         openModal()
-        setModalTitle('로그인 실패 😥\n' + JSON.stringify(err))
+        setTitle('로그인 실패 😥\n' + JSON.stringify(err))
         setClickModal(closeModal)
       })
   }
@@ -78,10 +78,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         imki123
       </Copyright>
-      <Modal
-        title={modalTitle}
-        buttons={[{ text: '확인', onClick: clickModal }]}
-      />
+      <Modal buttons={[{ text: '확인', onClick: clickModal }]} />
     </QueryClientProvider>
   )
 }

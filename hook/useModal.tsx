@@ -9,13 +9,16 @@ export interface ModalButtonModel {
 }
 
 export interface ModalModel {
-  title: ReactNode
+  title?: ReactNode
   text?: ReactNode
   buttons?: ModalButtonModel[]
 }
 
 const useModal = () => {
   const [visible, setVisible] = useState(false)
+  const [modalTitle, setTitle] = useState('')
+  const [modalText, setText] = useState('')
+  const [modalModalButtons, setButtons] = useState<ModalButtonModel[]>()
   const openModal = () => {
     document.body.style.overflow = 'hidden'
     setVisible(true)
@@ -35,11 +38,11 @@ const useModal = () => {
             }}
           >
             <ModalContent onClick={(e) => e.stopPropagation()}>
-              <TitleDiv>{title}</TitleDiv>
-              {text && <TextDiv>{text}</TextDiv>}
-              {buttons && (
+              <TitleDiv>{modalTitle || title}</TitleDiv>
+              {text && <TextDiv>{modalText || text}</TextDiv>}
+              {(modalModalButtons || buttons) && (
                 <ButtonDiv>
-                  {buttons?.map(({ text, onClick }) => (
+                  {(modalModalButtons || buttons)?.map(({ text, onClick }) => (
                     <Button key={text} onClick={onClick}>
                       {text}
                     </Button>
@@ -63,6 +66,9 @@ const useModal = () => {
     openModal,
     closeModal,
     Modal,
+    setTitle,
+    setText,
+    setButtons,
   }
 }
 
@@ -78,7 +84,7 @@ const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.8);
   text-align: center;
 `
 
@@ -107,18 +113,11 @@ const TextDiv = styled.div`
 
 const ButtonDiv = styled.div`
   margin-top: 30px;
-  font-size: 12px;
   button {
-    font: inherit;
-    border-radius: 8px;
-    color: white;
-    border: 0;
-    padding: 8px 8px;
     :not(:last-of-type) {
       background: ${OpenColor.gray[8]};
     }
     :not(:first-of-type) {
-      background: blue;
       margin-left: 20px;
     }
   }
