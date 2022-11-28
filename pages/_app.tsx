@@ -2,14 +2,15 @@ import type { AppProps } from 'next/app'
 import GlobalStyle from '../styles/GlobalStyle'
 import styled from '@emotion/styled'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import Head from 'next/head'
 import { initGoogle } from '../util/googleLogin'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '../queryClient'
-import { BE_URL, login } from './../api/user'
+import { BE_URL, checkLogin, login } from './../api/user'
+import useModal from '../hook/useModal'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -22,12 +23,42 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
+  const { openModal, closeModal, Modal } = useModal()
+  const [modalTitle, setModalTitle] = useState('')
+  const [clickModal, setClickModal] = useState(() => {
+    return () => {}
+  })
+
+  const afterLogin = () => {
+    checkLogin()
+      .then((res) => {
+        openModal()
+        if (res) {
+          setModalTitle('로그인 성공 😁')
+          setClickModal(() => {
+            return () => {
+              router.replace('/home')
+              closeModal()
+            }
+          })
+        } else {
+          setModalTitle('로그인 실패 😥')
+          setClickModal(closeModal)
+        }
+      })
+      .catch((err) => {
+        openModal()
+        setModalTitle('로그인 실패 😥\n' + JSON.stringify(err))
+        setClickModal(closeModal)
+      })
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalStyle />
       <Script
         src='https://accounts.google.com/gsi/client'
-        onLoad={() => initGoogle(login, () => router.replace('/home'))}
+        onLoad={() => initGoogle(login, afterLogin)}
       ></Script>
       <Head>
         <title>고영이메모장🐈</title>
@@ -47,6 +78,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         imki123
       </Copyright>
+      <Modal
+        title={modalTitle}
+        buttons={[{ text: '확인', onClick: clickModal }]}
+      />
     </QueryClientProvider>
   )
 }

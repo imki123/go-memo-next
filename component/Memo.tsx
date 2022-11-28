@@ -80,6 +80,10 @@ const MemoWrapper = styled.div<{ gridMode?: boolean }>`
   border: 2px solid ${OpenColor.yellow[3]};
   border-radius: 8px;
   padding-left: 10px;
+  :hover,
+  :active {
+    border: 2px solid ${OpenColor.yellow[5]};
+  }
 
   ${({ gridMode }) =>
     gridMode &&
@@ -87,9 +91,6 @@ const MemoWrapper = styled.div<{ gridMode?: boolean }>`
     padding-left: 10px;
     height: auto;
     cursor: pointer;
-    :hover{
-      border: 2px solid ${OpenColor.yellow[9]};
-    }
   `}
 `
 const MemoHeader = styled.div`

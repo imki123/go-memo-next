@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
+import Button from '../component/Button'
 
 export interface ModalButtonModel {
   text: string
@@ -39,9 +40,9 @@ const useModal = () => {
               {buttons && (
                 <ButtonDiv>
                   {buttons?.map(({ text, onClick }) => (
-                    <button key={text} onClick={onClick}>
+                    <Button key={text} onClick={onClick}>
                       {text}
-                    </button>
+                    </Button>
                   ))}
                 </ButtonDiv>
               )}

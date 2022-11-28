@@ -98,6 +98,6 @@ const DefaultImage = styled.span`
   display: inline-block;
   height: 30px;
   width: 30px;
-  background: ${OpenColor.gray[3]};
+  background: ${OpenColor.green[3]};
   border-radius: 50%;
 `

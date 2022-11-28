@@ -3,6 +3,7 @@ import { AxiosError } from 'axios'
 import React, { useState } from 'react'
 import { postMemo } from '../api/memo'
 import useModal from '../hook/useModal'
+import Button from './Button'
 import Memo, { MemoModel } from './Memo'
 
 /**
@@ -22,7 +23,7 @@ export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
   return (
     <>
       <ButtonDiv>
-        <button
+        <Button
           onClick={async () => {
             postMemo()
               .then(() => {
@@ -40,7 +41,7 @@ export default function MemoGrid({ memoData, refetch }: MemoGridModel) {
           }}
         >
           메모추가
-        </button>
+        </Button>
       </ButtonDiv>
       <Grid>
         {memoData?.map(({ ...props }) => (
