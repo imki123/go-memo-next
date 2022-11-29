@@ -1,4 +1,5 @@
-import { css, Global } from '@emotion/react'
+import { Global, css } from '@emotion/react'
+
 import OpenColor from 'open-color'
 
 export default function GlobalStyle() {
@@ -23,6 +24,7 @@ export default function GlobalStyle() {
         body {
           scroll-behavior: smooth;
           width: 100vw;
+          overflow-x: hidden;
           @media (min-width: 800px) {
             min-height: 100vh;
             max-width: 800px;
