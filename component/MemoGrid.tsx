@@ -28,6 +28,6 @@ const Grid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  gap: 16px;
-  padding: 0 16px 16px;
+  gap: 32px;
+  padding: 0 20px 20px;
 `

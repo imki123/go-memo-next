@@ -4,7 +4,9 @@ import { AxiosError } from 'axios'
 import Button from '../component/Button'
 import Header from '../component/Header'
 import MemoGrid from '../component/MemoGrid'
+import { MemoModel } from '../component/Memo'
 import { checkLogin } from '../api/user'
+import dayjs from 'dayjs'
 import { postMemo } from '../api/memo'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
@@ -22,6 +24,11 @@ export default function HomePage() {
   })
   const { openModal, Modal } = useModal()
   const [noSession, setNoSession] = useState(false)
+  const sortedData = (data || memos)?.sort((a, b) => {
+    const timeA = dayjs(a.editedAt).valueOf()
+    const timeB = dayjs(b.editedAt).valueOf()
+    return timeB - timeA
+  })
 
   // 로그인 되어있으면 memo 불러오고, 안되어있으면 스토어에 demmyMemo 저장
   if (isError && isLogin) {
@@ -76,7 +83,7 @@ export default function HomePage() {
 
 const ButtonDiv = styled.div`
   text-align: center;
-  margin: 10px;
+  margin: 20px;
 `
 
 const LoadingDiv = styled.div`

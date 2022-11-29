@@ -66,7 +66,7 @@ const HeaderFixed = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 20px;
   font-weight: bold;
 `
 const LeftItems = styled.div`
