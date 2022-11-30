@@ -25,7 +25,7 @@ export default function Header({
 }: HeaderModel) {
   const router = useRouter()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
-  const { openModal, closeModal, Modal, setTitle } = useModal()
+  const { openModal, Modal, setTitle } = useModal()
   const right = rightItems || [
     <StyledLockOpenIcon
       onClick={() => {

@@ -5,6 +5,7 @@
   "root": true,
   "rules": {
     "no-console": ["warn", { "allow": ["info", "error"] }],
-    "sort-imports": "warn"
+    "sort-imports": "warn",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }
