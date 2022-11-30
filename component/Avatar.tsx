@@ -71,7 +71,6 @@ const Avatar = ({
   return (
     <>
       <AvatarWrapper onClick={click}>
-        <AvatarSpan>{avatar.name}</AvatarSpan>
         {defaultImage ? (
           <DefaultImage />
         ) : (
@@ -83,6 +82,7 @@ const Avatar = ({
             onError={() => setDefaultImage(true)}
           />
         )}
+        <AvatarSpan>{avatar.name}</AvatarSpan>
       </AvatarWrapper>
       <Modal />
     </>
@@ -93,6 +93,7 @@ export default Avatar
 
 const AvatarWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;

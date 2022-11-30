@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import { headerHeight, noSelect } from '../styles/GlobalStyle'
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Avatar from './Avatar'
@@ -34,7 +35,8 @@ export default function Header({
     ),
   ]
   return (
-    <HeaderWrapper>
+    <>
+      <HeaderPadding />
       <HeaderFixed>
         <LeftItems>
           {backButton && (
@@ -49,19 +51,19 @@ export default function Header({
           {React.Children.toArray(right?.map((item) => item))}
         </RightItems>
       </HeaderFixed>
-    </HeaderWrapper>
+    </>
   )
 }
 
-const HeaderWrapper = styled.div`
-  height: 40px;
+const HeaderPadding = styled.div`
+  height: ${headerHeight}px;
 `
 const HeaderFixed = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: ${headerHeight}px;
 
   display: flex;
   align-items: center;

@@ -2,6 +2,19 @@ import { Global, css } from '@emotion/react'
 
 import OpenColor from 'open-color'
 
+// 헤더 높이
+export const headerHeight = 50
+
+// 드래그, 선택 막아주는 스타일
+export const noSelect = css`
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+`
+
 export default function GlobalStyle() {
   return (
     <Global
