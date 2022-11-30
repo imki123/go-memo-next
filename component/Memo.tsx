@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react'
+import { ChangeEvent, useRef, useState } from 'react'
 import { deleteMemo, patchMemo } from '../api/memo'
 
 import ClearIcon from '@mui/icons-material/Clear'
@@ -6,14 +6,12 @@ import { MouseEvent } from 'react'
 import OpenColor from 'open-color'
 import moment from 'moment-mini'
 import produce from 'immer'
-import { queryKeys } from '../queryClient'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
 import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { useMemoStore } from '../util/zustand'
 import useModal from '../hook/useModal'
-import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useStore } from '../util/zustand'
 
 export interface MemoModel {
   memoId: number
@@ -42,7 +40,7 @@ export default function Memo({
   )
   const { data: isLogin } = useGetCheckLogin()
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { memos, setMemos } = useStore()
+  const { memos, setMemos } = useMemoStore()
   const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
 
   const updateMemo = (memo: MemoModel) => {

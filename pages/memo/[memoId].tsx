@@ -7,9 +7,9 @@ import produce from 'immer'
 import { queryKeys } from '../../queryClient'
 import styled from '@emotion/styled'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
+import { useMemoStore } from '../../util/zustand'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useStore } from '../../util/zustand'
 
 /* // This function gets called at build time
 export async function getStaticPaths() {
@@ -50,7 +50,7 @@ export default function MemoIdPage() {
   const router = useRouter()
   const memoId = Number(router.query.memoId)
 
-  const { memos, setMemos } = useStore()
+  const { memos, setMemos } = useMemoStore()
   const { data: isLogin } = useGetCheckLogin()
   const { data, refetch, isError } = useQuery(
     queryKeys.getMemo,

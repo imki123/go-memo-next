@@ -4,19 +4,18 @@ import { AxiosError } from 'axios'
 import Button from '../component/Button'
 import Header from '../component/Header'
 import MemoGrid from '../component/MemoGrid'
-import { MemoModel } from '../component/Memo'
 import { checkLogin } from '../api/user'
 import dayjs from 'dayjs'
 import { postMemo } from '../api/memo'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
+import { useMemoStore } from '../util/zustand'
 import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useStore } from '../util/zustand'
 
 export default function HomePage() {
-  const { memos, setMemos } = useStore()
+  const { memos } = useMemoStore()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
   const { data, refetch, isError, isLoading, isFetching } = useGetAllMemo({
     staleTime: 0,
@@ -62,7 +61,7 @@ export default function HomePage() {
       {isLoading || isFetching ? (
         <LoadingDiv>로딩중...</LoadingDiv>
       ) : (
-        <MemoGrid memoData={isLogin ? data : memos} />
+        <MemoGrid memoData={sortedData} />
       )}
       <Modal
         title={

@@ -8,7 +8,7 @@ export interface StoreModel {
 }
 
 // zustand 글로벌 스토어 hook
-export const useStore = create<StoreModel>((set) => ({
+export const useMemoStore = create<StoreModel>((set) => ({
   memos: dummyMemos,
   setMemos: (memos) => set({ memos }),
 }))

@@ -11,15 +11,14 @@ import { dummyMemos } from '../dummy/dummyMemos'
 import { initGoogle } from '../util/googleLogin'
 import { queryClient } from '../queryClient'
 import styled from '@emotion/styled'
-import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { useMemoStore } from '../util/zustand'
 import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
-import { useStore } from '../util/zustand'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const globalStore = useStore()
-  const { setMemos } = useStore()
+  const globalStore = useMemoStore()
+  const { setMemos } = globalStore
 
   // 로그인 안되어있으면 더미메모 저장
   useEffect(() => {

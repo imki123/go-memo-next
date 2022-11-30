@@ -1,6 +1,4 @@
-import Router, { useRouter } from 'next/router'
-import { checkLogin, loginResponse, logout } from '../api/user'
-import { queryClient, queryKeys } from '../queryClient'
+import { loginResponse, logout } from '../api/user'
 
 import Image from 'next/image'
 import OpenColor from 'open-color'
@@ -8,10 +6,10 @@ import { dummyMemos } from '../dummy/dummyMemos'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
 import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { useMemoStore } from '../util/zustand'
 import useModal from '../hook/useModal'
-import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useStore } from '../util/zustand'
 
 const Avatar = ({
   avatar,
@@ -22,7 +20,7 @@ const Avatar = ({
 }) => {
   const [defaultImage, setDefaultImage] = useState(false)
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { setMemos } = useStore()
+  const { setMemos } = useMemoStore()
   const { refetch } = useGetCheckLogin({
     enabled: false,
   })
