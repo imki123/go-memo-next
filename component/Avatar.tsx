@@ -1,4 +1,5 @@
 import { loginResponse, logout } from '../api/user'
+import { queryClient, queryKeys } from '../queryClient'
 
 import Image from 'next/image'
 import OpenColor from 'open-color'
@@ -24,10 +25,6 @@ const Avatar = ({
   const { refetch } = useGetCheckLogin({
     enabled: false,
   })
-  const { refetch: refetchAllMemo } = useGetAllMemo({
-    staleTime: 0,
-    enabled: false,
-  })
   const router = useRouter()
 
   const click =
@@ -50,7 +47,7 @@ const Avatar = ({
             logout()
               .then(() => {
                 refetch() // checkLogin
-                refetchAllMemo()
+                queryClient.setQueryData(queryKeys.getAllMemo, null)
                 setMemos(dummyMemos)
                 router.replace('/home')
               })
