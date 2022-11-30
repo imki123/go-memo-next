@@ -51,6 +51,14 @@ export default function GlobalStyle() {
           color: ${OpenColor.blue[7]};
           font-size: inherit;
         }
+        button,
+        a {
+          cursor: pointer;
+        }
+        button,
+        img {
+          ${noSelect}
+        }
       `}
     />
   )
