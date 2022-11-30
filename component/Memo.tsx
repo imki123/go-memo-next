@@ -177,13 +177,5 @@ const StyledTextarea = styled.textarea`
   outline: none;
   overflow: auto;
   word-break: break-all;
-  ::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: ${OpenColor.yellow[5]};
-    border-radius: 3px;
-  }
   ${({ disabled }) => disabled && `cursor: pointer;`}
 `

@@ -3,7 +3,7 @@ import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
 
 // 헤더 높이
-export const headerHeight = 50
+export const headerHeight = 60
 
 // 드래그, 선택 막아주는 스타일
 export const noSelect = css`
@@ -21,18 +21,31 @@ export default function GlobalStyle() {
       styles={css`
         * {
           box-sizing: border-box;
-          font-size: 14px;
+          ::-webkit-scrollbar {
+            width: 5px;
+            border-radius: 3px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background: ${OpenColor.yellow[5]};
+            border-radius: 3px;
+          }
         }
         html,
         body {
           margin: 0;
           padding: 0;
           position: relative;
+          scroll-behavior: smooth;
         }
         html {
           @media (min-width: 800px) {
             background: ${OpenColor.blue[0]};
           }
+        }
+        body,
+        button,
+        textarea {
+          font-size: 14px;
         }
         body {
           scroll-behavior: smooth;

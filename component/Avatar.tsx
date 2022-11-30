@@ -70,9 +70,9 @@ const Avatar = ({
 
   return (
     <>
-      <AvatarWrapper onClick={click}>
+      <AvatarWrapper>
         {defaultImage ? (
-          <DefaultImage />
+          <DefaultImage onClick={click} />
         ) : (
           <Image
             src={avatar.picture || ''}
@@ -80,6 +80,7 @@ const Avatar = ({
             height='30'
             alt='avatar'
             onError={() => setDefaultImage(true)}
+            onClick={click}
           />
         )}
         <AvatarSpan>{avatar.name}</AvatarSpan>
@@ -92,18 +93,23 @@ const Avatar = ({
 export default Avatar
 
 const AvatarWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  align-items: flex-end;
   img {
+    cursor: pointer;
     border-radius: 50%;
   }
 `
 const AvatarSpan = styled.span`
-  font-size: 12px;
-  margin-right: 8px;
+  position: absolute;
+  top: 30px;
+  right: 0;
+  display: inline-block;
+  font-size: 10px;
+  text-align: right;
 `
 const DefaultImage = styled.span`
   display: inline-block;

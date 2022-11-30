@@ -4,10 +4,12 @@ import { headerHeight, noSelect } from '../styles/GlobalStyle'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Avatar from './Avatar'
 import Link from 'next/link'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
 import OpenColor from 'open-color'
 import { checkLogin } from '../api/user'
 import { queryKeys } from '../queryClient'
 import styled from '@emotion/styled'
+import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
@@ -23,7 +25,14 @@ export default function Header({
 }: HeaderModel) {
   const router = useRouter()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
+  const { openModal, closeModal, Modal, setTitle } = useModal()
   const right = rightItems || [
+    <StyledLockOpenIcon
+      onClick={() => {
+        openModal()
+        setTitle('잠금화면 준비중입니다 😄')
+      }}
+    />,
     isLogin ? (
       <Avatar avatar={isLogin} />
     ) : (
@@ -34,11 +43,12 @@ export default function Header({
       </LinkWrapper>
     ),
   ]
+
   return (
     <>
       <HeaderPadding />
       <HeaderFixed>
-        <LeftItems>
+        <LeftItems onClick={() => window.scrollTo(0, 0)}>
           {backButton && (
             <StyledArrowBackIosNewIcon
               fontSize='inherit'
@@ -51,6 +61,7 @@ export default function Header({
           {React.Children.toArray(right?.map((item) => item))}
         </RightItems>
       </HeaderFixed>
+      <Modal />
     </>
   )
 }
@@ -59,7 +70,8 @@ const HeaderPadding = styled.div`
   height: ${headerHeight}px;
 `
 const HeaderFixed = styled.div`
-  position: absolute;
+  position: fixed;
+  z-index: 10;
   top: 0;
   left: 0;
   right: 0;
@@ -70,8 +82,11 @@ const HeaderFixed = styled.div`
   justify-content: space-between;
   padding: 20px;
   font-weight: bold;
+  background: white;
 `
 const LeftItems = styled.div`
+  ${noSelect}
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -79,7 +94,7 @@ const LeftItems = styled.div`
 const RightItems = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
 `
 const StyledArrowBackIosNewIcon = styled(ArrowBackIosNewIcon)`
   :hover {
@@ -93,4 +108,8 @@ export const LinkWrapper = styled.span`
     font: inherit;
     font-size: 14px;
   }
+`
+
+export const StyledLockOpenIcon = styled(LockOpenIcon)`
+  cursor: pointer;
 `
