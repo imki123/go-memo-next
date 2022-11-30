@@ -23,7 +23,7 @@ export default function HomePage() {
   })
   const { openModal, Modal } = useModal()
   const [noSession, setNoSession] = useState(false)
-  const sortedData = (data || memos)?.sort((a, b) => {
+  const sortedData = [...(data || memos || [])]?.sort((a, b) => {
     const timeA = dayjs(a.editedAt).valueOf()
     const timeB = dayjs(b.editedAt).valueOf()
     return timeB - timeA
