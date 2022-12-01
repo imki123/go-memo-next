@@ -1,4 +1,4 @@
-import Memo, { MemoModel } from './Memo'
+import Memo, { MemoModel } from '../molecule/Memo'
 
 import styled from '@emotion/styled'
 
@@ -28,6 +28,6 @@ const Grid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  gap: 32px;
+  gap: 40px;
   padding: 0 20px 20px;
 `

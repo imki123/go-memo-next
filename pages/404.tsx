@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
 
@@ -6,11 +7,18 @@ export default function NotFound404() {
   // asPath가 루트이면 basePath로 이동(/go-memo-next)
   if (router.asPath === '/') router.push('/')
 
-  return <CenterDiv>404 | Not Found Page.</CenterDiv>
+  return (
+    <CenterDiv>
+      <div>404 | Not Found Page.</div>
+      <Link href={'/home'}>홈으로</Link>
+    </CenterDiv>
+  )
 }
 
 const CenterDiv = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 20px;
   justify-content: center;
   align-items: center;
   position: fixed;

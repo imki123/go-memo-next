@@ -1,9 +1,9 @@
 import { queryClient, queryKeys } from '../queryClient'
 
 import { AxiosError } from 'axios'
-import Button from '../component/Button'
-import Header from '../component/Header'
-import MemoGrid from '../component/MemoGrid'
+import Button from '../atom/Button'
+import Header from '../molecule/Header'
+import MemoGrid from '../layout/MemoGrid'
 import { checkLogin } from '../api/user'
 import dayjs from 'dayjs'
 import { postMemo } from '../api/memo'

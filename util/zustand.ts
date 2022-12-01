@@ -1,4 +1,4 @@
-import { MemoModel } from '../component/Memo'
+import { MemoModel } from '../molecule/Memo'
 import create from 'zustand'
 import { dummyMemos } from '../dummy/dummyMemos'
 

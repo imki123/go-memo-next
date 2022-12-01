@@ -1,6 +1,6 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 
-import { MemoModel } from '../component/Memo'
+import { MemoModel } from '../molecule/Memo'
 import { getAllMemo } from '../api/memo'
 import { queryKeys } from '../queryClient'
 

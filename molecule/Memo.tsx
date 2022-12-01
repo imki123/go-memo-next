@@ -113,27 +113,27 @@ export default function Memo({
 
   return (
     <>
-      <MemoWrapper onClick={() => clickMemo(memoId)} gridMode={gridMode}>
-        <MemoHeader>
+      <StyledMemo onClick={() => clickMemo(memoId)} gridMode={gridMode}>
+        <StyledMemoHeader>
           {`${time}`}
           <StyledClearIcon onClick={deleteMemoAction} />
-        </MemoHeader>
+        </StyledMemoHeader>
         <StyledTextarea
           value={value}
           onChange={changeText}
           disabled={gridMode}
         />
-      </MemoWrapper>
+      </StyledMemo>
       <Modal />
     </>
   )
 }
 
-const MemoWrapper = styled.div<{ gridMode?: boolean }>`
+const StyledMemo = styled.div<{ gridMode?: boolean }>`
   position: relative;
   flex: 1 0 250px;
   height: 100%;
-  min-height: 200px;
+  min-height: 300px;
   background: ${OpenColor.yellow[0]};
   border: 2px solid ${OpenColor.yellow[3]};
   border-radius: 8px;
@@ -151,7 +151,7 @@ const MemoWrapper = styled.div<{ gridMode?: boolean }>`
     cursor: pointer;
   `}
 `
-const MemoHeader = styled.div`
+const StyledMemoHeader = styled.div`
   position: absolute;
   top: 0;
   right: 4px;

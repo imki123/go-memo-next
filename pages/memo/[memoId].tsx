@@ -1,7 +1,7 @@
-import Memo, { MemoModel } from '../../component/Memo'
+import Memo, { MemoModel } from '../../molecule/Memo'
 import { useEffect, useState } from 'react'
 
-import Header from '../../component/Header'
+import Header from '../../molecule/Header'
 import { getMemo } from '../../api/memo'
 import produce from 'immer'
 import { queryKeys } from '../../queryClient'
@@ -119,6 +119,6 @@ export default function MemoIdPage() {
 
 const MemoWrapper = styled.div`
   height: calc(100vh - 40px);
-  padding: 0 15px 15px;
+  padding: 20px;
   border-radius: 15px; ;
 `
