@@ -30,7 +30,7 @@ export default function Header({
     <StyledLockOpenIcon
       onClick={() => {
         openModal()
-        setTitle('잠금화면 준비중입니다 😄')
+        setTitle('준비중입니다 😄')
       }}
     />,
     isLogin ? (
@@ -48,18 +48,20 @@ export default function Header({
     <>
       <HeaderPadding />
       <HeaderFixed>
-        <LeftItems onClick={() => window.scrollTo(0, 0)}>
-          {backButton && (
-            <StyledArrowBackIosNewIcon
-              fontSize='inherit'
-              onClick={router.back}
-            />
-          )}
-          {title}
-        </LeftItems>
-        <RightItems>
-          {React.Children.toArray(right?.map((item) => item))}
-        </RightItems>
+        <HeaderWrapper>
+          <LeftItems onClick={() => window.scrollTo(0, 0)}>
+            {backButton && (
+              <StyledArrowBackIosNewIcon
+                fontSize='inherit'
+                onClick={router.back}
+              />
+            )}
+            {title}
+          </LeftItems>
+          <RightItems>
+            {React.Children.toArray(right?.map((item) => item))}
+          </RightItems>
+        </HeaderWrapper>
       </HeaderFixed>
       <Modal />
     </>
@@ -77,12 +79,18 @@ const HeaderFixed = styled.div`
   right: 0;
   height: ${headerHeight}px;
 
+  background: white;
+  max-width: 800px;
+  margin: 0 auto;
+`
+const HeaderWrapper = styled.div`
+  height: calc(100% - 4px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px;
   font-weight: bold;
-  background: white;
+  box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
 `
 const LeftItems = styled.div`
   ${noSelect}
