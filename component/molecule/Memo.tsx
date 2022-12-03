@@ -46,8 +46,10 @@ export default function Memo({
 
   const updateMemo = useCallback(
     (memo: MemoModel) => {
-      console.info('수정완료:', memo)
-      if (isLogin) patchMemo(memo)
+      if (isLogin) {
+        console.info('수정완료:', memo)
+        patchMemo(memo)
+      }
     },
     [isLogin]
   )
@@ -158,7 +160,7 @@ const StyledMemo = styled.div<{ gridMode?: boolean }>`
   position: relative;
   flex: 1 0 250px;
   height: 100%;
-  min-height: 300px;
+  min-height: 250px;
   background: ${OpenColor.yellow[0]};
   border: 2px solid ${OpenColor.yellow[3]};
   border-radius: 8px;

@@ -6,54 +6,20 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { QueryClientProvider } from '@tanstack/react-query'
 import Script from 'next/script'
-import { dummyMemos } from '../api/dummyMemos'
 import { initGoogle } from '../util/googleLogin'
 import { queryClient } from '../queryClient'
 import styled from '@emotion/styled'
 import { useEffect } from 'react'
-import { useMemoStore } from '../zustand'
 import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const globalStore = useMemoStore()
-  const { setMemos } = globalStore
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
 
   const modalButtons = (onClick = closeModal) => [
     { text: '확인', onClick: onClick },
   ]
-
-  // 로그인 안되어있으면 더미메모 저장
-  useEffect(() => {
-    checkLogin()
-      .then((res) => {
-        if (!res) {
-          setMemos(dummyMemos)
-        }
-      })
-      .catch((err) => {
-        setMemos(dummyMemos)
-        setTitle(
-          <div>
-            서버 오류가 발생했습니다.😥
-            <br />
-            관리자에게 문의 바랍니다.
-            <br />
-            <br />
-            {JSON.stringify(err)}
-          </div>
-        )
-        setButtons([])
-        openModal()
-      })
-  }, [openModal, setButtons, setMemos, setTitle])
-
-  // 글로벌 스토어 로깅
-  useEffect(() => {
-    console.info('globalStore:', globalStore)
-  }, [globalStore])
 
   useEffect(() => {
     console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)

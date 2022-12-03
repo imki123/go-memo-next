@@ -1,4 +1,3 @@
-import { queryClient, queryKeys } from '../queryClient'
 import { useEffect, useMemo, useState } from 'react'
 
 import { AxiosError } from 'axios'
@@ -8,6 +7,7 @@ import MemoGrid from '../component/layout/MemoGrid'
 import { checkLogin } from '../api/user'
 import dayjs from 'dayjs'
 import { postMemo } from '../api/memo'
+import { queryKeys } from '../queryClient'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
 import { useMemoStore } from '../zustand'
@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query'
 export default function HomePage() {
   const { memos, setMemos } = useMemoStore()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
-  const { data, refetch, isError, isLoading, isFetching } = useGetAllMemo({
+  const { data, refetch, isLoading, isFetching } = useGetAllMemo({
     staleTime: 0,
     cacheTime: 0,
   })
@@ -32,11 +32,6 @@ export default function HomePage() {
       }),
     [memos]
   )
-
-  // 로그인 되어있으면 memo 불러오고, 안되어있으면 스토어에 demmyMemo 저장
-  if (isError && isLogin) {
-    queryClient.setQueryData([queryKeys.getAllMemo], [])
-  }
 
   useEffect(() => {
     if (isLogin && data) {

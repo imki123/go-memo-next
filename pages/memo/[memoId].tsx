@@ -11,6 +11,7 @@ import { headerHeight } from '../../styles/GlobalStyle'
 import produce from 'immer'
 import { queryKeys } from '../../queryClient'
 import styled from '@emotion/styled'
+import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
@@ -50,6 +51,7 @@ export async function getStaticProps({
 } */
 
 export default function MemoIdPage() {
+  const { data: isLogin } = useGetCheckLogin()
   const router = useRouter()
   const memoId = Number(router.query.memoId)
 
@@ -60,7 +62,7 @@ export default function MemoIdPage() {
   const memo = memos?.find((item) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
-  const { data, refetch, isError } = useQuery(
+  const { data, refetch, isError, isFetched } = useQuery(
     queryKeys.getMemo,
     () => getMemo(memoId),
     {
@@ -71,8 +73,14 @@ export default function MemoIdPage() {
   )
   const [currentMemo, setCurrentMemo] = useState(memo)
 
-  const { memoHistory, index, backHistory, nextHistory, resetHistory } =
-    useMemoHistoryStore()
+  const {
+    memoHistory,
+    index,
+    backHistory,
+    nextHistory,
+    resetHistory,
+    pushHistory,
+  } = useMemoHistoryStore()
 
   const updateMemos = useCallback(
     (memo: MemoModel) => {
@@ -103,15 +111,22 @@ export default function MemoIdPage() {
 
   // memoId 있으면 서버데이터 불러오기
   useEffect(() => {
-    if (memoId) refetch()
-  }, [memoId, refetch])
+    if (memoId && isLogin) refetch()
+  }, [isLogin, memoId, refetch])
 
-  // 서버에서 데이터 불러오면 currentMemo에 저장
+  // 히스토리에 첫 데이터 저장
   useEffect(() => {
-    if (data) {
-      setCurrentMemo(data)
+    if (index === -1 && memoId) {
+      if (isFetched) {
+        setCurrentMemo(data)
+        console.info('pushHistory:', data?.text || '')
+        pushHistory(data?.text || '')
+      } else {
+        console.info('pushHistory:', memo?.text || '')
+        pushHistory(memo?.text || '')
+      }
     }
-  }, [data])
+  }, [data, index, isError, isFetched, memo?.text, memoId, pushHistory])
 
   // 메모가 변경되면 currentMemo에 저장
   useEffect(() => {
