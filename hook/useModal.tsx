@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import Button from '../atom/Button'
+import Button from '../component/atom/Button'
 import OpenColor from 'open-color'
 import styled from '@emotion/styled'
 

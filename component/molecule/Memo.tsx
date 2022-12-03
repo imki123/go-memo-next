@@ -1,16 +1,16 @@
-import { ChangeEvent, useRef, useState } from 'react'
-import { deleteMemo, patchMemo } from '../api/memo'
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { deleteMemo, patchMemo } from '../../api/memo'
+import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
 import ClearIcon from '@mui/icons-material/Clear'
 import { MouseEvent } from 'react'
 import OpenColor from 'open-color'
-import moment from 'moment-mini'
+import dayjs from 'dayjs'
 import produce from 'immer'
 import styled from '@emotion/styled'
-import { useGetAllMemo } from '../hook/useGetAllMemo'
-import { useGetCheckLogin } from '../hook/useGetCheckLogin'
-import { useMemoStore } from '../util/zustand'
-import useModal from '../hook/useModal'
+import { useGetAllMemo } from '../../hook/useGetAllMemo'
+import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
+import useModal from '../../hook/useModal'
 import { useRouter } from 'next/router'
 
 export interface MemoModel {
@@ -26,48 +26,53 @@ export default function Memo({
   createdAt,
   editedAt,
   gridMode,
-  setMemoData,
+  updateMemos,
 }: MemoModel & {
   gridMode?: boolean
-  setMemoData?: (memo: MemoModel) => void
+  updateMemos?: (memo: MemoModel) => void
 }) {
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
   const [value, setValue] = useState(text)
   const [time, setTime] = useState(
-    moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
+    dayjs(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
   )
   const { data: isLogin } = useGetCheckLogin()
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
   const { memos, setMemos } = useMemoStore()
   const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
+  const { memoHistory, index, pushHistory } = useMemoHistoryStore()
 
-  const updateMemo = (memo: MemoModel) => {
-    console.info('수정완료:', memo)
-    if (isLogin) patchMemo(memo)
-  }
+  const updateMemo = useCallback(
+    (memo: MemoModel) => {
+      console.info('수정완료:', memo)
+      if (isLogin) patchMemo(memo)
+    },
+    [isLogin]
+  )
 
   const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value
+
     isChanged.current = true
-    setValue(e.target.value)
-    const now = moment().format('YYYY-MM-DD HH:mm')
+    setValue(text)
+    const now = dayjs().format('YYYY-MM-DD HH:mm')
     setTime(now)
-    setMemoData?.({
-      text: e.target.value,
+
+    // 현재 메모데이터 업데이트
+    updateMemos?.({
+      text: text,
       editedAt: now,
       memoId,
       createdAt,
     })
 
+    // 메모히스토리에 추가 디바운스: 0.5초
     clearTimeout(timeoutId.current)
     timeoutId.current = setTimeout(() => {
-      updateMemo({
-        memoId,
-        text: e.target.value,
-        editedAt: now,
-      })
-    }, 1000 * 1.5)
+      pushHistory(text)
+    }, 1000 * 0.5)
   }
 
   const clickMemo = (memoId: number) => {
@@ -110,6 +115,25 @@ export default function Memo({
       },
     ])
   }
+
+  useEffect(() => {
+    // 히스토리 변경되면 1.5초후에 서버에 저장
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current)
+      timeoutId.current = setTimeout(() => {
+        updateMemo({
+          memoId,
+          text: memoHistory[index],
+          editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+        })
+      }, 1000 * 1.5)
+    }
+  }, [index, memoHistory, memoId, updateMemo])
+
+  // 메모 변경되면 value도 변경하기
+  useEffect(() => {
+    setValue(text)
+  }, [text])
 
   return (
     <>

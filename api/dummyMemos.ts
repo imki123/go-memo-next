@@ -1,4 +1,4 @@
-import { MemoModel } from '../molecule/Memo'
+import { MemoModel } from '../component/molecule/Memo'
 
 export const dummyMemos = [
   {

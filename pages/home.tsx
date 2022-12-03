@@ -1,21 +1,21 @@
 import { queryClient, queryKeys } from '../queryClient'
+import { useEffect, useMemo, useState } from 'react'
 
 import { AxiosError } from 'axios'
-import Button from '../atom/Button'
-import Header from '../molecule/Header'
-import MemoGrid from '../layout/MemoGrid'
+import Button from '../component/atom/Button'
+import Header from '../component/molecule/Header'
+import MemoGrid from '../component/layout/MemoGrid'
 import { checkLogin } from '../api/user'
 import dayjs from 'dayjs'
 import { postMemo } from '../api/memo'
 import styled from '@emotion/styled'
 import { useGetAllMemo } from '../hook/useGetAllMemo'
-import { useMemoStore } from '../util/zustand'
+import { useMemoStore } from '../zustand'
 import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
 
 export default function HomePage() {
-  const { memos } = useMemoStore()
+  const { memos, setMemos } = useMemoStore()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
   const { data, refetch, isError, isLoading, isFetching } = useGetAllMemo({
     staleTime: 0,
@@ -23,16 +23,26 @@ export default function HomePage() {
   })
   const { openModal, Modal, setTitle } = useModal()
   const [noSession, setNoSession] = useState(false)
-  const sortedData = [...(data || memos || [])]?.sort((a, b) => {
-    const timeA = dayjs(a.editedAt).valueOf()
-    const timeB = dayjs(b.editedAt).valueOf()
-    return timeB - timeA
-  })
+  const sortedData = useMemo(
+    () =>
+      [...(memos || [])]?.sort((a, b) => {
+        const timeA = dayjs(a.editedAt).valueOf()
+        const timeB = dayjs(b.editedAt).valueOf()
+        return timeB - timeA
+      }),
+    [memos]
+  )
 
   // 로그인 되어있으면 memo 불러오고, 안되어있으면 스토어에 demmyMemo 저장
   if (isError && isLogin) {
     queryClient.setQueryData([queryKeys.getAllMemo], [])
   }
+
+  useEffect(() => {
+    if (isLogin && data) {
+      setMemos(data)
+    }
+  }, [data, isLogin, setMemos])
 
   return (
     <>

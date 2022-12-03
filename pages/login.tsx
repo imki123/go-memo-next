@@ -1,4 +1,4 @@
-import Header from '../molecule/Header'
+import Header from '../component/molecule/Header'
 import { renderGoogleButton } from '../util/googleLogin'
 import styled from '@emotion/styled'
 import { useEffect } from 'react'

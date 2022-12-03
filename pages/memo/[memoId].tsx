@@ -1,14 +1,14 @@
-import Memo, { MemoModel } from '../../molecule/Memo'
-import { useEffect, useState } from 'react'
+import Memo, { MemoModel } from '../../component/molecule/Memo'
+import { useCallback, useEffect, useState } from 'react'
+import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
-import Header from '../../molecule/Header'
+import Header from '../../component/molecule/Header'
+import dayjs from 'dayjs'
 import { getMemo } from '../../api/memo'
 import { headerHeight } from '../../styles/GlobalStyle'
 import produce from 'immer'
 import { queryKeys } from '../../queryClient'
 import styled from '@emotion/styled'
-import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
-import { useMemoStore } from '../../util/zustand'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
@@ -51,8 +51,13 @@ export default function MemoIdPage() {
   const router = useRouter()
   const memoId = Number(router.query.memoId)
 
+  // 전체 memos
   const { memos, setMemos } = useMemoStore()
-  const { data: isLogin } = useGetCheckLogin()
+
+  // 현재 id의 memo
+  const memo = memos?.find((item) => item.memoId === memoId)
+
+  // 서버에서 불러온 memo data
   const { data, refetch, isError } = useQuery(
     queryKeys.getMemo,
     () => getMemo(memoId),
@@ -62,16 +67,14 @@ export default function MemoIdPage() {
       enabled: false,
     }
   )
-  const [memoData, setMemoData] = useState<MemoModel>()
+  const [currentMemo, setCurrentMemo] = useState(memo)
 
-  const updateMemoData = (memo: MemoModel) => {
-    if (isLogin) {
-      setMemoData((state) => ({
-        ...state,
-        ...memo,
-      }))
-    } else {
-      // 스토어의 더미데이터 업데이트
+  const { memoHistory, index, backHistory, nextHistory, resetHistory } =
+    useMemoHistoryStore()
+
+  const updateMemos = useCallback(
+    (memo: MemoModel) => {
+      // 스토어의 memos 업데이트
       const result = produce(memos, (draft) => {
         let index = 0
         draft?.forEach((item, i) => {
@@ -85,33 +88,68 @@ export default function MemoIdPage() {
         return draft
       })
       setMemos(result)
+    },
+    [memoId, memos, setMemos]
+  )
+
+  // 페이지 벗어나면 히스토리 지우기
+  useEffect(() => {
+    return () => {
+      resetHistory()
+    }
+  }, [resetHistory])
+
+  // memoId 있으면 서버데이터 불러오기
+  useEffect(() => {
+    if (memoId) refetch()
+  }, [memoId, refetch])
+
+  // 서버에서 데이터 불러오면 currentMemo에 저장
+  useEffect(() => {
+    if (data) {
+      setCurrentMemo(data)
+    }
+  }, [data])
+
+  // 메모가 변경되면 currentMemo에 저장
+  useEffect(() => {
+    setCurrentMemo(memo)
+  }, [memo])
+
+  const clickBack = () => {
+    backHistory()
+    if (memoHistory[index - 1] !== undefined) {
+      updateMemos({
+        memoId,
+        text: memoHistory[index - 1],
+        editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      })
     }
   }
 
-  // 로그인 되어있으면 메모 불러오고, 안되어있으면 더미메모 수정
-  useEffect(() => {
-    if (isLogin) {
-      refetch()
-    } else {
-      // 더미메모
-      setMemoData(memos?.find((item) => item.memoId === memoId))
+  const clickNext = () => {
+    nextHistory()
+    if (memoHistory[index + 1] !== undefined) {
+      updateMemos({
+        memoId,
+        text: memoHistory[index + 1],
+        editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      })
     }
-  }, [isLogin, memoId, memos, refetch])
+  }
 
-  useEffect(() => {
-    if (data) setMemoData(data)
-  }, [data])
-
-  const title = memoData?.text?.split('\n')[0].slice(0, 50)
+  const title = currentMemo?.text?.split('\n')[0].slice(0, 50)
 
   return (
     <>
       <Header title={title} />
+      <button onClick={clickBack}>뒤로</button>
+      <button onClick={clickNext}>앞으로</button>
       <MemoWrapper>
         {isError ? (
           <div>메모 불러오기 실패 😥</div>
         ) : (
-          memoData && <Memo {...memoData} setMemoData={updateMemoData} />
+          currentMemo && <Memo {...currentMemo} updateMemos={updateMemos} />
         )}
       </MemoWrapper>
     </>

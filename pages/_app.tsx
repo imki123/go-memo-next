@@ -6,12 +6,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { QueryClientProvider } from '@tanstack/react-query'
 import Script from 'next/script'
-import { dummyMemos } from '../dummy/dummyMemos'
+import { dummyMemos } from '../api/dummyMemos'
 import { initGoogle } from '../util/googleLogin'
 import { queryClient } from '../queryClient'
 import styled from '@emotion/styled'
 import { useEffect } from 'react'
-import { useMemoStore } from '../util/zustand'
+import { useMemoStore } from '../zustand'
 import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
 
@@ -48,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         setButtons([])
         openModal()
       })
-  }, [setMemos])
+  }, [openModal, setButtons, setMemos, setTitle])
 
   // 글로벌 스토어 로깅
   useEffect(() => {
