@@ -50,18 +50,20 @@ export default function Header({
     <>
       {fixed && <HeaderPadding />}
       <HeaderFixed fixed={fixed}>
-        <LeftItems onClick={() => window.scrollTo(0, 0)}>
-          {backButton && (
-            <StyledArrowBackIosNewIcon
-              fontSize='inherit'
-              onClick={router.back}
-            />
-          )}
-          {title}
-        </LeftItems>
-        <RightItems>
-          {React.Children.toArray(right?.map((item) => item))}
-        </RightItems>
+        <HeaderWrapper>
+          <LeftItems onClick={() => window.scrollTo(0, 0)}>
+            {backButton && (
+              <StyledArrowBackIosNewIcon
+                fontSize='inherit'
+                onClick={router.back}
+              />
+            )}
+            {title}
+          </LeftItems>
+          <RightItems>
+            {React.Children.toArray(right?.map((item) => item))}
+          </RightItems>
+        </HeaderWrapper>
       </HeaderFixed>
       <Modal />
     </>
