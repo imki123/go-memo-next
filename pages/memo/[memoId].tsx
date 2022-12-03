@@ -2,7 +2,9 @@ import Memo, { MemoModel } from '../../component/molecule/Memo'
 import { useCallback, useEffect, useState } from 'react'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
+import Button from '../../component/atom/Button'
 import Header from '../../component/molecule/Header'
+import OpenColor from 'open-color'
 import dayjs from 'dayjs'
 import { getMemo } from '../../api/memo'
 import { headerHeight } from '../../styles/GlobalStyle'
@@ -143,13 +145,18 @@ export default function MemoIdPage() {
   return (
     <>
       <Header title={title} />
-      <button onClick={clickBack}>뒤로</button>
-      <button onClick={clickNext}>앞으로</button>
+
       <MemoWrapper>
         {isError ? (
           <div>메모 불러오기 실패 😥</div>
         ) : (
-          currentMemo && <Memo {...currentMemo} updateMemos={updateMemos} />
+          <>
+            <ButtonDiv>
+              <Button onClick={clickBack}>뒤로</Button>
+              <Button onClick={clickNext}>앞으로</Button>
+            </ButtonDiv>
+            {currentMemo && <Memo {...currentMemo} updateMemos={updateMemos} />}
+          </>
         )}
       </MemoWrapper>
     </>
@@ -160,4 +167,25 @@ const MemoWrapper = styled.div`
   height: calc(100% - ${headerHeight}px);
   padding: 0 15px 15px;
   border-radius: 15px; ;
+`
+
+const ButtonDiv = styled.div`
+  position: fixed;
+  height: 100px;
+  bottom: 10px;
+  right: 20px;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  button {
+    font-size: 10px;
+    width: 40px;
+    height: 30px;
+    padding: 0;
+    background: ${OpenColor.yellow[7]};
+  }
 `

@@ -71,6 +71,7 @@ export default function Memo({
     // 메모히스토리에 추가 디바운스: 0.5초
     clearTimeout(timeoutId.current)
     timeoutId.current = setTimeout(() => {
+      console.info('pushHistory:', text)
       pushHistory(text)
     }, 1000 * 0.5)
   }
