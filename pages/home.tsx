@@ -21,7 +21,7 @@ export default function HomePage() {
     staleTime: 0,
     cacheTime: 0,
   })
-  const { openModal, Modal } = useModal()
+  const { openModal, Modal, setTitle } = useModal()
   const [noSession, setNoSession] = useState(false)
   const sortedData = [...(data || memos || [])]?.sort((a, b) => {
     const timeA = dayjs(a.editedAt).valueOf()
@@ -52,6 +52,17 @@ export default function HomePage() {
                   setNoSession(false)
                 }
                 openModal()
+                setTitle(
+                  <>
+                    메모 추가에 실패했습니다. 😥
+                    {noSession ? (
+                      <>
+                        <br />
+                        로그인이 필요합니다.
+                      </>
+                    ) : null}
+                  </>
+                )
               })
           }}
         >
@@ -63,19 +74,7 @@ export default function HomePage() {
       ) : (
         <MemoGrid memoData={sortedData} />
       )}
-      <Modal
-        title={
-          <>
-            메모 추가에 실패했습니다. 😥
-            {noSession ? (
-              <>
-                <br />
-                로그인이 필요합니다.
-              </>
-            ) : null}
-          </>
-        }
-      />
+      <Modal />
     </>
   )
 }

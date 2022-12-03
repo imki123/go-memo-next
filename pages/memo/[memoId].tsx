@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import Header from '../../molecule/Header'
 import { getMemo } from '../../api/memo'
+import { headerHeight } from '../../styles/GlobalStyle'
 import produce from 'immer'
 import { queryKeys } from '../../queryClient'
 import styled from '@emotion/styled'
@@ -118,7 +119,7 @@ export default function MemoIdPage() {
 }
 
 const MemoWrapper = styled.div`
-  height: calc(100vh - 40px);
-  padding: 20px;
+  height: calc(100% - ${headerHeight}px);
+  padding: 0 15px 15px;
   border-radius: 15px; ;
 `

@@ -31,7 +31,9 @@ export default function GlobalStyle() {
           }
         }
         html,
-        body {
+        body,
+        #__next {
+          height: 100%;
           margin: 0;
           padding: 0;
           position: relative;
@@ -51,7 +53,6 @@ export default function GlobalStyle() {
           scroll-behavior: smooth;
           width: 100vw;
           overflow-x: hidden;
-          padding-bottom: 60px;
           @media (min-width: 800px) {
             min-height: 100vh;
             max-width: 800px;

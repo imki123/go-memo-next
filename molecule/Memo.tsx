@@ -36,7 +36,7 @@ export default function Memo({
   const router = useRouter()
   const [value, setValue] = useState(text)
   const [time, setTime] = useState(
-    moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm:ss')
+    moment(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
   )
   const { data: isLogin } = useGetCheckLogin()
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
@@ -51,7 +51,7 @@ export default function Memo({
   const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
     isChanged.current = true
     setValue(e.target.value)
-    const now = moment().format('YYYY-MM-DD HH:mm:ss')
+    const now = moment().format('YYYY-MM-DD HH:mm')
     setTime(now)
     setMemoData?.({
       text: e.target.value,
@@ -158,12 +158,12 @@ const StyledMemoHeader = styled.div`
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: ${OpenColor.gray[5]};
+  color: ${OpenColor.gray[7]};
   text-align: right;
 `
 const StyledClearIcon = styled(ClearIcon)`
   color: ${OpenColor.red[8]};
-  margin-left: 10px;
+  margin-left: 4px;
 `
 const StyledTextarea = styled.textarea`
   height: 100%;

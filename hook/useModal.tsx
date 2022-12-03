@@ -17,18 +17,27 @@ export interface ModalModel {
 
 const useModal = () => {
   const [visible, setVisible] = useState(false)
-  const [modalTitle, setTitle] = useState('')
-  const [modalText, setText] = useState('')
+  const [modalTitle, setTitle] = useState<ReactNode>()
+  const [modalText, setText] = useState<ReactNode>()
   const [modalModalButtons, setButtons] = useState<ModalButtonModel[]>()
+
   const openModal = () => {
     document.body.style.overflow = 'hidden'
     setVisible(true)
   }
+
   const closeModal = () => {
     document.body.removeAttribute('style')
     setVisible(false)
   }
-  const Modal = ({ title, text, buttons }: ModalModel) => {
+
+  const resetModal = () => {
+    setTitle(undefined)
+    setText(undefined)
+    setButtons(undefined)
+  }
+
+  const Modal = () => {
     return (
       <>
         {visible && (
@@ -39,11 +48,11 @@ const useModal = () => {
             }}
           >
             <ModalContent onClick={(e) => e.stopPropagation()}>
-              <TitleDiv>{modalTitle || title}</TitleDiv>
-              {text && <TextDiv>{modalText || text}</TextDiv>}
-              {(modalModalButtons || buttons) && (
+              {modalTitle && <TitleDiv>{modalTitle}</TitleDiv>}
+              {modalText && <TextDiv>{modalText}</TextDiv>}
+              {modalModalButtons && (
                 <ButtonDiv>
-                  {(modalModalButtons || buttons)?.map(({ text, onClick }) => (
+                  {modalModalButtons?.map(({ text, onClick }) => (
                     <Button key={text} onClick={onClick}>
                       {text}
                     </Button>
@@ -70,6 +79,7 @@ const useModal = () => {
     setTitle,
     setText,
     setButtons,
+    resetModal,
   }
 }
 

@@ -1,5 +1,4 @@
 import { BE_URL, checkLogin, login } from './../api/user'
-import { useEffect, useState } from 'react'
 
 import type { AppProps } from 'next/app'
 import GlobalStyle from '../styles/GlobalStyle'
@@ -11,6 +10,7 @@ import { dummyMemos } from '../dummy/dummyMemos'
 import { initGoogle } from '../util/googleLogin'
 import { queryClient } from '../queryClient'
 import styled from '@emotion/styled'
+import { useEffect } from 'react'
 import { useMemoStore } from '../util/zustand'
 import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
@@ -19,14 +19,35 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const globalStore = useMemoStore()
   const { setMemos } = globalStore
+  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
+
+  const modalButtons = (onClick = closeModal) => [
+    { text: '확인', onClick: onClick },
+  ]
 
   // 로그인 안되어있으면 더미메모 저장
   useEffect(() => {
-    checkLogin().then((res) => {
-      if (!res) {
+    checkLogin()
+      .then((res) => {
+        if (!res) {
+          setMemos(dummyMemos)
+        }
+      })
+      .catch((err) => {
         setMemos(dummyMemos)
-      }
-    })
+        setTitle(
+          <div>
+            서버 오류가 발생했습니다.😥
+            <br />
+            관리자에게 문의 바랍니다.
+            <br />
+            <br />
+            {JSON.stringify(err)}
+          </div>
+        )
+        setButtons([])
+        openModal()
+      })
   }, [setMemos])
 
   // 글로벌 스토어 로깅
@@ -42,11 +63,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
-  const { openModal, closeModal, Modal, setTitle } = useModal()
-  const [clickModal, setClickModal] = useState(() => {
-    return () => {}
-  })
-
   // 로그인 로직
   const afterLogin = () => {
     checkLogin()
@@ -54,21 +70,21 @@ function MyApp({ Component, pageProps }: AppProps) {
         openModal()
         if (res) {
           setTitle('로그인 성공 😄')
-          setClickModal(() => {
-            return () => {
+          setButtons(
+            modalButtons(() => {
               router.replace('/home')
               closeModal()
-            }
-          })
+            })
+          )
         } else {
           setTitle('로그인 실패 😥')
-          setClickModal(closeModal)
+          setButtons(modalButtons())
         }
       })
       .catch((err) => {
         openModal()
         setTitle('로그인 실패 😥\n' + JSON.stringify(err))
-        setClickModal(closeModal)
+        setButtons(modalButtons())
       })
   }
 
@@ -97,7 +113,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         imki123
       </Copyright>
-      <Modal buttons={[{ text: '확인', onClick: clickModal }]} />
+      <Modal />
     </QueryClientProvider>
   )
 }

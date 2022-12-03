@@ -14,11 +14,13 @@ import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
 interface HeaderModel {
+  fixed?: boolean
   title?: string | number
   backButton?: boolean
   rightItems?: ReactNode[]
 }
 export default function Header({
+  fixed = true,
   title,
   backButton = true,
   rightItems,
@@ -46,22 +48,20 @@ export default function Header({
 
   return (
     <>
-      <HeaderPadding />
-      <HeaderFixed>
-        <HeaderWrapper>
-          <LeftItems onClick={() => window.scrollTo(0, 0)}>
-            {backButton && (
-              <StyledArrowBackIosNewIcon
-                fontSize='inherit'
-                onClick={router.back}
-              />
-            )}
-            {title}
-          </LeftItems>
-          <RightItems>
-            {React.Children.toArray(right?.map((item) => item))}
-          </RightItems>
-        </HeaderWrapper>
+      {fixed && <HeaderPadding />}
+      <HeaderFixed fixed={fixed}>
+        <LeftItems onClick={() => window.scrollTo(0, 0)}>
+          {backButton && (
+            <StyledArrowBackIosNewIcon
+              fontSize='inherit'
+              onClick={router.back}
+            />
+          )}
+          {title}
+        </LeftItems>
+        <RightItems>
+          {React.Children.toArray(right?.map((item) => item))}
+        </RightItems>
       </HeaderFixed>
       <Modal />
     </>
@@ -71,7 +71,7 @@ export default function Header({
 const HeaderPadding = styled.div`
   height: ${headerHeight}px;
 `
-const HeaderFixed = styled.div`
+const HeaderFixed = styled.div<{ fixed?: boolean }>`
   position: fixed;
   z-index: 10;
   top: 0;
@@ -83,7 +83,7 @@ const HeaderFixed = styled.div`
   max-width: 800px;
   margin: 0 auto;
 `
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div<{ fixed?: boolean }>`
   height: calc(100% - 4px);
   display: flex;
   align-items: center;
@@ -91,6 +91,8 @@ const HeaderWrapper = styled.div`
   padding: 20px;
   font-weight: bold;
   box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
+  background: white;
+  ${({ fixed }) => !fixed && `position: relative;`}
 `
 const LeftItems = styled.div`
   ${noSelect}
