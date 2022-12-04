@@ -6,20 +6,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { QueryClientProvider } from '@tanstack/react-query'
 import Script from 'next/script'
+import { addSnackBar } from '../util/util'
 import { initGoogle } from '../util/googleLogin'
 import { queryClient } from '../queryClient'
 import styled from '@emotion/styled'
 import { useEffect } from 'react'
-import useModal from '../hook/useModal'
 import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-
-  const modalButtons = (onClick = closeModal) => [
-    { text: '확인', onClick: onClick },
-  ]
 
   useEffect(() => {
     console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)
@@ -33,24 +28,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   const afterLogin = () => {
     checkLogin()
       .then((res) => {
-        openModal()
         if (res) {
-          setTitle('로그인 성공 😄')
-          setButtons(
-            modalButtons(() => {
-              router.replace('/home')
-              closeModal()
-            })
-          )
+          addSnackBar('로그인 성공 😄')
+          router.replace('/home')
         } else {
-          setTitle('로그인 실패 😥')
-          setButtons(modalButtons())
+          addSnackBar('로그인 실패 😥')
         }
       })
       .catch((err) => {
-        openModal()
-        setTitle('로그인 실패 😥\n' + JSON.stringify(err))
-        setButtons(modalButtons())
+        addSnackBar('로그인 실패 😥<br/>' + JSON.stringify(err))
       })
   }
 
@@ -79,7 +65,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         imki123
       </Copyright>
-      <Modal />
     </QueryClientProvider>
   )
 }

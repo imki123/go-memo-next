@@ -5,6 +5,7 @@ import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 import ClearIcon from '@mui/icons-material/Clear'
 import { MouseEvent } from 'react'
 import OpenColor from 'open-color'
+import { addSnackBar } from '../../util/util'
 import dayjs from 'dayjs'
 import produce from 'immer'
 import styled from '@emotion/styled'
@@ -48,6 +49,7 @@ export default function Memo({
     (memo: MemoModel) => {
       if (isLogin) {
         console.info('수정완료:', memo)
+        addSnackBar('수정완료')
         patchMemo(memo)
       }
     },
@@ -100,13 +102,12 @@ export default function Memo({
           if (isLogin) {
             deleteMemo(memoId)
               .then(() => {
+                addSnackBar('메모 삭제 성공')
                 refetch()
                 router.replace('/home')
               })
               .catch((err) => {
-                openModal()
-                setTitle(`메모 삭제 실패: ${JSON.stringify(err)}`)
-                setButtons([])
+                addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
               })
           } else {
             const result = produce(memos, (draft) => {

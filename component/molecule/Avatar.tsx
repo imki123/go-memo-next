@@ -3,6 +3,7 @@ import { queryClient, queryKeys } from '../../queryClient'
 
 import Image from 'next/image'
 import OpenColor from 'open-color'
+import { addSnackBar } from '../../util/util'
 import { dummyMemos } from '../../api/dummyMemos'
 import styled from '@emotion/styled'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
@@ -45,22 +46,14 @@ const Avatar = ({
             // 로그아웃
             logout()
               .then(() => {
+                addSnackBar('로그아웃 성공')
                 refetch() // checkLogin
                 queryClient.setQueryData(queryKeys.getAllMemo, null)
                 setMemos(dummyMemos)
                 router.replace('/home')
               })
-              .catch(() => {
-                closeModal()
-                setTitle('로그아웃에 실패했습니다. 😥')
-                setButtons([
-                  {
-                    text: '확인',
-                    onClick: () => {
-                      closeModal()
-                    },
-                  },
-                ])
+              .catch((err) => {
+                addSnackBar(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)
               })
           },
         },
