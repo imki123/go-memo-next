@@ -10,12 +10,9 @@ import React, { ReactNode } from 'react'
 import { checkLogin } from '../../api/user'
 import useModal from '../../hook/useModal'
 import { queryKeys } from '../../queryClient'
-import { headerHeight, noSelect } from '../../styles/GlobalStyle'
+import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../../styles/GlobalStyle'
 
 import Avatar from './Avatar'
-
-
-
 
 interface HeaderModel {
   fixed?: boolean
@@ -75,7 +72,7 @@ export default function Header({
 }
 
 const HeaderPadding = styled.div`
-  height: ${headerHeight}px;
+  height: ${HEADER_HEIGHT}px;
 `
 const HeaderFixed = styled.div<{ fixed?: boolean }>`
   position: fixed;
@@ -83,10 +80,10 @@ const HeaderFixed = styled.div<{ fixed?: boolean }>`
   top: 0;
   left: 0;
   right: 0;
-  height: ${headerHeight}px;
+  height: ${HEADER_HEIGHT}px;
 
   background: white;
-  max-width: 800px;
+  max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
 `
 const HeaderWrapper = styled.div<{ fixed?: boolean }>`

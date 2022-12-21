@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import {
+import React, {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -27,7 +27,7 @@ export interface MemoModel {
   editedAt?: string
 }
 
-export default function Memo({
+const Memo = ({
   memoId,
   text = '',
   createdAt,
@@ -37,7 +37,7 @@ export default function Memo({
 }: MemoModel & {
   gridMode?: boolean
   updateMemos?: (memo: MemoModel) => void
-}) {
+}) => {
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
@@ -81,7 +81,6 @@ export default function Memo({
     // 메모히스토리에 추가 디바운스: 0.5초
     clearTimeout(timeoutId.current)
     timeoutId.current = setTimeout(() => {
-      console.info('pushHistory:', text)
       pushHistory(text)
     }, 1000 * 0.5)
   }
@@ -162,6 +161,8 @@ export default function Memo({
     </>
   )
 }
+
+export default React.memo(Memo)
 
 const StyledMemo = styled.div<{ gridMode?: boolean }>`
   position: relative;

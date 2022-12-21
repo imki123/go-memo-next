@@ -4,7 +4,6 @@ export const initGoogle = (login, afterLogin) => {
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
     // 로그인 콜백
     callback: (response) => {
-      // console.info('login succeess', response)
       login?.(response.credential, afterLogin)
     },
   })

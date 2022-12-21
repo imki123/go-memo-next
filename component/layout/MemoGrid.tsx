@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
+import React from 'react'
 
 import Memo, { MemoModel } from '../molecule/Memo'
-
 
 /**
  * 메모 리스트
@@ -13,7 +13,7 @@ interface MemoGridModel {
   memoData?: MemoModel[]
 }
 
-export default function MemoGrid({ memoData }: MemoGridModel) {
+const MemoGrid = ({ memoData }: MemoGridModel) => {
   return (
     <>
       <Grid>
@@ -24,6 +24,8 @@ export default function MemoGrid({ memoData }: MemoGridModel) {
     </>
   )
 }
+
+export default React.memo(MemoGrid)
 
 const Grid = styled.div`
   display: flex;

@@ -2,7 +2,9 @@ import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
 
 // 헤더 높이
-export const headerHeight = 60
+export const HEADER_HEIGHT = 60
+// 최대 너비
+export const MAX_WIDTH = 800
 
 // 드래그, 선택 막아주는 스타일
 export const noSelect = css`
@@ -13,6 +15,24 @@ export const noSelect = css`
   -ms-user-select: none;
   user-select: none;
 `
+
+// media 유틸
+export const mediaBiggerThan = (
+  size: number,
+  css: string,
+  isBigger = true,
+  isWidth = true
+) => {
+  let mediaType = 'min-width'
+  if (isBigger && !isWidth) mediaType = 'min-height'
+  else if (!isBigger && isWidth) mediaType = 'max-width'
+  else if (!isBigger && !isWidth) mediaType = 'max-height'
+  return `
+    @media (${mediaType}: ${size}px) {
+      ${css};
+    }
+  `
+}
 
 export default function GlobalStyle() {
   return (
@@ -39,9 +59,12 @@ export default function GlobalStyle() {
           scroll-behavior: smooth;
         }
         html {
-          @media (min-width: 800px) {
-            background: ${OpenColor.blue[0]};
-          }
+          ${mediaBiggerThan(
+            MAX_WIDTH,
+            `
+              background: ${OpenColor.blue[0]};
+            `
+          )}
         }
         body,
         button,
@@ -52,12 +75,14 @@ export default function GlobalStyle() {
           scroll-behavior: smooth;
           width: 100vw;
           overflow-x: hidden;
-          @media (min-width: 800px) {
-            min-height: 100vh;
-            max-width: 800px;
-            margin: auto;
-            background: white;
-          }
+          ${mediaBiggerThan(
+            MAX_WIDTH,
+            `min-height: 100vh;
+              max-width: ${MAX_WIDTH}px;
+              margin: auto;
+              background: white;
+            `
+          )}
         }
         a {
           text-decoration: underline;

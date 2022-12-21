@@ -12,7 +12,7 @@ import Header from '../../component/molecule/Header'
 import Memo, { MemoModel } from '../../component/molecule/Memo'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import { queryKeys } from '../../queryClient'
-import { headerHeight } from '../../styles/GlobalStyle'
+import { HEADER_HEIGHT } from '../../styles/GlobalStyle'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
 /* // This function gets called at build time
@@ -119,10 +119,8 @@ export default function MemoIdPage() {
     if (index === -1 && memoId) {
       if (isFetched) {
         setCurrentMemo(data)
-        console.info('pushHistory:', data?.text || '')
         pushHistory(data?.text || '')
       } else {
-        console.info('pushHistory:', memo?.text || '')
         pushHistory(memo?.text || '')
       }
     }
@@ -179,7 +177,7 @@ export default function MemoIdPage() {
 }
 
 const MemoWrapper = styled.div`
-  height: calc(100% - ${headerHeight}px);
+  height: calc(100% - ${HEADER_HEIGHT}px);
   padding: 0 15px 15px;
   border-radius: 15px; ;
 `
