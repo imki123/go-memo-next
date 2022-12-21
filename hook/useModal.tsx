@@ -1,8 +1,8 @@
+import styled from '@emotion/styled'
+import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import Button from '../component/atom/Button'
-import OpenColor from 'open-color'
-import styled from '@emotion/styled'
 
 export interface ModalButtonModel {
   text: string

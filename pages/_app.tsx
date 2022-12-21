@@ -1,17 +1,21 @@
+import styled from '@emotion/styled'
+import { QueryClientProvider } from '@tanstack/react-query'
+import Head from 'next/head'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import Script from 'next/script'
+import { useEffect } from 'react'
+
+import { queryClient } from '../queryClient'
+import GlobalStyle from '../styles/GlobalStyle'
+import { initGoogle } from '../util/googleLogin'
+import { addSnackBar } from '../util/util'
+
 import { BE_URL, checkLogin, login } from './../api/user'
 
 import type { AppProps } from 'next/app'
-import GlobalStyle from '../styles/GlobalStyle'
-import Head from 'next/head'
-import Image from 'next/image'
-import { QueryClientProvider } from '@tanstack/react-query'
-import Script from 'next/script'
-import { addSnackBar } from '../util/util'
-import { initGoogle } from '../util/googleLogin'
-import { queryClient } from '../queryClient'
-import styled from '@emotion/styled'
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()

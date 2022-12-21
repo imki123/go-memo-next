@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 declare global {
   interface Window {
-    google: any;
+    google: unknown
   }
 }
-export const google = window.google;
+export const google = window.google

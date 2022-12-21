@@ -1,6 +1,6 @@
+import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import { ReactNode } from 'react'
-import styled from '@emotion/styled'
 
 // 기본 버튼 컴포넌트
 const Button = ({

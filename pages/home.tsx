@@ -1,23 +1,24 @@
-import { useEffect, useMemo, useState } from 'react'
-
-import { AxiosError } from 'axios'
-import Button from '../component/atom/Button'
-import Header from '../component/molecule/Header'
-import MemoGrid from '../component/layout/MemoGrid'
-import { checkLogin } from '../api/user'
-import dayjs from 'dayjs'
-import { postMemo } from '../api/memo'
-import { queryKeys } from '../queryClient'
 import styled from '@emotion/styled'
-import { useGetAllMemo } from '../hook/useGetAllMemo'
-import { useMemoStore } from '../zustand'
-import useModal from '../hook/useModal'
 import { useQuery } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import dayjs from 'dayjs'
+import { useMemo, useState } from 'react'
+import useDeepCompareEffect from 'use-deep-compare-effect'
+
+import { postMemo } from '../api/memo'
+import { checkLogin } from '../api/user'
+import Button from '../component/atom/Button'
+import MemoGrid from '../component/layout/MemoGrid'
+import Header from '../component/molecule/Header'
+import { useGetAllMemo } from '../hook/useGetAllMemo'
+import useModal from '../hook/useModal'
+import { queryKeys } from '../queryClient'
+import { useMemoStore } from '../zustand'
 
 export default function HomePage() {
   const { memos, setMemos } = useMemoStore()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
-  const { data, refetch, isLoading, isFetching } = useGetAllMemo({
+  const { data, refetch, isLoading } = useGetAllMemo({
     staleTime: 0,
     cacheTime: 0,
   })
@@ -33,11 +34,11 @@ export default function HomePage() {
     [memos]
   )
 
-  useEffect(() => {
-    if (isLogin && data) {
+  useDeepCompareEffect(() => {
+    if (data && isLogin) {
       setMemos(data)
     }
-  }, [data, isLogin, setMemos])
+  }, [data, setMemos, isLogin])
 
   return (
     <>
@@ -74,7 +75,7 @@ export default function HomePage() {
           메모추가
         </Button>
       </ButtonDiv>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <LoadingDiv>로딩중...</LoadingDiv>
       ) : (
         <MemoGrid memoData={sortedData} />

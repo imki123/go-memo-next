@@ -1,8 +1,8 @@
-import Axios from 'axios'
+import axios from 'axios'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
 
-export const axiosWithCredentials = Axios.create({
+export const axiosWithCredentials = axios.create({
   baseURL: BE_URL + '/memo/user',
   withCredentials: true,
 })

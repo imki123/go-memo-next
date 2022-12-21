@@ -1,16 +1,17 @@
-import { loginResponse, logout } from '../../api/user'
-import { queryClient, queryKeys } from '../../queryClient'
-
-import Image from 'next/image'
-import OpenColor from 'open-color'
-import { addSnackBar } from '../../util/util'
-import { dummyMemos } from '../../api/dummyMemos'
 import styled from '@emotion/styled'
-import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
-import { useMemoStore } from '../../zustand'
-import useModal from '../../hook/useModal'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
+import OpenColor from 'open-color'
 import { useState } from 'react'
+
+import { dummyMemos } from '../../api/dummyMemos'
+import { loginResponse, logout } from '../../api/user'
+import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
+import useModal from '../../hook/useModal'
+import { queryClient, queryKeys } from '../../queryClient'
+import { addSnackBar } from '../../util/util'
+import { useMemoStore } from '../../zustand'
+
 
 const Avatar = ({
   avatar,

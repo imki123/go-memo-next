@@ -1,17 +1,21 @@
+import styled from '@emotion/styled'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
+import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import OpenColor from 'open-color'
 import React, { ReactNode } from 'react'
+
+import { checkLogin } from '../../api/user'
+import useModal from '../../hook/useModal'
+import { queryKeys } from '../../queryClient'
 import { headerHeight, noSelect } from '../../styles/GlobalStyle'
 
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Avatar from './Avatar'
-import Link from 'next/link'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import OpenColor from 'open-color'
-import { checkLogin } from '../../api/user'
-import { queryKeys } from '../../queryClient'
-import styled from '@emotion/styled'
-import useModal from '../../hook/useModal'
-import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/router'
+
+
+
 
 interface HeaderModel {
   fixed?: boolean

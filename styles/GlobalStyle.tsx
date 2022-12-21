@@ -1,5 +1,4 @@
 import { Global, css } from '@emotion/react'
-
 import OpenColor from 'open-color'
 
 // 헤더 높이
