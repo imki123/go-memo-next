@@ -7,7 +7,7 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'github.githubassets.com', '*'],
     loader: 'akamai',
-    path: '',
+    path: '.',
   },
 }
 
