@@ -1,6 +1,6 @@
 # go-memo-next
-Simple `Unrich` text editor !!!
 
+Simple `Unrich` text editor !!!
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
@@ -15,7 +15,8 @@ Open http://localhost:4000
 
 ### How to deploy
 
-This project use gh-pages.
+This project use gh-pages.  
+Add environment `NEXT_PUBLIC_BE_URL` in `.env.production.local`
 
 ```
 npm run deploy
