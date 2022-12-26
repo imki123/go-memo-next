@@ -5,9 +5,28 @@ import React from 'react'
  * Reload 컴포넌트
  * @params
  */
-const Reload = ({ isReloading }: { isReloading: boolean }) => {
+const Reload = ({
+  isReloading,
+  onClick,
+}: {
+  isReloading: boolean
+  onClick: () => void
+}) => {
   // style
-  const StyledReplayIcon = styled.div`
+  const StyledReplayIcon = styled(ReplayIcon)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: black;
+
+    border-radius: 100%;
+    border: 1px solid gray;
+    opacity: 0.7;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+
     ${isReloading &&
     `
       @keyframes rotating{
@@ -25,11 +44,7 @@ const Reload = ({ isReloading }: { isReloading: boolean }) => {
     }
   `}
   `
-  return (
-    <StyledReplayIcon>
-      <ReplayIcon />
-    </StyledReplayIcon>
-  )
+  return <StyledReplayIcon onClick={onClick} />
 }
 
 export default React.memo(Reload)

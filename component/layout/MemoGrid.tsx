@@ -33,4 +33,5 @@ const Grid = styled.div`
   justify-content: space-around;
   gap: 40px 20px;
   padding: 0 20px 20px;
+  background: white;
 `

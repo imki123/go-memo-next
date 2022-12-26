@@ -91,14 +91,12 @@ const MemoGridContainer = () => {
       {isLoading ? <Loading /> : <MemoGrid memoData={sortedData} />}
 
       <FloatingButtonsLayout>
-        <Button
-          type={'Circle'}
+        <Reload
+          isReloading={isFetching}
           onClick={() => {
             if (!isFetching) refetch().then(() => addSnackBar('새로고침 성공'))
           }}
-        >
-          <Reload isReloading={isFetching} />
-        </Button>
+        />
       </FloatingButtonsLayout>
 
       <Modal />
