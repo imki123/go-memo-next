@@ -1,16 +1,23 @@
 import styled from '@emotion/styled'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 export default function NotFound404() {
   const router = useRouter()
   // asPath가 루트이면 basePath로 이동(/go-memo-next)
-  if (router.asPath === '/') router.push('/')
+
+  useEffect(() => {
+    if (router.asPath === '/') router.push('/')
+    else {
+      console.info('404 page!')
+      router.replace('/home')
+    }
+  }, [router])
 
   return (
     <CenterDiv>
       <div>404 | Not Found Page.</div>
-      <Link href={'/home'}>홈으로</Link>
+      <div>Redirecting home...</div>
     </CenterDiv>
   )
 }
