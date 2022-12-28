@@ -12,7 +12,6 @@ import { queryClient, queryKeys } from '../../queryClient'
 import { addSnackBar } from '../../util/util'
 import { useMemoStore } from '../../zustand'
 
-
 const Avatar = ({
   avatar,
   onClick,
@@ -68,6 +67,7 @@ const Avatar = ({
           <DefaultImage onClick={click} />
         ) : (
           <Image
+            unoptimized={true} // 외부 url
             src={avatar.picture || ''}
             width='30'
             height='30'

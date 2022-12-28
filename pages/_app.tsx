@@ -15,8 +15,6 @@ import { BE_URL, checkLogin, login } from './../api/user'
 
 import type { AppProps } from 'next/app'
 
-
-
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
 
@@ -61,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <Copyright href='https://github.com/imki123' target='_blank'>
         <Image
+          unoptimized={true} // 외부 url
           alt='github'
           src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
           width={16}
