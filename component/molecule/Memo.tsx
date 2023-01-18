@@ -54,7 +54,6 @@ const Memo = ({
   const updateMemo = useCallback(
     (memo: MemoModel) => {
       if (isLogin) {
-        console.info('수정완료:', memo)
         addSnackBar('수정완료')
         patchMemo(memo)
       }

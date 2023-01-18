@@ -1,8 +1,6 @@
 import styled from '@emotion/styled'
-import OpenColor from 'open-color'
+import Button, { ButtonTypes } from 'go-storybook/dist/component/atom/Button'
 import React, { ReactNode, useEffect, useState } from 'react'
-
-import Button from '../component/atom/Button'
 
 export interface ModalButtonModel {
   text: string
@@ -52,8 +50,14 @@ const useModal = () => {
               {modalText && <TextDiv>{modalText}</TextDiv>}
               {modalModalButtons && (
                 <ButtonDiv>
-                  {modalModalButtons?.map(({ text, onClick }) => (
-                    <Button key={text} onClick={onClick}>
+                  {modalModalButtons?.map(({ text, onClick }, i) => (
+                    <Button
+                      buttonType={
+                        i === 0 ? ButtonTypes.Secondary : ButtonTypes.Primary
+                      }
+                      key={text}
+                      onClick={onClick}
+                    >
                       {text}
                     </Button>
                   ))}
@@ -127,9 +131,6 @@ const TextDiv = styled.div`
 const ButtonDiv = styled.div`
   margin-top: 30px;
   button {
-    :not(:last-of-type) {
-      background: ${OpenColor.gray[8]};
-    }
     :not(:first-of-type) {
       margin-left: 20px;
     }
