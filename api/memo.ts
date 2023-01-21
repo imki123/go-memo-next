@@ -11,7 +11,13 @@ const axiosWithCredentials = axios.create({
 
 const urls = {
   root: '/',
+  allIds: '/allIds',
 }
+
+export const getAllIds = () =>
+  axiosWithCredentials
+    .get<{ memoId: number }[]>(`${urls.allIds}`)
+    .then((res) => res.data)
 
 export const getAllMemo = () => {
   return axiosWithCredentials

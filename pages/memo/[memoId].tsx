@@ -7,13 +7,29 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useCallback, useEffect } from 'react'
 
-import { getMemo } from '../../api/memo'
+import { getAllIds, getMemo } from '../../api/memo'
 import Header from '../../component/molecule/Header'
 import Memo, { MemoModel } from '../../component/molecule/Memo'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import { queryKeys } from '../../queryClient'
 import { HEADER_HEIGHT } from '../../styles/GlobalStyle'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
+
+// Generates static files `/memo/1`, `/memo/2`, ...
+export async function getStaticPaths() {
+  const allIds = await getAllIds()
+  return {
+    paths: allIds.map(({ memoId }) => ({
+      params: { memoId: memoId.toString() }, // string type required
+    })),
+    fallback: false, // required fallback: false | true | 'blocking'
+  }
+}
+export async function getStaticProps() {
+  return {
+    props: {},
+  }
+}
 
 export default function MemoIdPage() {
   const { data: isLogin } = useGetCheckLogin()
