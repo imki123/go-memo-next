@@ -1,6 +1,9 @@
 import styled from '@emotion/styled'
 import Button, { ButtonTypes } from 'go-storybook/dist/component/atom/Button'
+import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
+
+import { useThemeStore } from '../zustand'
 
 export interface ModalButtonModel {
   text: string
@@ -14,6 +17,7 @@ export interface ModalModel {
 }
 
 const useModal = () => {
+  const { theme } = useThemeStore()
   const [visible, setVisible] = useState(false)
   const [modalTitle, setTitle] = useState<ReactNode>()
   const [modalText, setText] = useState<ReactNode>()
@@ -45,7 +49,7 @@ const useModal = () => {
               closeModal()
             }}
           >
-            <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalContent onClick={(e) => e.stopPropagation()} theme={theme}>
               {modalTitle && <TitleDiv>{modalTitle}</TitleDiv>}
               {modalText && <TextDiv>{modalText}</TextDiv>}
               {modalModalButtons && (
@@ -103,7 +107,7 @@ const ModalWrapper = styled.div`
   text-align: center;
 `
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ theme?: 'dark' }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -116,6 +120,7 @@ const ModalContent = styled.div`
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   padding: 20px;
+  ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[9]};`}
 `
 
 const TitleDiv = styled.div`

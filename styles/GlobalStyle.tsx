@@ -1,5 +1,9 @@
 import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
+import { useLayoutEffect, useState } from 'react'
+
+import { useThemeStore } from '../zustand'
+import 'pretendard/dist/web/variable/pretendardvariable.css'
 
 // 헤더 높이
 export const HEADER_HEIGHT = 60
@@ -34,17 +38,6 @@ export const mediaBiggerThan = (
   `
 }
 
-// 폰트 설정
-const setFont = () => css`
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/variable/pretendardvariable.css');
-  * {
-    font-family: 'Pretendard Variable', Pretendard, -apple-system,
-      BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
-      'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
-      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
-  }
-`
-
 // 애니메이션 설정
 const setAnimation = () => css`
   @keyframes skeleton {
@@ -60,13 +53,40 @@ const setAnimation = () => css`
   }
 `
 
+// 테마 설정
+const setTheme = (theme?: 'dark') =>
+  theme === 'dark'
+    ? css`
+        html,
+        body {
+          background: ${OpenColor.gray[9]};
+          color: ${OpenColor.gray[3]};
+        }
+      `
+    : ''
+
 export default function GlobalStyle() {
+  // 로컬 테마
+  const { theme: storeTheme } = useThemeStore()
+  const [theme, setLocalTheme] = useState<'dark' | undefined>()
+
+  useLayoutEffect(() => {
+    const localTheme = window.localStorage.getItem('go-memo-next-theme') as
+      | 'dark'
+      | undefined
+    setLocalTheme(localTheme)
+  }, [storeTheme])
+
   return (
     <Global
       styles={css`
-        ${setFont()}
         ${setAnimation()}
         * {
+          font-family: 'Pretendard Variable', Pretendard, -apple-system,
+            BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
+            'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+
           box-sizing: border-box;
           ::-webkit-scrollbar {
             width: 5px;
@@ -125,6 +145,7 @@ export default function GlobalStyle() {
         img {
           ${noSelect}
         }
+        ${setTheme(theme)}
       `}
     />
   )

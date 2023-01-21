@@ -18,7 +18,7 @@ import { useGetAllMemo } from '../../hook/useGetAllMemo'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import useModal from '../../hook/useModal'
 import { addSnackBar } from '../../util/util'
-import { useMemoHistoryStore, useMemoStore } from '../../zustand'
+import { useMemoHistoryStore, useMemoStore, useThemeStore } from '../../zustand'
 
 export interface MemoModel {
   memoId: number
@@ -40,6 +40,8 @@ const Memo = ({
   gridMode?: boolean
   updateMemos?: (memo: MemoModel) => void
 }) => {
+  // 테마 설정
+  const { theme } = useThemeStore()
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
@@ -151,6 +153,7 @@ const Memo = ({
         onClick={() => clickMemo(memoId)}
         gridMode={gridMode}
         fetching={fetching}
+        theme={theme}
       >
         <StyledMemoHeader>
           {`${time}`}
@@ -169,7 +172,11 @@ const Memo = ({
 
 export default React.memo(Memo)
 
-const StyledMemo = styled.div<{ gridMode?: boolean; fetching?: boolean }>`
+const StyledMemo = styled.div<{
+  gridMode?: boolean
+  fetching?: boolean
+  theme?: 'dark'
+}>`
   position: relative;
   flex: 1 0 250px;
   height: 100%;
@@ -182,7 +189,6 @@ const StyledMemo = styled.div<{ gridMode?: boolean; fetching?: boolean }>`
   :active {
     border: 2px solid ${OpenColor.yellow[5]};
   }
-  transition: background 1s linear;
 
   ${({ gridMode }) =>
     gridMode &&
@@ -192,6 +198,12 @@ const StyledMemo = styled.div<{ gridMode?: boolean; fetching?: boolean }>`
     cursor: pointer;
   `}
   ${({ fetching }) => fetching && `animation: skeleton 1s linear infinite;`}
+  ${({ theme }) =>
+    theme === 'dark' &&
+    `
+    background: #292913;
+    border-color: #404030 !important;
+  `}
 `
 const StyledMemoHeader = styled.div`
   position: absolute;

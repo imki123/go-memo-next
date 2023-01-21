@@ -16,6 +16,7 @@ import { BE_URL, checkLogin, login } from './../api/user'
 import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // 테마 지정
   const router = useRouter()
 
   useEffect(() => {
@@ -55,9 +56,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
-
       <Component {...pageProps} />
-
       <Copyright href='https://github.com/imki123' target='_blank'>
         <Image
           unoptimized={true} // 외부 url

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
+import OpenColor from 'open-color'
 import React from 'react'
 
+import { useThemeStore } from '../../zustand'
 import Memo, { MemoModel } from '../molecule/Memo'
 
 /**
@@ -14,9 +16,10 @@ interface MemoGridModel {
 }
 
 const MemoGrid = ({ memoData }: MemoGridModel) => {
+  const { theme } = useThemeStore()
   return (
     <>
-      <Grid>
+      <Grid theme={theme}>
         {memoData?.map(({ ...props }) => (
           <Memo key={props.memoId} {...props} gridMode={true} />
         ))}
@@ -27,11 +30,12 @@ const MemoGrid = ({ memoData }: MemoGridModel) => {
 
 export default React.memo(MemoGrid)
 
-const Grid = styled.div`
+const Grid = styled.div<{ theme?: 'dark' }>`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 40px 20px;
   padding: 0 20px 20px;
   background: white;
+  ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[9]};`}
 `

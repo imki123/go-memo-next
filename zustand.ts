@@ -9,16 +9,18 @@ export interface MemoStoreModel {
 }
 
 // zustand 글로벌 스토어 hook
+
+// 메모스토어
+export interface StoreModel {
+  memos?: MemoModel[]
+  setMemos: (memos?: MemoModel[]) => void
+}
 export const useMemoStore = create<MemoStoreModel>((set) => ({
   memos: dummyMemos,
   setMemos: (memos) => set({ memos }),
 }))
 
-export interface StoreModel {
-  memos?: MemoModel[]
-  setMemos: (memos?: MemoModel[]) => void
-}
-
+// 메모 히스토리 스토어
 export interface MemoHistoryModel {
   memoHistory: string[]
   index: number
@@ -27,8 +29,6 @@ export interface MemoHistoryModel {
   nextHistory: () => void
   resetHistory: () => void
 }
-
-// 메모 기록 스토어
 export const useMemoHistoryStore = create<MemoHistoryModel>((set) => ({
   memoHistory: [],
   index: -1,
@@ -66,4 +66,14 @@ export const useMemoHistoryStore = create<MemoHistoryModel>((set) => ({
       index: -1,
     })
   },
+}))
+
+// 테마 스토어
+export interface ThemeStoreModel {
+  theme?: 'dark'
+  set: (theme?: 'dark') => void
+}
+export const useThemeStore = create<ThemeStoreModel>((set) => ({
+  theme: undefined,
+  set: (theme) => set({ theme }),
 }))

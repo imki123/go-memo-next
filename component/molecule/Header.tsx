@@ -1,5 +1,7 @@
 import styled from '@emotion/styled'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import LightModeIcon from '@mui/icons-material/LightMode'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
@@ -11,6 +13,7 @@ import { checkLogin } from '../../api/user'
 import useModal from '../../hook/useModal'
 import { queryKeys } from '../../queryClient'
 import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../../styles/GlobalStyle'
+import { useThemeStore } from '../../zustand'
 
 import Avatar from './Avatar'
 
@@ -26,10 +29,34 @@ export default function Header({
   backButton = true,
   rightItems,
 }: HeaderModel) {
+  // 테마 지정
+  const { theme, set: setTheme } = useThemeStore()
+
   const router = useRouter()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
   const { openModal, Modal, setTitle } = useModal()
   const right = rightItems || [
+    <>
+      {theme === 'dark' ? (
+        <DarkModeIcon
+          fontSize='small'
+          onClick={() => {
+            setTheme(undefined)
+            window.localStorage.removeItem('go-memo-next-theme')
+          }}
+          style={{ cursor: 'pointer' }}
+        />
+      ) : (
+        <LightModeIcon
+          fontSize='small'
+          onClick={() => {
+            setTheme('dark')
+            window.localStorage.setItem('go-memo-next-theme', 'dark')
+          }}
+          style={{ cursor: 'pointer' }}
+        />
+      )}
+    </>,
     <StyledLockOpenIcon
       onClick={() => {
         openModal()
@@ -51,7 +78,7 @@ export default function Header({
     <>
       {fixed && <HeaderPadding />}
       <HeaderFixed fixed={fixed}>
-        <HeaderWrapper>
+        <HeaderWrapper theme={theme}>
           <LeftItems onClick={() => window.scrollTo(0, 0)}>
             {backButton && (
               <StyledArrowBackIosNewIcon
@@ -81,12 +108,10 @@ const HeaderFixed = styled.div<{ fixed?: boolean }>`
   left: 0;
   right: 0;
   height: ${HEADER_HEIGHT}px;
-
-  background: white;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
 `
-const HeaderWrapper = styled.div<{ fixed?: boolean }>`
+const HeaderWrapper = styled.div<{ fixed?: boolean; theme?: 'dark' }>`
   height: calc(100% - 4px);
   display: flex;
   align-items: center;
@@ -96,6 +121,7 @@ const HeaderWrapper = styled.div<{ fixed?: boolean }>`
   box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
   background: white;
   ${({ fixed }) => !fixed && `position: relative;`}
+  ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[9]};`}
 `
 const LeftItems = styled.div`
   ${noSelect}
