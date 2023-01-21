@@ -5,7 +5,7 @@ import { Button } from 'go-storybook'
 import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { getMemo } from '../../api/memo'
 import Header from '../../component/molecule/Header'
@@ -27,7 +27,7 @@ export default function MemoIdPage() {
   const memo = memos?.find((item) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
-  const { data, refetch, isError, isFetched } = useQuery(
+  const { data, refetch, isError, isFetched, isFetching } = useQuery(
     queryKeys.getMemo,
     () => getMemo(memoId),
     {
@@ -36,7 +36,8 @@ export default function MemoIdPage() {
       enabled: false,
     }
   )
-  const [currentMemo, setCurrentMemo] = useState(memo)
+  let memoData = memo
+  if (data && isLogin) memoData = data
 
   const {
     memoHistory,
@@ -51,15 +52,13 @@ export default function MemoIdPage() {
     (memo: MemoModel) => {
       // 스토어의 memos 업데이트
       const result = produce(memos, (draft) => {
-        let index = 0
         draft?.forEach((item, i) => {
           if (item.memoId === memoId) {
-            index = i
+            if (draft?.[i]) {
+              draft[i] = memo
+            }
           }
         })
-        if (draft?.[index]) {
-          draft[index] = memo
-        }
         return draft
       })
       setMemos(result)
@@ -83,18 +82,12 @@ export default function MemoIdPage() {
   useEffect(() => {
     if (index === -1 && memoId) {
       if (isFetched) {
-        setCurrentMemo(data)
         pushHistory(data?.text || '')
       } else {
         pushHistory(memo?.text || '')
       }
     }
-  }, [data, index, isError, isFetched, memo?.text, memoId, pushHistory])
-
-  // 메모가 변경되면 currentMemo에 저장
-  useEffect(() => {
-    setCurrentMemo(memo)
-  }, [memo])
+  }, [data?.text, index, isFetched, memo?.text, memoId, pushHistory])
 
   const clickBack = () => {
     backHistory()
@@ -118,7 +111,7 @@ export default function MemoIdPage() {
     }
   }
 
-  const title = currentMemo?.text?.split('\n')[0].slice(0, 50)
+  const title = memoData?.text?.split('\n')[0].slice(0, 50)
 
   return (
     <>
@@ -133,7 +126,12 @@ export default function MemoIdPage() {
               <Button onClick={clickBack}>뒤로</Button>
               <Button onClick={clickNext}>앞으로</Button>
             </ButtonDiv>
-            {currentMemo && <Memo {...currentMemo} updateMemos={updateMemos} />}
+            <Memo
+              {...memoData}
+              memoId={memoData?.memoId || 0}
+              updateMemos={updateMemos}
+              fetching={!!isLogin && isFetching}
+            />
           </>
         )}
       </MemoWrapper>

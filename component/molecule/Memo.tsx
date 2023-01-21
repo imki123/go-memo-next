@@ -25,6 +25,7 @@ export interface MemoModel {
   text?: string
   createdAt?: string
   editedAt?: string
+  fetching?: boolean
 }
 
 const Memo = ({
@@ -34,6 +35,7 @@ const Memo = ({
   editedAt,
   gridMode,
   updateMemos,
+  fetching,
 }: MemoModel & {
   gridMode?: boolean
   updateMemos?: (memo: MemoModel) => void
@@ -145,7 +147,11 @@ const Memo = ({
 
   return (
     <>
-      <StyledMemo onClick={() => clickMemo(memoId)} gridMode={gridMode}>
+      <StyledMemo
+        onClick={() => clickMemo(memoId)}
+        gridMode={gridMode}
+        fetching={fetching}
+      >
         <StyledMemoHeader>
           {`${time}`}
           <StyledClearIcon onClick={deleteMemoAction} />
@@ -163,7 +169,7 @@ const Memo = ({
 
 export default React.memo(Memo)
 
-const StyledMemo = styled.div<{ gridMode?: boolean }>`
+const StyledMemo = styled.div<{ gridMode?: boolean; fetching?: boolean }>`
   position: relative;
   flex: 1 0 250px;
   height: 100%;
@@ -176,6 +182,7 @@ const StyledMemo = styled.div<{ gridMode?: boolean }>`
   :active {
     border: 2px solid ${OpenColor.yellow[5]};
   }
+  transition: background 1s linear;
 
   ${({ gridMode }) =>
     gridMode &&
@@ -184,6 +191,7 @@ const StyledMemo = styled.div<{ gridMode?: boolean }>`
     height: auto;
     cursor: pointer;
   `}
+  ${({ fetching }) => fetching && `animation: skeleton 1s linear infinite;`}
 `
 const StyledMemoHeader = styled.div`
   position: absolute;
