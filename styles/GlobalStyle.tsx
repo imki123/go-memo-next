@@ -1,6 +1,6 @@
 import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
-import { useLayoutEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { useThemeStore } from '../zustand'
 import 'pretendard/dist/web/variable/pretendardvariable.css'
@@ -53,8 +53,8 @@ const setAnimation = () => css`
   }
 `
 
-// 테마 설정
-const setTheme = (theme?: 'dark') =>
+// 다크 테마 설정
+const setDarkTheme = (theme?: 'dark') =>
   theme === 'dark'
     ? css`
         html,
@@ -67,15 +67,14 @@ const setTheme = (theme?: 'dark') =>
 
 export default function GlobalStyle() {
   // 로컬 테마
-  const { theme: storeTheme } = useThemeStore()
-  const [theme, setLocalTheme] = useState<'dark' | undefined>()
+  const { theme: storeTheme, set: setStoreTheme } = useThemeStore()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const localTheme = window.localStorage.getItem('go-memo-next-theme') as
       | 'dark'
       | undefined
-    setLocalTheme(localTheme)
-  }, [storeTheme])
+    setStoreTheme(localTheme)
+  }, [setStoreTheme])
 
   return (
     <Global
@@ -145,7 +144,7 @@ export default function GlobalStyle() {
         img {
           ${noSelect}
         }
-        ${setTheme(theme)}
+        ${setDarkTheme(storeTheme)}
       `}
     />
   )

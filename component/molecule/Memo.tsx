@@ -41,7 +41,6 @@ const Memo = ({
   updateMemos?: (memo: MemoModel) => void
 }) => {
   // 테마 설정
-  const { theme } = useThemeStore()
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
@@ -54,6 +53,7 @@ const Memo = ({
   const { memos, setMemos } = useMemoStore()
   const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
   const { memoHistory, index, pushHistory } = useMemoHistoryStore()
+  const { theme } = useThemeStore()
 
   const updateMemo = useCallback(
     (memo: MemoModel) => {
