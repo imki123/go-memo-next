@@ -22,7 +22,7 @@ export async function getStaticPaths() {
     paths: allIds.map(({ memoId }) => ({
       params: { memoId: memoId.toString() }, // string type required
     })),
-    fallback: false, // required fallback: false | true | 'blocking'
+    fallback: true, // required fallback: false | true | 'blocking'
   }
 }
 export async function getStaticProps() {
@@ -128,6 +128,14 @@ export default function MemoIdPage() {
   }
 
   const title = memoData?.text?.split('\n')[0].slice(0, 50)
+
+  if (router.isFallback) {
+    return (
+      <MemoWrapper>
+        <Memo memoId={0} fetching />
+      </MemoWrapper>
+    )
+  }
 
   return (
     <>

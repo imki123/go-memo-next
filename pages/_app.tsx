@@ -13,6 +13,8 @@ import { addSnackBar } from '../util/util'
 
 import { BE_URL, checkLogin, login } from './../api/user'
 
+import { routes } from '.'
+
 import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -33,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       .then((res) => {
         if (res) {
           addSnackBar('로그인 성공 😄')
-          router.replace('/home')
+          router.replace(routes.home)
         } else {
           addSnackBar('로그인 실패 😥')
         }

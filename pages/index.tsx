@@ -13,7 +13,7 @@ export default function IndexPage() {
     timeoutId.current = setTimeout(() => {
       setVisibleSplash(false)
       setTimeout(() => {
-        router.replace('/home') // home으로 이동
+        router.replace(routes.home) // home으로 이동
       }, 300)
     }, 1000 * 2)
     return () => {
@@ -26,4 +26,11 @@ export default function IndexPage() {
       <Splash visible={visibleSplash} />
     </div>
   )
+}
+
+export const routes = {
+  root: '/',
+  home: '/home',
+  login: '/login',
+  memo: '/memo',
 }
