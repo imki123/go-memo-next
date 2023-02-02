@@ -39,19 +39,34 @@ export const mediaBiggerThan = (
 }
 
 // 애니메이션 설정
-const setAnimation = () => css`
-  @keyframes skeleton {
-    0% {
-      background: ${OpenColor.gray[2]};
-    }
-    50% {
-      background: ${OpenColor.gray[5]};
-    }
-    100% {
-      background: ${OpenColor.gray[2]};
-    }
-  }
-`
+const setAnimation = (theme?: 'dark') =>
+  theme === 'dark'
+    ? css`
+        @keyframes skeleton {
+          0% {
+            background: ${OpenColor.gray[9]};
+          }
+          50% {
+            background: ${OpenColor.gray[7]};
+          }
+          100% {
+            background: ${OpenColor.gray[9]};
+          }
+        }
+      `
+    : css`
+        @keyframes skeleton {
+          0% {
+            background: ${OpenColor.gray[2]};
+          }
+          50% {
+            background: ${OpenColor.gray[5]};
+          }
+          100% {
+            background: ${OpenColor.gray[2]};
+          }
+        }
+      `
 
 // 다크 테마 설정
 const setDarkTheme = (theme?: 'dark') =>
@@ -79,7 +94,7 @@ export default function GlobalStyle() {
   return (
     <Global
       styles={css`
-        ${setAnimation()}
+        ${setAnimation(storeTheme)}
         * {
           font-family: 'Pretendard Variable', Pretendard, -apple-system,
             BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',

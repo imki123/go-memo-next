@@ -43,17 +43,18 @@ export default function MemoIdPage() {
   const memo = memos?.find((item) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
-  const { data, refetch, isError, isFetched, isFetching } = useQuery(
+  const { data, isError, isFetched, isFetching } = useQuery(
     queryKeys.getMemo,
     () => getMemo(memoId),
     {
       staleTime: 0,
       cacheTime: 0,
-      enabled: false,
+      onSuccess: (res) => {
+        updateMemos(res)
+      },
     }
   )
-  let memoData = memo
-  if (data && isLogin) memoData = data
+  const title = memo?.text?.split('\n')[0].slice(0, 50)
 
   const {
     memoHistory,
@@ -64,46 +65,28 @@ export default function MemoIdPage() {
     pushHistory,
   } = useMemoHistoryStore()
 
+  // function
   const updateMemos = useCallback(
     (memo: MemoModel) => {
       // 스토어의 memos 업데이트
       const result = produce(memos, (draft) => {
-        draft?.forEach((item, i) => {
-          if (item.memoId === memoId) {
-            if (draft?.[i]) {
-              draft[i] = memo
+        if (draft?.find((item) => item.memoId === memoId)) {
+          draft?.forEach((item, i) => {
+            if (item.memoId === memoId) {
+              if (draft?.[i]) {
+                draft[i] = memo
+              }
             }
-          }
-        })
+          })
+        } else {
+          draft?.push(memo)
+        }
         return draft
       })
       setMemos(result)
     },
     [memoId, memos, setMemos]
   )
-
-  // 페이지 벗어나면 히스토리 지우기
-  useEffect(() => {
-    return () => {
-      resetHistory()
-    }
-  }, [resetHistory])
-
-  // memoId 있으면 서버데이터 불러오기
-  useEffect(() => {
-    if (memoId && isLogin) refetch()
-  }, [isLogin, memoId, refetch])
-
-  // 히스토리에 첫 데이터 저장
-  useEffect(() => {
-    if (index === -1 && memoId) {
-      if (isFetched) {
-        pushHistory(data?.text || '')
-      } else {
-        pushHistory(memo?.text || '')
-      }
-    }
-  }, [data?.text, index, isFetched, memo?.text, memoId, pushHistory])
 
   const clickBack = () => {
     backHistory()
@@ -127,13 +110,33 @@ export default function MemoIdPage() {
     }
   }
 
-  const title = memoData?.text?.split('\n')[0].slice(0, 50)
+  // effect
+  // 페이지 벗어나면 히스토리 지우기
+  useEffect(() => {
+    return () => {
+      resetHistory()
+    }
+  }, [resetHistory])
+
+  // 히스토리에 첫 데이터 저장
+  useEffect(() => {
+    if (index === -1 && memoId) {
+      if (isFetched) {
+        pushHistory(data?.text || '')
+      } else {
+        pushHistory(memo?.text || '')
+      }
+    }
+  }, [data?.text, index, isFetched, memo?.text, memoId, pushHistory])
 
   if (router.isFallback) {
     return (
-      <MemoWrapper>
-        <Memo memoId={0} fetching />
-      </MemoWrapper>
+      <>
+        <Header title={title} />
+        <MemoWrapper>
+          <Memo memoId={0} fetching text='Loading...' />
+        </MemoWrapper>
+      </>
     )
   }
 
@@ -143,7 +146,7 @@ export default function MemoIdPage() {
 
       <MemoWrapper>
         {isError ? (
-          <div>메모 불러오기 실패 😥</div>
+          <StyledCenter>메모 불러오기 실패 😥</StyledCenter>
         ) : (
           <>
             <ButtonDiv>
@@ -151,8 +154,8 @@ export default function MemoIdPage() {
               <Button onClick={clickNext}>앞으로</Button>
             </ButtonDiv>
             <Memo
-              {...memoData}
-              memoId={memoData?.memoId || 0}
+              {...memo}
+              memoId={memo?.memoId || 0}
               updateMemos={updateMemos}
               fetching={!!isLogin && isFetching}
             />
@@ -167,6 +170,9 @@ const MemoWrapper = styled.div`
   height: calc(100% - ${HEADER_HEIGHT}px);
   padding: 0 15px 15px;
   border-radius: 15px; ;
+`
+const StyledCenter = styled.div`
+  text-align: center;
 `
 
 const ButtonDiv = styled.div`
