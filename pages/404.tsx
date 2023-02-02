@@ -11,6 +11,10 @@ export default function NotFound404() {
 
   useEffect(() => {
     if (router.asPath === '/') router.push(routes.root)
+    else {
+      console.info('404')
+      router.replace(routes.home)
+    }
   }, [router])
 
   return (

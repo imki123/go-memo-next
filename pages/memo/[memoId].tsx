@@ -5,9 +5,9 @@ import { Button } from 'go-storybook'
 import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { getAllIds, getMemo } from '../../api/memo'
+import { getMemo } from '../../api/memo'
 import Header from '../../component/molecule/Header'
 import Memo, { MemoModel } from '../../component/molecule/Memo'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
@@ -15,29 +15,14 @@ import { queryKeys } from '../../queryClient'
 import { HEADER_HEIGHT } from '../../styles/GlobalStyle'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
-// Generates static files `/memo/1`, `/memo/2`, ...
-export async function getStaticPaths() {
-  const allIds = await getAllIds()
-  return {
-    paths: allIds.map(({ memoId }) => ({
-      params: { memoId: memoId.toString() }, // string type required
-    })),
-    fallback: true, // required fallback: false | true | 'blocking'
-  }
-}
-export async function getStaticProps() {
-  return {
-    props: {},
-  }
-}
-
 export default function MemoIdPage() {
   const { data: isLogin } = useGetCheckLogin()
   const router = useRouter()
-  const memoId = Number(router.query.memoId)
+  const memoId = Number(router.query.memoId || 0)
 
   // 전체 memos
   const { memos, setMemos } = useMemoStore()
+  const [notFound, setNotFound] = useState(false)
 
   // 현재 id의 memo
   const memo = memos?.find((item) => item.memoId === memoId)
@@ -50,7 +35,8 @@ export default function MemoIdPage() {
       staleTime: 0,
       cacheTime: 0,
       onSuccess: (res) => {
-        updateMemos(res)
+        if (memoId > 0) updateMemos(res)
+        else setNotFound(true)
       },
     }
   )
@@ -145,7 +131,7 @@ export default function MemoIdPage() {
       <Header title={title} />
 
       <MemoWrapper>
-        {isError ? (
+        {isError || notFound ? (
           <StyledCenter>메모 불러오기 실패 😥</StyledCenter>
         ) : (
           <>
