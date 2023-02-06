@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
 import { postMemo } from '../api/memo'
@@ -31,9 +31,6 @@ export default function HomePage() {
     [memos]
   )
 
-  // state
-  const [noSession, setNoSession] = useState(false)
-
   // hook
   const { openModal, Modal, setTitle } = useModal()
 
@@ -50,23 +47,14 @@ export default function HomePage() {
       })
       .catch((err: AxiosError) => {
         console.error(err)
+        let title
         if (err.response?.data === 'no session') {
-          setNoSession(true)
+          title = '로그인이 필요합니다. 😥'
         } else {
-          setNoSession(false)
+          title = '메모 추가에 실패했습니다. 😥'
         }
         openModal()
-        setTitle(
-          <>
-            메모 추가에 실패했습니다. 😥
-            {noSession ? (
-              <>
-                <br />
-                로그인이 필요합니다.
-              </>
-            ) : null}
-          </>
-        )
+        setTitle(title)
       })
   }
 
