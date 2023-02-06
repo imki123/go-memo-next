@@ -90,7 +90,7 @@ const Memo = ({
 
   const clickMemo = (memoId: number) => {
     if (gridMode) {
-      router.push(`/memo/${memoId}`)
+      router.push(`/memo?memoId=${memoId}`)
     }
   }
 

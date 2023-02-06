@@ -7,15 +7,15 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useCallback, useEffect, useState } from 'react'
 
-import { getMemo } from '../../api/memo'
-import Header from '../../component/molecule/Header'
-import Memo, { MemoModel } from '../../component/molecule/Memo'
-import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
-import { queryKeys } from '../../queryClient'
-import { HEADER_HEIGHT } from '../../styles/GlobalStyle'
-import { useMemoHistoryStore, useMemoStore } from '../../zustand'
+import { getMemo } from '../api/memo'
+import Header from '../component/molecule/Header'
+import Memo, { MemoModel } from '../component/molecule/Memo'
+import { useGetCheckLogin } from '../hook/useGetCheckLogin'
+import { queryKeys } from '../queryClient'
+import { HEADER_HEIGHT } from '../styles/GlobalStyle'
+import { useMemoHistoryStore, useMemoStore } from '../zustand'
 
-export default function MemoIdPage() {
+export default function MemoPage() {
   const { data: isLogin } = useGetCheckLogin()
   const router = useRouter()
   const memoId = Number(router.query.memoId || 0)
@@ -28,10 +28,11 @@ export default function MemoIdPage() {
   const memo = memos?.find((item) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
-  const { data, isError, isFetched, isFetching } = useQuery(
+  const { data, refetch, isError, isFetched, isFetching } = useQuery(
     queryKeys.getMemo,
     () => getMemo(memoId),
     {
+      enabled: false,
       staleTime: 0,
       cacheTime: 0,
       onSuccess: (res) => {
@@ -97,6 +98,13 @@ export default function MemoIdPage() {
   }
 
   // effect
+  // 로그인되어있고, memoId가 있으면 데이터 불러오기
+  useEffect(() => {
+    if (isLogin && memoId > 0) {
+      refetch()
+    }
+  }, [isLogin, memoId, refetch])
+
   // 페이지 벗어나면 히스토리 지우기
   useEffect(() => {
     return () => {
@@ -115,23 +123,12 @@ export default function MemoIdPage() {
     }
   }, [data?.text, index, isFetched, memo?.text, memoId, pushHistory])
 
-  if (router.isFallback) {
-    return (
-      <>
-        <Header title={title} />
-        <MemoWrapper>
-          <Memo memoId={0} fetching text='Loading...' />
-        </MemoWrapper>
-      </>
-    )
-  }
-
   return (
     <>
       <Header title={title} />
 
       <MemoWrapper>
-        {isError || notFound ? (
+        {isError || (isLogin && notFound) ? (
           <StyledCenter>메모 불러오기 실패 😥</StyledCenter>
         ) : (
           <>
@@ -141,7 +138,7 @@ export default function MemoIdPage() {
             </ButtonDiv>
             <Memo
               {...memo}
-              memoId={memo?.memoId || 0}
+              memoId={memoId || 0}
               updateMemos={updateMemos}
               fetching={!!isLogin && isFetching}
             />
