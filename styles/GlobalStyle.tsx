@@ -1,9 +1,10 @@
+import 'pretendard/dist/web/variable/pretendardvariable.css'
+
 import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
 import { useEffect } from 'react'
 
 import { useThemeStore } from '../zustand'
-import 'pretendard/dist/web/variable/pretendardvariable.css'
 
 // 헤더 높이
 export const HEADER_HEIGHT = 60
@@ -84,12 +85,26 @@ export default function GlobalStyle() {
   // 로컬 테마
   const { theme: storeTheme, set: setStoreTheme } = useThemeStore()
 
+  // meta theme-color 변경하는 함수
+  function setMetaThemeColor(color: string) {
+    const meta = document.createElement('meta')
+    meta.name = 'theme-color'
+    meta.content = color
+    document.querySelector('meta[name=theme-color]')?.remove()
+    document.head?.appendChild(meta)
+  }
+
   useEffect(() => {
     const localTheme = window.localStorage.getItem('go-memo-next-theme') as
       | 'dark'
       | undefined
     setStoreTheme(localTheme)
+    setMetaThemeColor(localTheme === 'dark' ? OpenColor.gray[9] : 'white')
   }, [setStoreTheme])
+
+  useEffect(() => {
+    setMetaThemeColor(storeTheme === 'dark' ? OpenColor.gray[9] : 'white')
+  }, [storeTheme])
 
   return (
     <Global
