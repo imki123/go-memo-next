@@ -1,4 +1,4 @@
-import create from 'zustand'
+import { create } from 'zustand'
 
 import { dummyMemos } from './api/dummyMemos'
 import { MemoModel } from './component/molecule/Memo'
