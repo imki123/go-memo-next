@@ -33,11 +33,11 @@ const Memo = ({
   text = '',
   createdAt,
   editedAt,
-  gridMode,
+  readOnly,
   updateMemos,
   fetching,
 }: MemoModel & {
-  gridMode?: boolean
+  readOnly?: boolean
   updateMemos?: (memo: MemoModel) => void
 }) => {
   // 테마 설정
@@ -89,7 +89,7 @@ const Memo = ({
   }
 
   const clickMemo = (memoId: number) => {
-    if (gridMode) {
+    if (readOnly) {
       router.push(`/memo?memoId=${memoId}`)
     }
   }
@@ -151,7 +151,7 @@ const Memo = ({
     <>
       <StyledMemo
         onClick={() => clickMemo(memoId)}
-        gridMode={gridMode}
+        readOnly={readOnly}
         fetching={fetching}
         theme={theme}
       >
@@ -162,7 +162,7 @@ const Memo = ({
         <StyledTextarea
           value={value}
           onChange={changeText}
-          disabled={gridMode}
+          readOnly={readOnly}
         />
       </StyledMemo>
       <Modal />
@@ -173,7 +173,7 @@ const Memo = ({
 export default React.memo(Memo)
 
 const StyledMemo = styled.div<{
-  gridMode?: boolean
+  readOnly?: boolean
   fetching?: boolean
   theme?: 'dark'
 }>`
@@ -190,8 +190,8 @@ const StyledMemo = styled.div<{
     border: 2px solid ${OpenColor.yellow[5]};
   }
 
-  ${({ gridMode }) =>
-    gridMode &&
+  ${({ readOnly }) =>
+    readOnly &&
     `
     padding-left: 10px;
     height: auto;
@@ -231,5 +231,5 @@ const StyledTextarea = styled.textarea`
   outline: none;
   overflow: auto;
   word-break: break-all;
-  ${({ disabled }) => disabled && `cursor: pointer;`}
+  ${({ readOnly }) => readOnly && `cursor: pointer;`}
 `

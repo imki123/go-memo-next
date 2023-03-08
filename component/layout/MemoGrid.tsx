@@ -18,7 +18,7 @@ const MemoGrid = ({ memoData }: MemoGridModel) => {
     <>
       <Grid>
         {memoData?.map(({ ...props }) => (
-          <Memo key={props.memoId} {...props} gridMode={true} />
+          <Memo key={props.memoId} {...props} readOnly={true} />
         ))}
       </Grid>
     </>
