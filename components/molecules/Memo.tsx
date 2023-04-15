@@ -13,12 +13,12 @@ import React, {
   MouseEvent,
 } from 'react'
 
-import { deleteMemo, patchMemo } from '../../api/memo'
-import { useGetAllMemo } from '../../hook/useGetAllMemo'
-import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
-import useModal from '../../hook/useModal'
+import { deleteMemo, patchMemo } from '../../apis/memo'
+import { useGetAllMemo } from '../../hooks/useGetAllMemo'
+import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
+import useModal from '../../hooks/useModal'
 import { routes } from '../../pages'
-import { addSnackBar } from '../../util/util'
+import { addSnackBar } from '../../utils/util'
 import { useMemoHistoryStore, useMemoStore, useThemeStore } from '../../zustand'
 
 export interface MemoModel {

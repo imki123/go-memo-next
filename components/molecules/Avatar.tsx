@@ -4,13 +4,13 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useState } from 'react'
 
-import { dummyMemos } from '../../api/dummyMemos'
-import { loginResponse, logout } from '../../api/user'
-import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
-import useModal from '../../hook/useModal'
+import { dummyMemos } from '../../apis/dummyMemos'
+import { loginResponse, logout } from '../../apis/user'
+import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
+import useModal from '../../hooks/useModal'
 import { routes } from '../../pages'
 import { queryClient, queryKeys } from '../../queryClient'
-import { addSnackBar } from '../../util/util'
+import { addSnackBar } from '../../utils/util'
 import { useMemoStore } from '../../zustand'
 
 const Avatar = ({

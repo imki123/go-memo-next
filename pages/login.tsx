@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { useEffect } from 'react'
 
-import Header from '../component/molecule/Header'
-import { renderGoogleButton } from '../util/googleLogin'
+import Header from '../components/molecules/Header'
+import { renderGoogleButton } from '../utils/googleLogin'
 
 export default function LoginPage() {
   useEffect(() => {

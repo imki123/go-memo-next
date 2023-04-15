@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
-import { dummyMemos } from './api/dummyMemos'
-import { MemoModel } from './component/molecule/Memo'
+import { dummyMemos } from './apis/dummyMemos'
+import { MemoModel } from './components/molecules/Memo'
 
 export interface MemoStoreModel {
   memos?: MemoModel[]

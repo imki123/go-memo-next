@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
 
-import Memo, { MemoModel } from '../molecule/Memo'
+import Memo, { MemoModel } from '../molecules/Memo'
 
 /**
  * 메모 리스트

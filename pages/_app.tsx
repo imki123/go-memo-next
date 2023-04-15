@@ -8,10 +8,10 @@ import { useEffect } from 'react'
 
 import { queryClient } from '../queryClient'
 import GlobalStyle from '../styles/GlobalStyle'
-import { initGoogle } from '../util/googleLogin'
-import { addSnackBar } from '../util/util'
+import { initGoogle } from '../utils/googleLogin'
+import { addSnackBar } from '../utils/util'
 
-import { BE_URL, checkLogin, login } from './../api/user'
+import { BE_URL, checkLogin, login } from '../apis/user'
 
 import { routes } from '.'
 
