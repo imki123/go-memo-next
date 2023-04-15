@@ -77,3 +77,13 @@ export const useThemeStore = create<ThemeStoreModel>((set) => ({
   theme: undefined,
   set: (theme) => set({ theme }),
 }))
+
+// 초기 스플래시 스토어
+export type SplashStoreType = {
+  initial?: boolean
+  set: (initial?: boolean) => void
+}
+export const useSplashStore = create<SplashStoreType>((set) => ({
+  initial: undefined,
+  set: (initial) => set({ initial }),
+}))

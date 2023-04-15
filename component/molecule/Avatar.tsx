@@ -8,6 +8,7 @@ import { dummyMemos } from '../../api/dummyMemos'
 import { loginResponse, logout } from '../../api/user'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import useModal from '../../hook/useModal'
+import { routes } from '../../pages'
 import { queryClient, queryKeys } from '../../queryClient'
 import { addSnackBar } from '../../util/util'
 import { useMemoStore } from '../../zustand'
@@ -50,7 +51,7 @@ const Avatar = ({
                 refetch() // checkLogin
                 queryClient.setQueryData(queryKeys.getAllMemo, null)
                 setMemos(dummyMemos)
-                router.replace('/home')
+                router.replace(routes.root)
               })
               .catch((err) => {
                 addSnackBar(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)

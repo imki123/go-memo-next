@@ -13,14 +13,14 @@ export default function NotFound404() {
     if (router.asPath === '/') router.push(routes.root)
     else {
       console.info('404')
-      router.replace(routes.home)
+      router.replace(routes.root)
     }
   }, [router])
 
   return (
     <CenterDiv>
       <div>404 | Not Found Page.</div>
-      <Link href={routes.home} replace>
+      <Link href={routes.root} replace>
         Go home
       </Link>
     </CenterDiv>

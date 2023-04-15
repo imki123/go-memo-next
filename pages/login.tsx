@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header title='고영이 메모장 🐈' backButton={true} rightItems={[]} />
+      <Header title='고영이 메모장🐈' backButton={true} rightItems={[]} />
       <LoginPageWrapper>
         <div id='googleLoginDiv'></div>
         <br />

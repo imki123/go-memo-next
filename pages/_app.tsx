@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       .then((res) => {
         if (res) {
           addSnackBar('로그인 성공 😄')
-          router.replace(routes.home)
+          router.replace(routes.root)
         } else {
           addSnackBar('로그인 실패 😥')
         }

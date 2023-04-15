@@ -17,6 +17,7 @@ import { deleteMemo, patchMemo } from '../../api/memo'
 import { useGetAllMemo } from '../../hook/useGetAllMemo'
 import { useGetCheckLogin } from '../../hook/useGetCheckLogin'
 import useModal from '../../hook/useModal'
+import { routes } from '../../pages'
 import { addSnackBar } from '../../util/util'
 import { useMemoHistoryStore, useMemoStore, useThemeStore } from '../../zustand'
 
@@ -94,7 +95,7 @@ const Memo = ({
     }
   }
 
-  const deleteMemoAction = (e: MouseEvent<SVGSVGElement>) => {
+  const handleDeleteMemo = (e: MouseEvent<SVGSVGElement>) => {
     e.stopPropagation()
     openModal()
     setTitle(`메모를 삭제하시겠습니까?`)
@@ -112,7 +113,7 @@ const Memo = ({
               .then(() => {
                 addSnackBar('메모 삭제 성공')
                 refetch()
-                router.replace('/home')
+                if (!readOnly) router.replace(routes.root)
               })
               .catch((err) => {
                 addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
@@ -157,7 +158,7 @@ const Memo = ({
       >
         <StyledMemoHeader>
           {`${time}`}
-          <StyledClearIcon onClick={deleteMemoAction} />
+          <StyledClearIcon onClick={handleDeleteMemo} />
         </StyledMemoHeader>
         <StyledTextarea
           value={value}
