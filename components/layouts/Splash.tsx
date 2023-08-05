@@ -9,19 +9,21 @@ export default function Splash({
   theme?: 'dark'
 }) {
   return (
-    <SplashWrapper visible={visible} theme={theme}>
+    <StyledSplash visible={visible} theme={theme}>
       잔짜잔! 고영이 메모장🐈
-    </SplashWrapper>
+    </StyledSplash>
   )
 }
 
-const SplashWrapper = styled.div<{ visible?: boolean; theme?: 'dark' }>`
+const StyledSplash = styled.div<{ visible?: boolean; theme?: 'dark' }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  width: 100vw;
-  height: 100%;
   background: ${OpenColor.blue[2]};
   font-size: 20px;
   transition: opacity 0.3s;

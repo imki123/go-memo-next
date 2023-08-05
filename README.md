@@ -26,6 +26,6 @@ Open http://localhost:4000
 This project use gh-pages.  
 Add environment `NEXT_PUBLIC_BE_URL` in `.env.production.local`
 
-```
+```bash
 yarn deploy
 ```

@@ -6,12 +6,11 @@ import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { useEffect } from 'react'
 
+import { BE_URL, checkLogin, login } from '../apis/user'
 import { queryClient } from '../queryClient'
 import GlobalStyle from '../styles/GlobalStyle'
 import { initGoogle } from '../utils/googleLogin'
 import { addSnackBar } from '../utils/util'
-
-import { BE_URL, checkLogin, login } from '../apis/user'
 
 import { routes } from '.'
 
