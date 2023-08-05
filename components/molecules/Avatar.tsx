@@ -63,7 +63,7 @@ const Avatar = ({
 
   return (
     <>
-      <AvatarWrapper>
+      <StyledAvatar>
         {defaultImage ? (
           <DefaultImage onClick={click} />
         ) : (
@@ -77,8 +77,8 @@ const Avatar = ({
             onClick={click}
           />
         )}
-        <AvatarSpan>{avatar.name}</AvatarSpan>
-      </AvatarWrapper>
+        <StyledName>{avatar.name}</StyledName>
+      </StyledAvatar>
       <Modal />
     </>
   )
@@ -86,7 +86,7 @@ const Avatar = ({
 
 export default Avatar
 
-const AvatarWrapper = styled.div`
+const StyledAvatar = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -97,13 +97,14 @@ const AvatarWrapper = styled.div`
     border-radius: 50%;
   }
 `
-const AvatarSpan = styled.span`
+const StyledName = styled.span`
   position: absolute;
   top: 30px;
   right: 0;
-  display: inline-block;
+  display: block;
   font-size: 10px;
   text-align: right;
+  white-space: nowrap;
 `
 const DefaultImage = styled.span`
   display: inline-block;
