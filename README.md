@@ -2,6 +2,8 @@
 
 A simple `unrich` note app !!!
 
+![image](https://github.com/imki123/go-memo-next/assets/43270441/828aea82-0843-4a69-8612-0cb88be083c5)
+
 ## Getting Started
 
 ### How to install
