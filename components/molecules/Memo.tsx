@@ -11,6 +11,7 @@ import React, {
   useRef,
   useState,
   MouseEvent,
+  forwardRef,
 } from 'react'
 
 import { deleteMemo, patchMemo } from '../../apis/memo'
@@ -28,19 +29,22 @@ export interface MemoModel {
   editedAt?: string
   fetching?: boolean
 }
-
-const Memo = ({
-  memoId,
-  text = '',
-  createdAt,
-  editedAt,
-  readOnly,
-  updateMemos,
-  fetching,
-}: MemoModel & {
-  readOnly?: boolean
-  updateMemos?: (memo: MemoModel) => void
-}) => {
+export const Memo = forwardRef(_Memo)
+function _Memo(
+  {
+    memoId,
+    text = '',
+    createdAt,
+    editedAt,
+    readOnly,
+    updateMemos,
+    fetching,
+  }: MemoModel & {
+    readOnly?: boolean
+    updateMemos?: (memo: MemoModel) => void
+  },
+  forwardedRef: React.LegacyRef<HTMLTextAreaElement>
+) {
   // 테마 설정
   const isChanged = useRef(false)
   const timeoutId = useRef<NodeJS.Timeout>()
@@ -164,14 +168,13 @@ const Memo = ({
           value={value}
           onChange={changeText}
           readOnly={readOnly}
+          ref={forwardedRef}
         />
       </StyledMemo>
       <Modal />
     </>
   )
 }
-
-export default React.memo(Memo)
 
 const StyledMemo = styled.div<{
   readOnly?: boolean

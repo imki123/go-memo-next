@@ -22,12 +22,14 @@ interface HeaderModel {
   title?: string | number
   backButton?: boolean
   rightItems?: ReactNode[]
+  onTitleClick?: () => void
 }
 export default function Header({
   fixed = true,
   title,
   backButton = true,
   rightItems,
+  onTitleClick,
 }: HeaderModel) {
   // 테마 지정
   const { theme, set: setTheme } = useThemeStore()
@@ -86,7 +88,7 @@ export default function Header({
                 onClick={router.back}
               />
             )}
-            {title}
+            <span onClick={() => onTitleClick?.()}>{title}</span>
           </LeftItems>
           <RightItems>
             {React.Children.toArray(right?.map((item) => item))}

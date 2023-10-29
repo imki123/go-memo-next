@@ -5,17 +5,18 @@ import { Button } from 'go-storybook'
 import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getMemo } from '../apis/memo'
 import Header from '../components/molecules/Header'
-import Memo, { MemoModel } from '../components/molecules/Memo'
+import { Memo, MemoModel } from '../components/molecules/Memo'
 import { useGetCheckLogin } from '../hooks/useGetCheckLogin'
 import { queryKeys } from '../queryClient'
 import { HEADER_HEIGHT } from '../styles/GlobalStyle'
 import { useMemoHistoryStore, useMemoStore } from '../zustand'
 
 export default function MemoPage() {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { data: isLogin } = useGetCheckLogin()
   const router = useRouter()
   const memoId = Number(router.query.memoId || 0)
@@ -125,7 +126,12 @@ export default function MemoPage() {
 
   return (
     <>
-      <Header title={title} />
+      <Header
+        title={title}
+        onTitleClick={() => {
+          textareaRef.current?.scrollTo(0, 0)
+        }}
+      />
 
       <MemoWrapper>
         {isError || (isLogin && notFound) ? (
@@ -141,6 +147,7 @@ export default function MemoPage() {
               memoId={memoId || 0}
               updateMemos={updateMemos}
               fetching={!!isLogin && isFetching}
+              ref={textareaRef}
             />
           </>
         )}
@@ -150,9 +157,9 @@ export default function MemoPage() {
 }
 
 const MemoWrapper = styled.div`
-  height: calc(100% - ${HEADER_HEIGHT}px);
+  height: calc(100vh - ${HEADER_HEIGHT}px);
   padding: 0 15px 15px;
-  border-radius: 15px; ;
+  border-radius: 15px;
 `
 const StyledCenter = styled.div`
   text-align: center;

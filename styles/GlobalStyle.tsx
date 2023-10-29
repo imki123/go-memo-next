@@ -97,6 +97,7 @@ export default function GlobalStyle() {
       styles={css`
         ${setSkeleton()}
         * {
+          scroll-behavior: smooth;
           font-family: 'Pretendard Variable', Pretendard, -apple-system,
             BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
             'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
@@ -112,6 +113,14 @@ export default function GlobalStyle() {
             border-radius: 3px;
           }
         }
+
+        html,
+        body {
+          height: 100%;
+        }
+        #__next {
+          background: white;
+        }
         html,
         body,
         #__next {
@@ -119,7 +128,6 @@ export default function GlobalStyle() {
           margin: 0;
           padding: 0;
           position: relative;
-          scroll-behavior: smooth;
         }
         html {
           ${mediaBiggerThan(
@@ -135,7 +143,6 @@ export default function GlobalStyle() {
           font-size: 14px;
         }
         body {
-          scroll-behavior: smooth;
           width: 100vw;
           overflow-x: hidden;
           ${mediaBiggerThan(
