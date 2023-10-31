@@ -56,11 +56,12 @@ const setSkeleton = () =>
   `
 
 // 다크 테마 설정
-const setDarkTheme = (theme?: 'dark') =>
+const setGlobalDarkTheme = (theme?: 'dark') =>
   theme === 'dark'
     ? css`
         html,
-        body {
+        body,
+        #__next {
           background: ${OpenColor.gray[9]};
           color: ${OpenColor.gray[3]};
         }
@@ -167,7 +168,7 @@ export default function GlobalStyle() {
         img {
           ${noSelect}
         }
-        ${setDarkTheme(storeTheme)}
+        ${setGlobalDarkTheme(storeTheme)}
       `}
     />
   )
