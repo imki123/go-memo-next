@@ -39,8 +39,10 @@ function _Memo(
     readOnly,
     updateMemos,
     fetching,
+    fontSize,
   }: MemoModel & {
     readOnly?: boolean
+    fontSize?: number
     updateMemos?: (memo: MemoModel) => void
   },
   forwardedRef: React.LegacyRef<HTMLTextAreaElement>
@@ -169,6 +171,7 @@ function _Memo(
           onChange={changeText}
           readOnly={readOnly}
           ref={forwardedRef}
+          fontSize={fontSize}
         />
       </StyledMemo>
       <Modal />
@@ -184,6 +187,7 @@ const StyledMemo = styled.div<{
   position: relative;
   flex: 1 0 250px;
   height: 100%;
+  width: 100%;
   min-height: 250px;
   background: ${OpenColor.yellow[0]};
   border: 2px solid ${OpenColor.yellow[3]};
@@ -223,7 +227,7 @@ const StyledClearIcon = styled(ClearIcon)`
   color: ${OpenColor.red[8]};
   margin-left: 4px;
 `
-const StyledTextarea = styled.textarea`
+const StyledTextarea = styled.textarea<{ fontSize?: number }>`
   height: 100%;
   padding-top: 18px;
   width: 100%;
@@ -235,5 +239,7 @@ const StyledTextarea = styled.textarea`
   outline: none;
   overflow: auto;
   word-break: break-all;
+  ${({ fontSize }) =>
+    fontSize ? `font-size: ${fontSize}px;` : `font-size: 14px;`}
   ${({ readOnly }) => readOnly && `cursor: pointer;`}
 `

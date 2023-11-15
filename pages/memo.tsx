@@ -21,6 +21,13 @@ export default function MemoPage() {
   const router = useRouter()
   const memoId = Number(router.query.memoId || 0)
 
+  // 메모 폰트 사이즈
+  const [fontSize, setFontSize] = useState(14)
+  useEffect(() => {
+    const size = Number(localStorage.getItem('memo-font-size') || 14)
+    setFontSize(size)
+  }, [])
+
   // 전체 memos
   const { memos, setMemos } = useMemoStore()
   const [notFound, setNotFound] = useState(false)
@@ -133,7 +140,7 @@ export default function MemoPage() {
         }}
       />
 
-      <MemoWrapper>
+      <StyledPageDiv>
         {isError || (isLogin && notFound) ? (
           <StyledCenter>메모 불러오기 실패 😥</StyledCenter>
         ) : (
@@ -141,6 +148,24 @@ export default function MemoPage() {
             <ButtonDiv>
               <Button onClick={clickBack}>뒤로</Button>
               <Button onClick={clickNext}>앞으로</Button>
+              <Button
+                onClick={() => {
+                  const size = fontSize < 42 ? fontSize + 4 : 42
+                  setFontSize(size)
+                  localStorage.setItem('memo-font-size', String(size))
+                }}
+              >
+                글씨+
+              </Button>
+              <Button
+                onClick={() => {
+                  const size = fontSize > 10 ? fontSize - 4 : 10
+                  setFontSize(size)
+                  localStorage.setItem('memo-font-size', String(size))
+                }}
+              >
+                글씨-
+              </Button>
             </ButtonDiv>
             <Memo
               {...memo}
@@ -148,35 +173,32 @@ export default function MemoPage() {
               updateMemos={updateMemos}
               fetching={!!isLogin && isFetching}
               ref={textareaRef}
+              fontSize={fontSize}
             />
           </>
         )}
-      </MemoWrapper>
+      </StyledPageDiv>
     </>
   )
 }
 
-const MemoWrapper = styled.div`
+const StyledPageDiv = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT}px);
   padding: 0 15px 15px;
-  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 `
 const StyledCenter = styled.div`
   text-align: center;
 `
 
 const ButtonDiv = styled.div`
-  position: fixed;
-  height: 100px;
-  bottom: 10px;
-  right: 20px;
-  z-index: 1;
-
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 10px;
+  padding-top: 10px;
   button {
     font-size: 10px;
     width: 40px;
