@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import Button, { ButtonTypes } from 'go-storybook/dist/component/atom/Button'
 import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { useThemeStore } from '../zustand'
 
@@ -39,7 +40,7 @@ const useModal = () => {
     setButtons(undefined)
   }
 
-  const Modal = () => {
+  const Modal_ = () => {
     return (
       <>
         {visible && (
@@ -74,6 +75,14 @@ const useModal = () => {
     )
   }
 
+  function Modal() {
+    if (typeof window !== 'undefined') {
+      return createPortal(<Modal_ />, document.body)
+    } else {
+      return null
+    }
+  }
+
   useEffect(() => {
     return () => {
       closeModal()
@@ -97,9 +106,9 @@ const ModalWrapper = styled.div`
   position: fixed;
   z-index: 999;
   top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;

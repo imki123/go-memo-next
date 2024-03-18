@@ -156,6 +156,7 @@ const StyledArrowBackIosNewIcon = styled(ArrowBackIosNewIcon)`
 `
 export const LinkWrapper = styled.span`
   a {
+    white-space: nowrap;
     color: ${OpenColor.indigo[6]};
     text-decoration: none;
     font: inherit;
