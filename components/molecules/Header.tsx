@@ -17,7 +17,7 @@ import { useThemeStore } from '../../zustand'
 
 import Avatar from './Avatar'
 
-interface HeaderModel {
+type HeaderType = {
   fixed?: boolean
   title?: string | number
   backButton?: boolean
@@ -28,16 +28,16 @@ export default function Header({
   fixed = true,
   title,
   backButton = true,
-  rightItems,
+  rightItems = [],
   onTitleClick,
-}: HeaderModel) {
+}: HeaderType) {
   // 테마 지정
   const { theme, set: setTheme } = useThemeStore()
 
   const router = useRouter()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
   const { openModal, Modal, setTitle } = useModal()
-  const right = rightItems || [
+  const right = rightItems.concat([
     <>
       {theme === 'dark' ? (
         <DarkModeIcon
@@ -74,7 +74,7 @@ export default function Header({
         </Link>
       </LinkWrapper>
     ),
-  ]
+  ])
 
   return (
     <>
@@ -90,6 +90,7 @@ export default function Header({
             )}
             <span onClick={() => onTitleClick?.()}>{title}</span>
           </LeftItems>
+
           <RightItems>
             {React.Children.toArray(right?.map((item) => item))}
           </RightItems>
@@ -107,9 +108,10 @@ const HeaderFixed = styled.div<{ fixed?: boolean }>`
   position: fixed;
   z-index: 10;
   top: 0;
-  left: 0;
-  right: 0;
+  left: calc(50vw);
+  transform: translateX(-50%);
   height: ${HEADER_HEIGHT}px;
+  width: 100vw;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
 `

@@ -27,16 +27,6 @@ export default function IndexPage() {
   const initialTimeoutId = useRef<NodeJS.Timeout>()
   const [splashOpened, setSplashOpened] = useState(true)
 
-  const sortedData = useMemo(
-    () =>
-      [...(memos || [])]?.sort((a, b) => {
-        const timeA = dayjs(a.editedAt).valueOf()
-        const timeB = dayjs(b.editedAt).valueOf()
-        return timeB - timeA
-      }),
-    [memos]
-  )
-
   // hook
   const { openModal, Modal, setTitle } = useModal()
 
@@ -76,7 +66,7 @@ export default function IndexPage() {
     if (initial === undefined) {
       setInitial(true)
       // 페이지 열리고 1초 후 스플래시 fadeout
-      initialTimeoutId.current = setTimeout(() => setInitial(false), 1000 * 1)
+      initialTimeoutId.current = setTimeout(() => setInitial(false), 1 * 1000)
     }
     if (initial === false) {
       // 스플래시 fadeout되고 0.3초 후 제거
@@ -91,17 +81,45 @@ export default function IndexPage() {
     }
   }, [])
 
-  if (initial === undefined) return null
+  const sortedMemos = useMemo(
+    () =>
+      [...(memos || [])]?.sort((a, b) => {
+        const timeA = dayjs(a.editedAt).valueOf()
+        const timeB = dayjs(b.editedAt).valueOf()
+        return timeB - timeA
+      }),
+    [memos]
+  )
+
+  const [searchValue, setSearchValue] = useState('')
+  const filteredMemos = sortedMemos.filter((memo) => {
+    return memo.text?.includes(searchValue)
+  })
+
+  if (initial === undefined) {
+    return null
+  }
+
   return (
     <>
       {splashOpened && <Splash visible={initial} theme={theme} />}
 
-      <Header title="고영이 메모장🐈" backButton={false} />
+      <Header
+        title="고영이 메모장🐈"
+        backButton={false}
+        rightItems={[
+          <input
+            placeholder="메모 검색"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.currentTarget.value)}
+          />,
+        ]}
+      />
       <ButtonDiv>
         <Button onClick={addMemo}>메모추가</Button>
       </ButtonDiv>
 
-      {isLoading ? <Loading /> : <MemoGrid memoData={sortedData} />}
+      {isLoading ? <Loading /> : <MemoGrid memoData={filteredMemos} />}
 
       <FloatingButtonsLayout>
         <Reload

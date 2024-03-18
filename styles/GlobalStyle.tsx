@@ -97,6 +97,7 @@ export default function GlobalStyle() {
     <Global
       styles={css`
         ${setSkeleton()}
+
         * {
           scroll-behavior: smooth;
           font-family: 'Pretendard Variable', Pretendard, -apple-system,
@@ -115,13 +116,19 @@ export default function GlobalStyle() {
           }
         }
 
+        html {
+          width: 100vw; // 스크롤바 때문에 쉬프팅 생겨서 고정
+        }
+
         html,
         body {
           height: 100%;
         }
+
         #__next {
           background: white;
         }
+
         html,
         body,
         #__next {
@@ -130,6 +137,7 @@ export default function GlobalStyle() {
           padding: 0;
           position: relative;
         }
+
         html {
           ${mediaBiggerThan(
             MAX_WIDTH,
@@ -138,11 +146,13 @@ export default function GlobalStyle() {
             `
           )}
         }
+
         body,
         button,
         textarea {
           font-size: 14px;
         }
+
         body {
           width: 100vw;
           overflow-x: hidden;
@@ -155,19 +165,23 @@ export default function GlobalStyle() {
             `
           )}
         }
+
         a {
           text-decoration: underline;
           color: ${OpenColor.blue[7]};
           font-size: inherit;
         }
+
         button,
         a {
           cursor: pointer;
         }
+
         button,
         img {
           ${noSelect}
         }
+
         ${setGlobalDarkTheme(storeTheme)}
       `}
     />
