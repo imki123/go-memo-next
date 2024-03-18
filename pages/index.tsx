@@ -71,14 +71,16 @@ export default function IndexPage() {
     }
   }, [data, setMemos, isLogin])
 
-  // 처음 접근할 경우 스플래시 노출, 2초 후 숨기기
   useEffect(() => {
+    // 스플래시 노출
     if (initial === undefined) {
       setInitial(true)
-      initialTimeoutId.current = setTimeout(() => setInitial(false), 1000 * 2) // 2초 후 스플래시 숨기기
+      // 페이지 열리고 1초 후 스플래시 fadeout
+      initialTimeoutId.current = setTimeout(() => setInitial(false), 1000 * 1)
     }
     if (initial === false) {
-      setTimeout(() => setSplashOpened(false), 300) // 스플래시 숨기고 0.3초 후 돔에서 제거
+      // 스플래시 fadeout되고 0.3초 후 제거
+      setTimeout(() => setSplashOpened(false), 300)
     }
   }, [initial, setInitial])
 
@@ -94,7 +96,7 @@ export default function IndexPage() {
     <>
       {splashOpened && <Splash visible={initial} theme={theme} />}
 
-      <Header title='고영이 메모장🐈' backButton={false} />
+      <Header title="고영이 메모장🐈" backButton={false} />
       <ButtonDiv>
         <Button onClick={addMemo}>메모추가</Button>
       </ButtonDiv>
