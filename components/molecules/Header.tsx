@@ -88,7 +88,9 @@ export default function Header({
                 onClick={router.back}
               />
             )}
-            <span onClick={() => onTitleClick?.()}>{title}</span>
+            <StyledTitleSpan onClick={() => onTitleClick?.()}>
+              {title}
+            </StyledTitleSpan>
           </LeftItems>
 
           <RightItems>
@@ -120,6 +122,7 @@ const HeaderWrapper = styled.div<{ fixed?: boolean; theme?: 'dark' }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
   padding: 20px;
   font-weight: bold;
   box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
@@ -128,14 +131,21 @@ const HeaderWrapper = styled.div<{ fixed?: boolean; theme?: 'dark' }>`
   ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[9]};`}
 `
 const LeftItems = styled.div`
+  flex-shrink: 0;
   ${noSelect}
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
 `
+
+const StyledTitleSpan = styled.span`
+  flex-shrink: 0;
+`
+
 const RightItems = styled.div`
   display: flex;
+  flex-shrink: 1;
   align-items: center;
   gap: 16px;
 `

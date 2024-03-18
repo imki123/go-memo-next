@@ -105,11 +105,11 @@ export default function IndexPage() {
       {splashOpened && <Splash visible={initial} theme={theme} />}
 
       <Header
-        title="고영이 메모장🐈"
+        title='고영이 메모장🐈'
         backButton={false}
         rightItems={[
-          <input
-            placeholder="메모 검색"
+          <StyledSearchInput
+            placeholder='메모 검색'
             value={searchValue}
             onChange={(e) => setSearchValue(e.currentTarget.value)}
           />,
@@ -138,6 +138,11 @@ export default function IndexPage() {
 const ButtonDiv = styled.div`
   text-align: center;
   margin: 20px;
+`
+const StyledSearchInput = styled.input`
+  width: 100%;
+  max-width: 150px;
+  flex-shrink: 1;
 `
 
 export const routes = {

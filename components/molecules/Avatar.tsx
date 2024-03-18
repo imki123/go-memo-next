@@ -90,6 +90,7 @@ const StyledAvatar = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   justify-content: center;
   align-items: flex-end;
   img {
