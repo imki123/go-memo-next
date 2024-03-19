@@ -1,21 +1,11 @@
 import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 
-export default function Splash({
-  visible,
-  theme,
-}: {
-  visible?: boolean
-  theme?: 'dark'
-}) {
-  return (
-    <StyledSplash visible={visible} theme={theme}>
-      잔짜잔! 고영이 메모장🐈
-    </StyledSplash>
-  )
+export default function Splash({ visible }: { visible?: boolean }) {
+  return <StyledSplash visible={visible}>잔짜잔! 고영이 메모장🐈</StyledSplash>
 }
 
-const StyledSplash = styled.div<{ visible?: boolean; theme?: 'dark' }>`
+const StyledSplash = styled.div<{ visible?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -36,5 +26,6 @@ const StyledSplash = styled.div<{ visible?: boolean; theme?: 'dark' }>`
       : `
           opacity: 0;
         `}
-  ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[7]};`}
+  ${({ theme }) =>
+    theme.theme === 'dark' && `background: ${OpenColor.gray[7]};`}
 `

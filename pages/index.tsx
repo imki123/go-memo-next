@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
+import OpenColor from 'open-color'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
@@ -18,11 +19,10 @@ import { useGetAllMemo } from '../hooks/useGetAllMemo'
 import useModal from '../hooks/useModal'
 import { queryKeys } from '../queryClient'
 import { addSnackBar } from '../utils/util'
-import { useMemoStore, useSplashStore, useThemeStore } from '../zustand'
+import { useMemoStore, useSplashStore } from '../zustand'
 
 export default function IndexPage() {
   const { memos, setMemos } = useMemoStore()
-  const { theme } = useThemeStore()
   const { initial, set: setInitial } = useSplashStore()
   const initialTimeoutId = useRef<NodeJS.Timeout>()
   const [splashOpened, setSplashOpened] = useState(true)
@@ -102,20 +102,17 @@ export default function IndexPage() {
 
   return (
     <>
-      {splashOpened && <Splash visible={initial} theme={theme} />}
+      {splashOpened && <Splash visible={initial} />}
 
-      <Header
-        title='고영이 메모장🐈'
-        backButton={false}
-        rightItems={[
-          <StyledSearchInput
-            placeholder='메모 검색'
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.currentTarget.value)}
-          />,
-        ]}
-      />
+      <Header title='고영이 메모장🐈' backButton={false} />
+
       <ButtonDiv>
+        <StyledSearchInput
+          placeholder='메모 검색'
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.currentTarget.value)}
+        />
+
         <Button onClick={addMemo}>메모추가</Button>
       </ButtonDiv>
 
@@ -136,12 +133,22 @@ export default function IndexPage() {
 }
 
 const ButtonDiv = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin: 20px;
+  gap: 20px;
 `
 const StyledSearchInput = styled.input`
+  ${({ theme }) =>
+    theme.theme === 'dark' &&
+    `background: ${OpenColor.gray[9]};
+    color: ${OpenColor.gray[3]};
+    &::placeholder {
+      color: ${OpenColor.gray[5]};
+    }`};
   width: 100%;
-  max-width: 150px;
+  max-width: 200px;
   flex-shrink: 1;
 `
 

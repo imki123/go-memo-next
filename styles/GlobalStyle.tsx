@@ -56,7 +56,7 @@ const setSkeleton = () =>
   `
 
 // 다크 테마 설정
-const setGlobalDarkTheme = (theme?: 'dark') =>
+const setGlobalDarkTheme = (theme: 'dark' | undefined) =>
   theme === 'dark'
     ? css`
         html,

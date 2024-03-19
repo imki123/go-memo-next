@@ -20,7 +20,7 @@ import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
 import useModal from '../../hooks/useModal'
 import { routes } from '../../pages'
 import { addSnackBar } from '../../utils/util'
-import { useMemoHistoryStore, useMemoStore, useThemeStore } from '../../zustand'
+import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
 export interface MemoModel {
   memoId: number
@@ -60,7 +60,6 @@ function _Memo(
   const { memos, setMemos } = useMemoStore()
   const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
   const { memoHistory, index, pushHistory } = useMemoHistoryStore()
-  const { theme } = useThemeStore()
 
   const updateMemo = useCallback(
     (memo: MemoModel) => {
@@ -160,7 +159,6 @@ function _Memo(
         onClick={() => clickMemo(memoId)}
         readOnly={readOnly}
         fetching={fetching}
-        theme={theme}
       >
         <StyledMemoHeader>
           {`${time}`}
@@ -207,7 +205,7 @@ const StyledMemo = styled.div<{
   `}
   ${({ fetching }) => fetching && `animation: skeleton 1s linear infinite;`}
   ${({ theme }) =>
-    theme === 'dark' &&
+    theme.theme === 'dark' &&
     `
     background: #292913;
     border-color: #404030 !important;

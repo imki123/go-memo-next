@@ -70,8 +70,8 @@ export const useMemoHistoryStore = create<MemoHistoryModel>((set) => ({
 
 // 테마 스토어
 export interface ThemeStoreModel {
-  theme?: 'dark'
-  set: (theme?: 'dark') => void
+  theme: 'dark' | undefined
+  set: (theme: 'dark' | undefined) => void
 }
 export const useThemeStore = create<ThemeStoreModel>((set) => ({
   theme: undefined,

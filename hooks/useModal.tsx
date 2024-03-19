@@ -4,8 +4,6 @@ import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import { useThemeStore } from '../zustand'
-
 export interface ModalButtonModel {
   text: string
   onClick: () => void
@@ -18,7 +16,6 @@ export interface ModalModel {
 }
 
 const useModal = () => {
-  const { theme } = useThemeStore()
   const [visible, setVisible] = useState(false)
   const [modalTitle, setTitle] = useState<ReactNode>()
   const [modalText, setText] = useState<ReactNode>()
@@ -50,7 +47,7 @@ const useModal = () => {
               closeModal()
             }}
           >
-            <ModalContent onClick={(e) => e.stopPropagation()} theme={theme}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
               {modalTitle && <TitleDiv>{modalTitle}</TitleDiv>}
               {modalText && <TextDiv>{modalText}</TextDiv>}
               {modalModalButtons && (

@@ -80,7 +80,7 @@ export default function Header({
     <>
       {fixed && <HeaderPadding />}
       <HeaderFixed fixed={fixed}>
-        <HeaderWrapper theme={theme}>
+        <HeaderWrapper>
           <LeftItems onClick={() => window.scrollTo(0, 0)}>
             {backButton && (
               <StyledArrowBackIosNewIcon
@@ -117,7 +117,7 @@ const HeaderFixed = styled.div<{ fixed?: boolean }>`
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
 `
-const HeaderWrapper = styled.div<{ fixed?: boolean; theme?: 'dark' }>`
+const HeaderWrapper = styled.div<{ fixed?: boolean }>`
   height: calc(100% - 4px);
   display: flex;
   align-items: center;
@@ -128,7 +128,8 @@ const HeaderWrapper = styled.div<{ fixed?: boolean; theme?: 'dark' }>`
   box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
   background: white;
   ${({ fixed }) => !fixed && `position: relative;`}
-  ${({ theme }) => theme === 'dark' && `background: ${OpenColor.gray[9]};`}
+  ${({ theme }) =>
+    theme.theme === 'dark' && `background: ${OpenColor.gray[9]};`}
 `
 const LeftItems = styled.div`
   flex-shrink: 0;
