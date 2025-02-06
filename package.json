@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "tsc": "tsc --noEmit",
-    "gh-deploy": "rm -rf node_modules/.cache && next build && next export && touch out/.nojekyll && git add -f out/ && git checkout -b temp-for-deploy-gh-pages && git commit -m \"Deploy Next.js to gh-pages\" && git subtree split --prefix out -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git checkout main && git branch -D temp-for-deploy-gh-pages"
+    "checkEnv": "node ./checkEnv.mjs",
+    "gh-deploy": "rm -rf node_modules/.cache && pnpm checkEnv && next build && next export && touch out/.nojekyll && git add -f out/ && git checkout -b temp-for-deploy-gh-pages && git commit -m \"Deploy Next.js to gh-pages\" && git subtree split --prefix out -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git checkout main && git branch -D temp-for-deploy-gh-pages"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -19,6 +20,7 @@
     "@tanstack/react-query": "^4.16.1",
     "axios": "^1.1.3",
     "dayjs": "^1.11.6",
+    "dotenv": "^16.4.7",
     "go-storybook": "^0.1.17",
     "immer": "^9.0.16",
     "moment-mini": "^2.29.4",
