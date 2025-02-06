@@ -183,8 +183,12 @@ export default function MemoPage() {
 }
 
 const StyledPageDiv = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT}px);
+  position: fixed;
+  inset: 0;
+  top: ${HEADER_HEIGHT}px;
   padding: 0 15px 15px;
+  background-color: ${OpenColor.blue[8]};
+
   display: flex;
   flex-direction: column;
   align-items: center;
