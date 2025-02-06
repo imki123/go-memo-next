@@ -167,6 +167,7 @@ export default function MemoPage() {
                 글씨-
               </Button>
             </ButtonDiv>
+
             <Memo
               {...memo}
               memoId={memoId || 0}
@@ -185,7 +186,6 @@ export default function MemoPage() {
 const StyledPageDiv = styled.div`
   height: calc(100% - ${HEADER_HEIGHT}px);
   padding: 0 15px 15px;
-  background-color: blue;
 
   display: flex;
   flex-direction: column;
