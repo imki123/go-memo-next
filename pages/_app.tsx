@@ -24,6 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)
+    console.info('>>> hash:', process.env.NEXT_PUBLIC_GIT_COMMIT_HASH)
   }, [])
 
   useEffect(() => {
