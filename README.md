@@ -23,7 +23,7 @@ Open http://localhost:4000
 ### How to deploy
 
 This project use gh-pages.  
-Add environment `NEXT_PUBLIC_BE_URL` in `.env.production.local`
+Add environment `NEXT_PUBLIC_BE_URL`, `NEXT_PUBLIC_GOOGLE_CLIENT_ID` in `.env.production.local`
 
 ```bash
 pnpm gh-deploy
