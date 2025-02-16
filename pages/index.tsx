@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
+import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
@@ -22,6 +23,8 @@ import { addSnackBar } from '../utils/util'
 import { useMemoStore, useSplashStore } from '../zustand'
 
 export default function IndexPage() {
+  const router = useRouter()
+
   const { memos, setMemos } = useMemoStore()
   const { initial, set: setInitial } = useSplashStore()
   const initialTimeoutId = useRef<NodeJS.Timeout>()
@@ -37,7 +40,8 @@ export default function IndexPage() {
   // function
   const addMemo = async () => {
     postMemo()
-      .then(() => {
+      .then((response) => {
+        router.push(`/memo?memoId=${response.memoId}`)
         refetch()
         addSnackBar('메모 추가 성공')
       })
