@@ -109,8 +109,9 @@ const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
   text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  transition: 0s 1s background ease; // delay, duration, property, timing-function, behavior
 `
 
 const ModalContent = styled.div<{ theme?: 'dark' }>`

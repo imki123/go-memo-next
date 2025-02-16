@@ -1,3 +1,5 @@
+export const isClient = typeof window !== 'undefined'
+
 export const addSnackBar = (
   message: string,
   duration = 2000,

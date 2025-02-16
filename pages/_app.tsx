@@ -49,6 +49,23 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const { theme: theme } = useThemeStore()
 
+  useEffect(() => {
+    const updateHeight = () => {
+      if (window.visualViewport) {
+        document.documentElement.style.height = `${window.visualViewport.height}px`
+        document.body.style.height = `${window.visualViewport.height}px`
+      }
+    }
+
+    updateHeight() // 초기 실행
+    window.visualViewport?.addEventListener('resize', updateHeight)
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateHeight)
+      document.documentElement.style.height = ''
+      document.body.style.height = ''
+    }
+  }, [])
+
   return (
     <ThemeProvider theme={{ theme: theme }}>
       <QueryClientProvider client={queryClient}>
@@ -63,7 +80,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
           <link rel='manifest' href='/go-memo-next/manifest.json' />
         </Head>
+
         <Component {...pageProps} />
+
         <Copyright href='https://github.com/imki123' target='_blank'>
           <Image
             unoptimized={true} // 외부 url

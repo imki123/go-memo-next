@@ -20,6 +20,11 @@ pnpm dev
 Open http://localhost:4000
 ```
 
+### How to test on Simulator
+
+Open http://localhost:4000
+TODO: Sign in is not working on simulator.
+
 ### How to deploy
 
 This project use gh-pages.  

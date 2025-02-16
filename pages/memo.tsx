@@ -184,7 +184,7 @@ export default function MemoPage() {
 }
 
 const StyledPageDiv = styled.div`
-  height: calc(100% - ${HEADER_HEIGHT}px);
+  height: calc(100dvh - ${HEADER_HEIGHT}px - env(safe-area-inset-bottom));
   padding: 0 15px 15px;
 
   display: flex;
