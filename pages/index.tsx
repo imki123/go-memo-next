@@ -4,7 +4,6 @@ import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
-import OpenColor from 'open-color'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
@@ -110,10 +109,6 @@ export default function IndexPage() {
       {splashOpened && <Splash visible={initial} />}
 
       <Header title='고영이 메모장🐈' backButton={false} />
-
-      <button className='bg-blue-500 text-white px-4 py-2 rounded transition-colors'>
-        테스트
-      </button>
 
       <ButtonDiv>
         <Input
