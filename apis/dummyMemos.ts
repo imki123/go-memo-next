@@ -1,4 +1,4 @@
-import { MemoModel } from '../components/molecules/Memo'
+import { MemoType } from '../components/molecules/Memo'
 
 export const dummyMemos = [
   {
@@ -45,4 +45,4 @@ export const dummyMemos = [
     createdAt: '2022-10-25T23:10:20',
     editedAt: '2022-10-25T23:30:10',
   },
-] as MemoModel[]
+] as MemoType[]

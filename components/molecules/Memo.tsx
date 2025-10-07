@@ -22,7 +22,7 @@ import { routes } from '../../pages'
 import { addSnackBar } from '../../utils/util'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
 
-export interface MemoModel {
+export type MemoType = {
   memoId: number
   text?: string
   createdAt?: string
@@ -40,10 +40,10 @@ function _Memo(
     updateMemos,
     fetching,
     fontSize,
-  }: MemoModel & {
+  }: MemoType & {
     readOnly?: boolean
     fontSize?: number
-    updateMemos?: (memo: MemoModel) => void
+    updateMemos?: (memo: MemoType) => void
   },
   forwardedRef: React.LegacyRef<HTMLTextAreaElement>
 ) {
@@ -62,7 +62,7 @@ function _Memo(
   const { memoHistory, index, pushHistory } = useMemoHistoryStore()
 
   const updateMemo = useCallback(
-    (memo: MemoModel) => {
+    (memo: MemoType) => {
       if (isLogin) {
         addSnackBar('수정완료')
         patchMemo(memo)
@@ -124,7 +124,7 @@ function _Memo(
                 addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
               })
           } else {
-            const result = produce(memos, (draft) => {
+            const result = produce(memos, (draft: MemoType[]) => {
               return draft?.filter((item) => item.memoId !== memoId)
             })
             setMemos(result)

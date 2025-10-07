@@ -8,7 +8,7 @@
     "export": "next export",
     "start": "next start",
     "lint": "next lint",
-    "tsc": "tsc --noEmit",
+    "type": "tsc --noEmit --watch",
     "checkEnv": "node ./checkEnv.mjs",
     "gh-deploy": "rm -rf node_modules/.cache && pnpm checkEnv && next build && next export && touch out/.nojekyll && git add -f out/ && git checkout -b temp-for-deploy-gh-pages && git commit -m \"Deploy Next.js to gh-pages\" && git subtree split --prefix out -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git checkout main && git branch -D temp-for-deploy-gh-pages"
   },
@@ -32,7 +32,7 @@
     "react-dom": "^18.2.0",
     "tailwind-merge": "^3.3.1",
     "use-deep-compare-effect": "^1.8.1",
-    "zustand": "^4.5.7"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.5.11",

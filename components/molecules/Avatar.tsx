@@ -5,7 +5,7 @@ import OpenColor from 'open-color'
 import { useState } from 'react'
 
 import { dummyMemos } from '../../apis/dummyMemos'
-import { loginResponse, logout } from '../../apis/user'
+import { loginResponseType, logout } from '../../apis/user'
 import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
 import useModal from '../../hooks/useModal'
 import { routes } from '../../pages'
@@ -17,7 +17,7 @@ const Avatar = ({
   avatar,
   onClick,
 }: {
-  avatar: loginResponse
+  avatar: loginResponseType
   onClick?: () => void
 }) => {
   const [defaultImage, setDefaultImage] = useState(false)

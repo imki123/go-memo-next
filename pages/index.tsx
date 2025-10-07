@@ -26,7 +26,7 @@ export default function IndexPage() {
   const router = useRouter()
 
   const { memos, setMemos } = useMemoStore()
-  const { initial, set: setInitial } = useSplashStore()
+  const { initial, setState: setInitial } = useSplashStore()
   const initialTimeoutId = useRef<NodeJS.Timeout>()
   const [splashOpened, setSplashOpened] = useState(true)
 

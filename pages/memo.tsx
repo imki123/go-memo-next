@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getMemo } from '../apis/memo'
 import Header from '../components/molecules/Header'
-import { Memo, MemoModel } from '../components/molecules/Memo'
+import { Memo, MemoType } from '../components/molecules/Memo'
 import { useGetCheckLogin } from '../hooks/useGetCheckLogin'
 import { queryKeys } from '../queryClient'
 import { HEADER_HEIGHT } from '../styles/GlobalStyle'
@@ -33,7 +33,7 @@ export default function MemoPage() {
   const [notFound, setNotFound] = useState(false)
 
   // 현재 id의 memo
-  const memo = memos?.find((item) => item.memoId === memoId)
+  const memo = memos?.find((item: MemoType) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
   const { data, refetch, isError, isFetched, isFetching } = useQuery(
@@ -62,11 +62,11 @@ export default function MemoPage() {
 
   // function
   const updateMemos = useCallback(
-    (memo: MemoModel) => {
+    (memo: MemoType) => {
       // 스토어의 memos 업데이트
-      const result = produce(memos, (draft) => {
-        if (draft?.find((item) => item.memoId === memoId)) {
-          draft?.forEach((item, i) => {
+      const result = produce(memos, (draft: MemoType[] | undefined) => {
+        if (draft?.find((item: MemoType) => item.memoId === memoId)) {
+          draft?.forEach((item: MemoType, i: number) => {
             if (item.memoId === memoId) {
               if (draft?.[i]) {
                 draft[i] = memo

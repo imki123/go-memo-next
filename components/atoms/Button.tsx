@@ -2,14 +2,14 @@ import styled from '@emotion/styled'
 import OpenColor from 'open-color'
 import { ReactNode } from 'react'
 
-export interface ButtonModel {
+export type ButtonModelType = {
   onClick?: () => void
   children?: ReactNode
   type?: 'Primary' | 'Circle'
 }
 
 // 기본 버튼 컴포넌트
-const Button = ({ onClick, children, type }: ButtonModel) => {
+const Button = ({ onClick, children, type }: ButtonModelType) => {
   // style
   const StyledButton = styled.button`
     cursor: pointer;

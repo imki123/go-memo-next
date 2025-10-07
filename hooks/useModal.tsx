@@ -4,22 +4,22 @@ import OpenColor from 'open-color'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-export interface ModalButtonModel {
+export type ModalButtonModelType = {
   text: string
   onClick: () => void
 }
 
-export interface ModalModel {
+export type ModalModelType = {
   title?: ReactNode
   text?: ReactNode
-  buttons?: ModalButtonModel[]
+  buttons?: ModalButtonModelType[]
 }
 
 const useModal = () => {
   const [visible, setVisible] = useState(false)
   const [modalTitle, setTitle] = useState<ReactNode>()
   const [modalText, setText] = useState<ReactNode>()
-  const [modalModalButtons, setButtons] = useState<ModalButtonModel[]>()
+  const [modalModalButtons, setButtons] = useState<ModalButtonModelType[]>()
 
   const openModal = () => {
     document.body.style.overflow = 'hidden'

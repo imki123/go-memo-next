@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
 
-import { Memo, MemoModel } from '../molecules/Memo'
+import { Memo, MemoType } from '../molecules/Memo'
 
 /**
  * 메모 리스트
@@ -9,11 +9,11 @@ import { Memo, MemoModel } from '../molecules/Memo'
  * @returns
  */
 
-interface MemoGridModel {
-  memoData?: MemoModel[]
+type MemoGridModelType = {
+  memoData?: MemoType[]
 }
 
-export function MemoGrid({ memoData }: MemoGridModel) {
+export function MemoGrid({ memoData }: MemoGridModelType) {
   return (
     <>
       <Grid>

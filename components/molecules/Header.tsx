@@ -32,7 +32,7 @@ export default function Header({
   onTitleClick,
 }: HeaderType) {
   // 테마 지정
-  const { theme, set: setTheme } = useThemeStore()
+  const { theme, setState: setTheme } = useThemeStore()
 
   const router = useRouter()
   const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)

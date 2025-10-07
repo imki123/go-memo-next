@@ -18,7 +18,7 @@ export const login = (credential: string, afterLogin?: () => void) => {
   return axiosWithCredentials
     .post(urls.login, { credential })
     .then((res) => {
-      return res.data as loginResponse
+      return res.data as loginResponseType
     })
     .then(() => {
       afterLogin?.()
@@ -32,10 +32,10 @@ export const logout = () => {
 export const checkLogin = () => {
   return axiosWithCredentials
     .post(urls.checkLogin)
-    .then((res) => res.data as loginResponse)
+    .then((res) => res.data as loginResponseType)
 }
 
-export interface loginResponse {
+export type loginResponseType = {
   email: string
   sub: string
   name?: string

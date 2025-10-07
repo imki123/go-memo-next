@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { MemoModel } from '../components/molecules/Memo'
+import { MemoType } from '../components/molecules/Memo'
 
 import { BE_URL } from './user'
 
@@ -21,23 +21,23 @@ export const getAllIds = () =>
 
 export const getAllMemo = () => {
   return axiosWithCredentials
-    .get<MemoModel[]>(`${urls.root}`)
+    .get<MemoType[]>(`${urls.root}`)
     .then((res) => res.data)
 }
 
 export const getMemo = (memoId: number) => {
   return axiosWithCredentials
-    .get<MemoModel>(`${urls.root}${memoId}`)
+    .get<MemoType>(`${urls.root}${memoId}`)
     .then((res) => res.data)
 }
 
 export const postMemo = () => {
-  return axiosWithCredentials.post<MemoModel>(urls.root).then((res) => res.data)
+  return axiosWithCredentials.post<MemoType>(urls.root).then((res) => res.data)
 }
 
-export const patchMemo = (memo: MemoModel) => {
+export const patchMemo = (memo: MemoType) => {
   return axiosWithCredentials
-    .patch<MemoModel>(urls.root, {
+    .patch<MemoType>(urls.root, {
       memo,
     })
     .then((res) => res.data)
@@ -45,6 +45,6 @@ export const patchMemo = (memo: MemoModel) => {
 
 export const deleteMemo = (memoId: number) => {
   return axiosWithCredentials
-    .delete<MemoModel>(`${urls.root}${memoId}`)
+    .delete<MemoType>(`${urls.root}${memoId}`)
     .then((res) => res.data)
 }

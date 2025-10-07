@@ -70,7 +70,7 @@ const setGlobalDarkTheme = (theme: 'dark' | undefined) =>
 
 export default function GlobalStyle() {
   // 로컬 테마
-  const { theme: storeTheme, set: setStoreTheme } = useThemeStore()
+  const { theme: storeTheme, setState: setStoreTheme } = useThemeStore()
 
   // meta theme-color 변경하는 함수
   function setMetaThemeColor(color: string) {
