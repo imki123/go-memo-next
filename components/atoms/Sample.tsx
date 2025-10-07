@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
  * Sample 컴포넌트
  * @params
  */
-const Sample = () => {
+function Sample() {
   return <StyledSample>Sample</StyledSample>
 }
 

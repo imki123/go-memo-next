@@ -15,29 +15,29 @@ export type ModalModelType = {
   buttons?: ModalButtonModelType[]
 }
 
-const useModal = () => {
+function useModal() {
   const [visible, setVisible] = useState(false)
   const [modalTitle, setTitle] = useState<ReactNode>()
   const [modalText, setText] = useState<ReactNode>()
   const [modalModalButtons, setButtons] = useState<ModalButtonModelType[]>()
 
-  const openModal = () => {
+  function openModal() {
     document.body.style.overflow = 'hidden'
     setVisible(true)
   }
 
-  const closeModal = () => {
+  function closeModal() {
     document.body.removeAttribute('style')
     setVisible(false)
   }
 
-  const resetModal = () => {
+  function resetModal() {
     setTitle(undefined)
     setText(undefined)
     setButtons(undefined)
   }
 
-  const Modal_ = () => {
+  function Modal_() {
     return (
       <>
         {visible && (
@@ -49,7 +49,9 @@ const useModal = () => {
           >
             <ModalContent onClick={(e) => e.stopPropagation()}>
               {modalTitle && <TitleDiv>{modalTitle}</TitleDiv>}
+
               {modalText && <TextDiv>{modalText}</TextDiv>}
+
               {modalModalButtons && (
                 <ButtonDiv>
                   {modalModalButtons?.map(({ text, onClick }, i) => (

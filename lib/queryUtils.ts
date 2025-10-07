@@ -88,7 +88,7 @@ export function useInvalidation() {
     return queryClient.invalidateQueries({ queryKey })
   }
 
-  const invalidateAll = () => {
+  function invalidateAll() {
     return queryClient.invalidateQueries()
   }
 

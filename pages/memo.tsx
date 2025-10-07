@@ -45,7 +45,6 @@ export default function MemoPage() {
   const {
     data: memoData,
     isError,
-    isFetched,
     isFetching,
   } = useApiQuery({
     queryFn: memoApi.getMemo,
@@ -63,7 +62,7 @@ export default function MemoPage() {
     } else if (memoData && memoId === 0) {
       setNotFound(true)
     }
-  }, [memoData, memoId, setMemo])
+  }, [memoData, memoId, setMemo, pushHistory])
 
   // 현재 id의 memo
   const memo = allMemos?.find((item: MemoType) => item.memoId === memoId)

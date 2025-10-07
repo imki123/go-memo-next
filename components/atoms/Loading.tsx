@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
  * Loading 컴포넌트
  * @params
  */
-const Loading = () => {
+function Loading() {
   return <StyledLoading>로딩중...</StyledLoading>
 }
 

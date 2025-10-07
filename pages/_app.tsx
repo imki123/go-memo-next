@@ -34,7 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   // 로그인 로직
   const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const afterLogin = () => {
+  function afterLogin() {
     setIsLoggingIn(true)
 
     userApi
@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const { theme: theme } = useThemeStore()
 
   useEffect(() => {
-    const updateHeight = () => {
+    function updateHeight() {
       if (window.visualViewport) {
         document.documentElement.style.height = `${window.visualViewport.height}px`
         document.body.style.height = `${window.visualViewport.height}px`

@@ -2,6 +2,6 @@
  * Password 사용하는 hook
  * @params
  */
-const usePassword = () => {}
+function usePassword() {}
 
 export default usePassword

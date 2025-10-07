@@ -9,7 +9,7 @@ export type ButtonModelType = {
 }
 
 // 기본 버튼 컴포넌트
-const Button = ({ onClick, children, type }: ButtonModelType) => {
+function Button({ onClick, children, type }: ButtonModelType) {
   // style
   const StyledButton = styled.button`
     cursor: pointer;

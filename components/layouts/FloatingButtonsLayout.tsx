@@ -9,7 +9,7 @@ import { MAX_WIDTH, mediaBiggerThan } from '../../styles/GlobalStyle'
  * // 이름도 Bottom이 들어가도록 수정 필요
  * @params
  */
-const FloatingButtonsLayout = ({ children }: { children: ReactNode }) => {
+function FloatingButtonsLayout({ children }: { children: ReactNode }) {
   return <StyledFloatingButtonsLayout>{children}</StyledFloatingButtonsLayout>
 }
 

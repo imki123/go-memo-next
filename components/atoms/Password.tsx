@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
  * Password 컴포넌트
  * @params
  */
-const Password = () => {
+function Password() {
   return <StyledPassword>Password</StyledPassword>
 }
 

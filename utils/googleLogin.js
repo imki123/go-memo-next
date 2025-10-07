@@ -1,4 +1,4 @@
-export const initGoogle = (login, afterLogin) => {
+export function initGoogle(login, afterLogin) {
   const google = window.google
   google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -11,8 +11,8 @@ export const initGoogle = (login, afterLogin) => {
 }
 
 // 구글로그인 버튼, 원버튼 렌더링하기
-export const renderGoogleButton = (divId) => {
-  const startRender = () => {
+export function renderGoogleButton(divId) {
+  function startRender() {
     const google = window.google
     google.accounts.id.renderButton(
       document.getElementById(divId),

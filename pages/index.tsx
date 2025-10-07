@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { AxiosError } from 'axios'
 
 import { memoApi } from '../apis/memoApi'
 import { userApi } from '../apis/userApi'
@@ -46,16 +47,17 @@ export default function IndexPage() {
   })
 
   // function
-  const addMemo = async () => {
+  async function addMemo() {
     try {
       const response = await memoApi.postMemo()
       router.push(`/memo?memoId=${response.memoId}`)
       await refetch() // refetch 완료 후 스낵바 표시
       addSnackBar('메모 추가 성공')
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
+      const error = err as AxiosError
       let title
-      if (err.response?.data === 'no session') {
+      if (error.response?.data === 'no session') {
         title = '로그인이 필요합니다. 😥'
       } else {
         title = '메모 추가에 실패했습니다. 😥'

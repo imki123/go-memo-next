@@ -40,9 +40,9 @@ export const mediaBiggerThan = (
   `
 }
 
-// 애니메이션 설정
-const setSkeleton = () =>
-  css`
+function setSkeleton() {
+  // 애니메이션 설정
+  return css`
     @keyframes skeleton {
       0% {
         opacity: 1;
@@ -55,10 +55,11 @@ const setSkeleton = () =>
       }
     }
   `
+}
 
-// 다크 테마 설정
-const setGlobalDarkTheme = (theme: 'dark' | undefined) =>
-  theme === 'dark'
+function setGlobalDarkTheme(theme: 'dark' | undefined) {
+  // 다크 테마 설정
+  return theme === 'dark'
     ? css`
         html,
         body,
@@ -68,7 +69,7 @@ const setGlobalDarkTheme = (theme: 'dark' | undefined) =>
         }
       `
     : ''
-
+}
 export default function GlobalStyle() {
   // 로컬 테마
   const { theme: storeTheme, setState: setStoreTheme } = useThemeStore()

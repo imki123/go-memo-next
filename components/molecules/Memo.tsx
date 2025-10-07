@@ -86,13 +86,13 @@ function _Memo(
     }, 1000 * 1.5)
   }
 
-  const clickMemo = (memoId: number) => {
+  function clickMemo(memoId: number) {
     if (readOnly) {
       router.push(`/memo?memoId=${memoId}`)
     }
   }
 
-  const handleDeleteMemo = (e: MouseEvent<SVGSVGElement>) => {
+  function handleDeleteMemo(e: MouseEvent<SVGSVGElement>) {
     e.stopPropagation()
     openModal()
     setTitle(`메모를 삭제하시겠습니까?`)
