@@ -1,13 +1,11 @@
 import styled from '@emotion/styled'
-import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import useDeepCompareEffect from 'use-deep-compare-effect'
 
-import { postMemo, getAllMemo } from '../apis/memo'
-import { checkLogin } from '../apis/user'
+import { memoApi } from '../apis/memoApi'
+import { userApi } from '../apis/userApi'
 import Loading from '../components/atoms/Loading'
 import Reload from '../components/atoms/Reload'
 import FloatingButtonsLayout from '../components/layouts/FloatingButtonsLayout'
@@ -18,12 +16,13 @@ import { Input } from '../components/ui/input'
 import useModal from '../hooks/useModal'
 import { useApiQuery } from '../lib/queryUtils'
 import { addSnackBar } from '../utils/util'
-import { useMemoStore, useSplashStore } from '../zustand'
+import { useAllMemosStore } from '../zustand/useAllMemosStore'
+import { useSplashStore } from '../zustand/useSplashStore'
 
 export default function IndexPage() {
   const router = useRouter()
 
-  const { memos, setMemos } = useMemoStore()
+  const { allMemos, setAllMemos } = useAllMemosStore()
   const { initial, setState: setInitial } = useSplashStore()
   const initialTimeoutId = useRef<NodeJS.Timeout>()
   const [splashOpened, setSplashOpened] = useState(true)
@@ -32,38 +31,46 @@ export default function IndexPage() {
   const { openModal, Modal, setTitle } = useModal()
 
   // query
-  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
-  const { data, refetch, isLoading, isFetching } = useApiQuery({
-    queryFn: getAllMemo,
+  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
+  const {
+    data: allMemosData,
+    refetch,
+    isLoading,
+    isFetching,
+    isFetched,
+  } = useApiQuery({
+    queryFn: memoApi.getAllMemo,
+    options: {
+      enabled: !!isLogin,
+    },
   })
 
   // function
   const addMemo = async () => {
-    postMemo()
-      .then((response) => {
-        router.push(`/memo?memoId=${response.memoId}`)
-        refetch()
-        addSnackBar('메모 추가 성공')
-      })
-      .catch((err: AxiosError) => {
-        console.error(err)
-        let title
-        if (err.response?.data === 'no session') {
-          title = '로그인이 필요합니다. 😥'
-        } else {
-          title = '메모 추가에 실패했습니다. 😥'
-        }
-        openModal()
-        setTitle(title)
-      })
+    try {
+      const response = await memoApi.postMemo()
+      router.push(`/memo?memoId=${response.memoId}`)
+      await refetch() // refetch 완료 후 스낵바 표시
+      addSnackBar('메모 추가 성공')
+    } catch (err: any) {
+      console.error(err)
+      let title
+      if (err.response?.data === 'no session') {
+        title = '로그인이 필요합니다. 😥'
+      } else {
+        title = '메모 추가에 실패했습니다. 😥'
+      }
+      openModal()
+      setTitle(title)
+    }
   }
 
-  // effect
-  useDeepCompareEffect(() => {
-    if (data && isLogin) {
-      setMemos(data)
+  useEffect(() => {
+    // NOTE: 서버에서 받아온 메모로 업데이트
+    if (isLogin && allMemosData && isFetched) {
+      setAllMemos(allMemosData)
     }
-  }, [data, setMemos, isLogin])
+  }, [isLogin, allMemosData, setAllMemos, isFetched])
 
   useEffect(() => {
     // 스플래시 노출
@@ -87,12 +94,12 @@ export default function IndexPage() {
 
   const sortedMemos = useMemo(
     () =>
-      [...(memos || [])]?.sort((a, b) => {
+      [...(allMemos || [])]?.sort((a, b) => {
         const timeA = dayjs(a.editedAt).valueOf()
         const timeB = dayjs(b.editedAt).valueOf()
         return timeB - timeA
       }),
-    [memos]
+    [allMemos]
   )
 
   const [searchValue, setSearchValue] = useState('')
@@ -121,7 +128,13 @@ export default function IndexPage() {
         <Button onClick={addMemo}>메모추가</Button>
       </ButtonDiv>
 
-      {isLoading ? <Loading /> : <MemoGrid memoData={filteredMemos} />}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <MemoGrid
+          memoData={filteredMemos.map((memo) => ({ memoId: memo.memoId }))}
+        />
+      )}
 
       <FloatingButtonsLayout>
         <Reload

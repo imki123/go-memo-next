@@ -1,150 +1,93 @@
 import styled from '@emotion/styled'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
-import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { getMemo } from '../apis/memo'
-import { checkLogin } from '../apis/user'
+import { memoApi } from '../apis/memoApi'
+import { userApi } from '../apis/userApi'
 import Header from '../components/molecules/Header'
 import { Memo, MemoType } from '../components/molecules/Memo'
 import { useApiQuery } from '../lib/queryUtils'
 import { HEADER_HEIGHT } from '../styles/GlobalStyle'
-import { useMemoHistoryStore, useMemoStore } from '../zustand'
+import { useAllMemosStore } from '../zustand/useAllMemosStore'
+import { useFontSizeStore } from '../zustand/useFontSizeStore'
+import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
 
 export default function MemoPage() {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
   const router = useRouter()
-  const memoId = Number(router.query.memoId || 0)
 
-  // 메모 폰트 사이즈
-  const [fontSize, setFontSize] = useState(14)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
+
+  const memoId = Number(router.query.memoId) || 0
+
+  const { increaseFontSize, decreaseFontSize, loadFontSizeFromStorage } =
+    useFontSizeStore()
   useEffect(() => {
-    const size = Number(localStorage.getItem('memo-font-size') || 14)
-    setFontSize(size)
-  }, [])
+    // NOTE: 로컬 스토리지에서 폰트 사이즈 가져오기
+    loadFontSizeFromStorage()
+  }, [loadFontSizeFromStorage])
 
-  // 전체 memos
-  const { memos, setMemos } = useMemoStore()
+  const { allMemos, setMemo } = useAllMemosStore()
   const [notFound, setNotFound] = useState(false)
 
-  // 현재 id의 memo
-  const memo = memos?.find((item: MemoType) => item.memoId === memoId)
-
-  // 서버에서 불러온 memo data
-  const { data, refetch, isError, isFetched, isFetching } = useApiQuery({
-    queryFn: getMemo,
-    payload: memoId,
-    options: {
-      enabled: false,
-      staleTime: 0,
-    },
-  })
-  const title = memo?.text?.split('\n')[0].slice(0, 50)
-
   const {
-    memoHistory,
-    index,
+    memoHistories,
+    currentIndex,
     backHistory,
     nextHistory,
     resetHistory,
     pushHistory,
   } = useMemoHistoryStore()
 
-  // function
-  const updateMemos = useCallback(
-    (memo: MemoType) => {
-      // 스토어의 memos 업데이트
-      const result = produce(memos, (draft: MemoType[] | undefined) => {
-        if (draft?.find((item: MemoType) => item.memoId === memoId)) {
-          draft?.forEach((item: MemoType, i: number) => {
-            if (item.memoId === memoId) {
-              if (draft?.[i]) {
-                draft[i] = memo
-              }
-            }
-          })
-        } else {
-          draft?.push(memo)
-        }
-        return draft
-      })
-      setMemos(result)
+  const {
+    data: memoData,
+    isError,
+    isFetched,
+    isFetching,
+  } = useApiQuery({
+    queryFn: memoApi.getMemo,
+    payload: memoId,
+    options: {
+      enabled: isLogin && memoId > 0,
     },
-    [memoId, memos, setMemos]
-  )
+  })
 
-  // effect
   useEffect(() => {
-    if (
-      data &&
-      memoId > 0 &&
-      typeof data === 'object' &&
-      data !== null &&
-      'memoId' in data
-    ) {
-      updateMemos(data)
-    } else if (data && memoId === 0) {
+    // NOTE: 메모 데이터 가져온 후 스토어 업데이트
+    if (memoData && memoId && memoId > 0) {
+      setMemo(memoData)
+      pushHistory(memoData.text || '')
+    } else if (memoData && memoId === 0) {
       setNotFound(true)
     }
-  }, [data, memoId, updateMemos])
+  }, [memoData, memoId, setMemo])
 
-  const clickBack = () => {
-    backHistory()
-    if (memoHistory[index - 1] !== undefined) {
-      updateMemos({
+  // 현재 id의 memo
+  const memo = allMemos?.find((item: MemoType) => item.memoId === memoId)
+
+  const title = memo?.text?.split('\n')[0].slice(0, 50)
+
+  // currentIndex가 변경될 때마다 해당 히스토리로 메모 업데이트
+  useEffect(() => {
+    if (memoHistories[currentIndex] !== undefined) {
+      setMemo({
         memoId,
-        text: memoHistory[index - 1],
+        text: memoHistories[currentIndex],
         editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+        createdAt: memo?.createdAt,
       })
     }
-  }
+  }, [currentIndex, memoHistories, memoId, setMemo, memo?.createdAt])
 
-  const clickNext = () => {
-    nextHistory()
-    if (memoHistory[index + 1] !== undefined) {
-      updateMemos({
-        memoId,
-        text: memoHistory[index + 1],
-        editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
-      })
-    }
-  }
-
-  // effect
-  // 로그인되어있고, memoId가 있으면 데이터 불러오기
   useEffect(() => {
-    if (isLogin && memoId > 0) {
-      refetch()
-    }
-  }, [isLogin, memoId, refetch])
-
-  // 페이지 벗어나면 히스토리 지우기
-  useEffect(() => {
+    // 페이지 벗어나면 히스토리 지우기
     return () => {
       resetHistory()
     }
   }, [resetHistory])
-
-  // 히스토리에 첫 데이터 저장
-  useEffect(() => {
-    if (index === -1 && memoId) {
-      if (
-        isFetched &&
-        data &&
-        typeof data === 'object' &&
-        data !== null &&
-        'text' in data
-      ) {
-        pushHistory(data.text || '')
-      } else {
-        pushHistory(memo?.text || '')
-      }
-    }
-  }, [data, index, isFetched, memo?.text, memoId, pushHistory])
 
   return (
     <>
@@ -161,35 +104,19 @@ export default function MemoPage() {
         ) : (
           <>
             <ButtonDiv>
-              <Button onClick={clickBack}>뒤로</Button>
-              <Button onClick={clickNext}>앞으로</Button>
-              <Button
-                onClick={() => {
-                  const size = fontSize < 42 ? fontSize + 4 : 42
-                  setFontSize(size)
-                  localStorage.setItem('memo-font-size', String(size))
-                }}
-              >
-                글씨+
-              </Button>
-              <Button
-                onClick={() => {
-                  const size = fontSize > 10 ? fontSize - 4 : 10
-                  setFontSize(size)
-                  localStorage.setItem('memo-font-size', String(size))
-                }}
-              >
-                글씨-
-              </Button>
+              <Button onClick={increaseFontSize}>글씨+</Button>
+
+              <Button onClick={decreaseFontSize}>글씨-</Button>
+
+              <Button onClick={backHistory}>뒤로</Button>
+
+              <Button onClick={nextHistory}>앞으로</Button>
             </ButtonDiv>
 
             <Memo
-              {...memo}
               memoId={memoId || 0}
-              updateMemos={updateMemos}
               fetching={!!isLogin && isFetching}
               ref={textareaRef}
-              fontSize={fontSize}
             />
           </>
         )}

@@ -1,26 +1,19 @@
 import styled from '@emotion/styled'
 import ClearIcon from '@mui/icons-material/Clear'
 import dayjs from 'dayjs'
-import { produce } from 'immer'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  MouseEvent,
-  forwardRef,
-} from 'react'
+import React, { ChangeEvent, MouseEvent, forwardRef, useRef } from 'react'
 
-import { deleteMemo, patchMemo, getAllMemo } from '../../apis/memo'
-import { checkLogin } from '../../apis/user'
+import { memoApi } from '../../apis/memoApi'
+import { userApi } from '../../apis/userApi'
 import useModal from '../../hooks/useModal'
-import { useApiQuery } from '../../lib/queryUtils'
+import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
 import { addSnackBar } from '../../utils/util'
-import { useMemoHistoryStore, useMemoStore } from '../../zustand'
+import { useAllMemosStore } from '../../zustand/useAllMemosStore'
+import { useFontSizeStore } from '../../zustand/useFontSizeStore'
+import { useMemoHistoryStore } from '../../zustand/useMemoHistoryStore'
 
 export type MemoType = {
   memoId: number
@@ -33,71 +26,64 @@ export const Memo = forwardRef(_Memo)
 function _Memo(
   {
     memoId,
-    text = '',
-    createdAt,
-    editedAt,
     readOnly,
-    updateMemos,
     fetching,
-    fontSize,
-  }: MemoType & {
+  }: {
+    memoId: number
+    fetching?: boolean
     readOnly?: boolean
-    fontSize?: number
-    updateMemos?: (memo: MemoType) => void
   },
   forwardedRef: React.LegacyRef<HTMLTextAreaElement>
 ) {
-  // 테마 설정
-  const isChanged = useRef(false)
-  const timeoutId = useRef<NodeJS.Timeout>()
   const router = useRouter()
-  const [value, setValue] = useState(text)
-  const [time, setTime] = useState(
-    dayjs(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
-  )
-  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
+
+  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { memos, setMemos } = useMemoStore()
-  const { refetch } = useApiQuery({
-    queryFn: getAllMemo,
-    options: {
-      staleTime: 0,
-      enabled: false,
-    },
-  })
-  const { memoHistory, index, pushHistory } = useMemoHistoryStore()
+  const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
+  const { fontSize } = useFontSizeStore()
 
-  const updateMemo = useCallback(
-    (memo: MemoType) => {
-      if (isLogin) {
-        addSnackBar('수정완료')
-        patchMemo(memo)
-      }
-    },
-    [isLogin]
-  )
+  const currentMemo = allMemos?.find((memo) => memo.memoId === memoId)
+  const memoText = currentMemo?.text || ''
 
-  const changeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+  const { pushHistory } = useMemoHistoryStore()
+  const { invalidateQuery } = useInvalidation()
 
-    isChanged.current = true
-    setValue(text)
+  const debounceTimeoutId = useRef<NodeJS.Timeout>()
+  const fetchTimeoutId = useRef<NodeJS.Timeout>()
+
+  function setMemoAndPushHistory(e: ChangeEvent<HTMLTextAreaElement>) {
+    const newText = e.target.value
+
     const now = dayjs().format('YYYY-MM-DD HH:mm')
-    setTime(now)
 
-    // 현재 메모데이터 업데이트
-    updateMemos?.({
-      text: text,
-      editedAt: now,
+    const newMemo = {
       memoId,
-      createdAt,
-    })
+      text: newText,
+      editedAt: now,
+      createdAt: currentMemo?.createdAt || now,
+    }
+
+    setMemo(newMemo)
 
     // 메모히스토리에 추가 디바운스: 0.5초
-    clearTimeout(timeoutId.current)
-    timeoutId.current = setTimeout(() => {
-      pushHistory(text)
+    clearTimeout(debounceTimeoutId.current)
+    debounceTimeoutId.current = setTimeout(async () => {
+      pushHistory(newText)
     }, 1000 * 0.5)
+
+    clearTimeout(fetchTimeoutId.current)
+    fetchTimeoutId.current = setTimeout(async () => {
+      if (isLogin) {
+        try {
+          await memoApi.patchMemo(newMemo)
+          invalidateQuery({ queryFn: memoApi.getAllMemo })
+
+          addSnackBar('수정완료')
+        } catch (error) {
+          console.error('메모 수정 실패:', error)
+        }
+      }
+    }, 1000 * 1.5)
   }
 
   const clickMemo = (memoId: number) => {
@@ -117,48 +103,30 @@ function _Memo(
       },
       {
         text: '삭제',
-        onClick: () => {
+        onClick: async () => {
           closeModal()
           if (isLogin) {
-            deleteMemo(memoId)
-              .then(() => {
-                addSnackBar('메모 삭제 성공')
-                refetch()
-                if (!readOnly) router.replace(routes.root)
-              })
-              .catch((err) => {
-                addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
-              })
+            try {
+              await memoApi.deleteMemo(memoId)
+              addSnackBar('메모 삭제 성공')
+              invalidateQuery({ queryFn: memoApi.getAllMemo })
+              if (!readOnly) router.replace(routes.root)
+            } catch (err) {
+              addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
+            }
           } else {
-            const result = produce(memos, (draft: MemoType[]) => {
-              return draft?.filter((item) => item.memoId !== memoId)
-            })
-            setMemos(result)
+            deleteMemo(memoId)
           }
         },
       },
     ])
   }
 
-  useEffect(() => {
-    // 히스토리 변경되면 1.5초후에 서버에 저장
-    if (timeoutId.current) {
-      clearTimeout(timeoutId.current)
-      timeoutId.current = setTimeout(() => {
-        updateMemo({
-          memoId,
-          text: memoHistory[index],
-          editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
-        })
-      }, 1000 * 1.5)
-    }
-  }, [index, memoHistory, memoId, updateMemo])
-
-  // 메모 변경되면 value도 변경하기
-  useEffect(() => {
-    setValue(text)
-  }, [text])
-
+  const memoTime = currentMemo
+    ? dayjs(currentMemo.editedAt || currentMemo.createdAt).format(
+        'YYYY-MM-DD HH:mm'
+      )
+    : ''
   return (
     <>
       <StyledMemo
@@ -167,17 +135,19 @@ function _Memo(
         fetching={fetching}
       >
         <StyledMemoHeader>
-          {`${time}`}
+          {memoTime}
           <StyledClearIcon onClick={handleDeleteMemo} />
         </StyledMemoHeader>
+
         <StyledTextarea
-          value={value}
-          onChange={changeText}
+          value={memoText}
+          onChange={setMemoAndPushHistory}
           readOnly={readOnly}
           ref={forwardedRef}
           fontSize={fontSize}
         />
       </StyledMemo>
+
       <Modal />
     </>
   )
@@ -245,5 +215,8 @@ const StyledTextarea = styled.textarea<{ fontSize?: number }>`
   word-break: break-all;
   ${({ fontSize }) =>
     fontSize ? `font-size: ${fontSize}px;` : `font-size: 14px;`}
-  ${({ readOnly }) => readOnly && `cursor: pointer;`}
+  ${({ readOnly }) =>
+    readOnly &&
+    `cursor: pointer;
+    overflow: hidden;`}
 `

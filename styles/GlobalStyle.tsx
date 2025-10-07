@@ -4,7 +4,8 @@ import { Global, css } from '@emotion/react'
 import OpenColor from 'open-color'
 import { useEffect } from 'react'
 
-import { useThemeStore } from '../zustand'
+import { localStorageKeys } from '@/utils/localStorageKeys'
+import { useThemeStore } from '@/zustand/useThemeStore'
 
 // 헤더 높이
 export const HEADER_HEIGHT = 60
@@ -82,9 +83,9 @@ export default function GlobalStyle() {
   }
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem('go-memo-next-theme') as
-      | 'dark'
-      | undefined
+    const localTheme = window.localStorage.getItem(
+      localStorageKeys.memoTheme
+    ) as 'dark' | undefined
     setStoreTheme(localTheme)
     setMetaThemeColor(localTheme === 'dark' ? OpenColor.gray[9] : 'white')
   }, [setStoreTheme])

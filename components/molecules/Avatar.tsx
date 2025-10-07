@@ -5,27 +5,27 @@ import OpenColor from 'open-color'
 import { useState } from 'react'
 
 import { dummyMemos } from '../../apis/dummyMemos'
-import { getAllMemo } from '../../apis/memo'
-import { loginResponseType, logout, checkLogin } from '../../apis/user'
+import { memoApi } from '../../apis/memoApi'
+import { userApi, LoginResponseType } from '../../apis/userApi'
 import useModal from '../../hooks/useModal'
 import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
 import { addSnackBar } from '../../utils/util'
-import { useMemoStore } from '../../zustand'
+import { useAllMemosStore } from '../../zustand/useAllMemosStore'
 
 const Avatar = ({
   avatar,
   onClick,
 }: {
-  avatar: loginResponseType
+  avatar: LoginResponseType
   onClick?: () => void
 }) => {
   const [defaultImage, setDefaultImage] = useState(false)
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { setMemos } = useMemoStore()
+  const { setAllMemos: setMemos } = useAllMemosStore()
   const { invalidateQuery } = useInvalidation()
   const { refetch } = useApiQuery({
-    queryFn: checkLogin,
+    queryFn: userApi.checkLogin,
     options: {
       enabled: false,
     },
@@ -49,11 +49,12 @@ const Avatar = ({
           onClick: () => {
             closeModal()
             // 로그아웃
-            logout()
+            userApi
+              .logout()
               .then(() => {
                 addSnackBar('로그아웃 성공')
                 refetch() // checkLogin
-                invalidateQuery(getAllMemo)
+                invalidateQuery({ queryFn: memoApi.getAllMemo })
                 setMemos(dummyMemos)
                 router.replace(routes.root)
               })

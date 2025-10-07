@@ -8,11 +8,13 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import React, { ReactNode } from 'react'
 
-import { checkLogin } from '../../apis/user'
+import { localStorageKeys } from '@/utils/localStorageKeys'
+
+import { userApi } from '../../apis/userApi'
 import useModal from '../../hooks/useModal'
 import { useApiQuery } from '../../lib/queryUtils'
 import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../../styles/GlobalStyle'
-import { useThemeStore } from '../../zustand'
+import { useThemeStore } from '../../zustand/useThemeStore'
 
 import Avatar from './Avatar'
 
@@ -34,7 +36,7 @@ export default function Header({
   const { theme, setState: setTheme } = useThemeStore()
 
   const router = useRouter()
-  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
+  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
   const { openModal, Modal, setTitle } = useModal()
   const right = rightItems.concat([
     <>
@@ -43,7 +45,7 @@ export default function Header({
           fontSize='small'
           onClick={() => {
             setTheme(undefined)
-            window.localStorage.removeItem('go-memo-next-theme')
+            window.localStorage.removeItem(localStorageKeys.memoTheme)
           }}
           style={{ cursor: 'pointer' }}
         />
@@ -52,7 +54,7 @@ export default function Header({
           fontSize='small'
           onClick={() => {
             setTheme('dark')
-            window.localStorage.setItem('go-memo-next-theme', 'dark')
+            window.localStorage.setItem(localStorageKeys.memoTheme, 'dark')
           }}
           style={{ cursor: 'pointer' }}
         />

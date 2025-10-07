@@ -11,12 +11,13 @@
     "plugin:import/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["@typescript-eslint", "import", "unused-imports"],
   "root": true,
   "rules": {
     "no-console": ["warn", { "allow": ["info", "error"] }],
     "@typescript-eslint/no-empty-function": "off",
     "import/named": "off",
+    "unused-imports/no-unused-imports": "warn",
     "import/order": [
       "error",
       {
@@ -40,6 +41,10 @@
   },
   "settings": {
     "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      },
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }

@@ -5,15 +5,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-import { BE_URL, checkLogin, login } from '../apis/user'
+import { BE_URL, userApi } from '../apis/userApi'
 import { queryClient } from '../queryClient'
 import GlobalStyle from '../styles/GlobalStyle'
 import '../styles/globals.css'
 import { initGoogle } from '../utils/googleLogin'
 import { addSnackBar } from '../utils/util'
-import { useThemeStore } from '../zustand'
+import { useThemeStore } from '../zustand/useThemeStore'
 
 import { routes } from '.'
 
@@ -33,8 +33,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.pathname])
 
   // 로그인 로직
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const afterLogin = () => {
-    checkLogin()
+    setIsLoggingIn(true)
+
+    userApi
+      .checkLogin()
       .then((res) => {
         if (res) {
           addSnackBar('로그인 성공 😄')
@@ -45,6 +49,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       })
       .catch((err) => {
         addSnackBar('로그인 실패 😥<br/>' + JSON.stringify(err))
+      })
+      .finally(() => {
+        setIsLoggingIn(false)
       })
   }
 
@@ -73,7 +80,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <GlobalStyle />
         <Script
           src='https://accounts.google.com/gsi/client'
-          onLoad={() => initGoogle(login, afterLogin)}
+          onLoad={() => initGoogle(userApi.login, afterLogin)}
         ></Script>
         <Head>
           <title>고영이메모장🐈</title>
@@ -81,6 +88,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
           <link rel='manifest' href='/go-memo-next/manifest.json' />
         </Head>
+
+        {isLoggingIn && (
+          <div>
+            로그인 중... 서버가 재시작될 경우 최대 5분정도 소요될 수 있습니다.
+          </div>
+        )}
 
         <Component {...pageProps} />
 

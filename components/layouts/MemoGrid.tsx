@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
 
-import { Memo, MemoType } from '../molecules/Memo'
+import { Memo } from '../molecules/Memo'
 
 /**
  * 메모 리스트
@@ -10,15 +10,15 @@ import { Memo, MemoType } from '../molecules/Memo'
  */
 
 type MemoGridModelType = {
-  memoData?: MemoType[]
+  memoData?: { memoId: number }[]
 }
 
 export function MemoGrid({ memoData }: MemoGridModelType) {
   return (
     <>
       <Grid>
-        {memoData?.map(({ ...props }) => (
-          <Memo key={props.memoId} {...props} readOnly={true} />
+        {memoData?.map(({ memoId }) => (
+          <Memo key={memoId} memoId={memoId} readOnly={true} />
         ))}
       </Grid>
     </>

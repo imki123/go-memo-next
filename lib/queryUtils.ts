@@ -74,10 +74,13 @@ export function useApiMutation<MutationFnInput, MutationFnOutput>({
 export function useInvalidation() {
   const queryClient = useQueryClient()
 
-  const invalidateQuery = <QueryFnInput, QueryFnOutput>(
-    queryFn: (payload: QueryFnInput) => QueryFnOutput,
+  const invalidateQuery = <QueryFnInput, QueryFnOutput>({
+    queryFn,
+    payload,
+  }: {
+    queryFn: (payload: QueryFnInput) => QueryFnOutput
     payload?: QueryFnInput
-  ) => {
+  }) => {
     const queryKey = createQueryKey(
       queryFn as (...args: unknown[]) => unknown,
       payload as unknown
