@@ -5,11 +5,11 @@ import OpenColor from 'open-color'
 import { useState } from 'react'
 
 import { dummyMemos } from '../../apis/dummyMemos'
-import { loginResponseType, logout } from '../../apis/user'
-import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
+import { getAllMemo } from '../../apis/memo'
+import { loginResponseType, logout, checkLogin } from '../../apis/user'
 import useModal from '../../hooks/useModal'
+import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
-import { queryClient, queryKeys } from '../../queryClient'
 import { addSnackBar } from '../../utils/util'
 import { useMemoStore } from '../../zustand'
 
@@ -23,8 +23,12 @@ const Avatar = ({
   const [defaultImage, setDefaultImage] = useState(false)
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
   const { setMemos } = useMemoStore()
-  const { refetch } = useGetCheckLogin({
-    enabled: false,
+  const { invalidateQuery } = useInvalidation()
+  const { refetch } = useApiQuery({
+    queryFn: checkLogin,
+    options: {
+      enabled: false,
+    },
   })
   const router = useRouter()
 
@@ -49,7 +53,7 @@ const Avatar = ({
               .then(() => {
                 addSnackBar('로그아웃 성공')
                 refetch() // checkLogin
-                queryClient.setQueryData(queryKeys.getAllMemo, null)
+                invalidateQuery(getAllMemo)
                 setMemos(dummyMemos)
                 router.replace(routes.root)
               })

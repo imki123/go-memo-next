@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
@@ -7,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
-import { postMemo } from '../apis/memo'
+import { postMemo, getAllMemo } from '../apis/memo'
 import { checkLogin } from '../apis/user'
 import Loading from '../components/atoms/Loading'
 import Reload from '../components/atoms/Reload'
@@ -16,9 +15,8 @@ import { MemoGrid } from '../components/layouts/MemoGrid'
 import Splash from '../components/layouts/Splash'
 import Header from '../components/molecules/Header'
 import { Input } from '../components/ui/input'
-import { useGetAllMemo } from '../hooks/useGetAllMemo'
 import useModal from '../hooks/useModal'
-import { queryKeys } from '../queryClient'
+import { useApiQuery } from '../lib/queryUtils'
 import { addSnackBar } from '../utils/util'
 import { useMemoStore, useSplashStore } from '../zustand'
 
@@ -34,8 +32,10 @@ export default function IndexPage() {
   const { openModal, Modal, setTitle } = useModal()
 
   // query
-  const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
-  const { data, refetch, isLoading, isFetching } = useGetAllMemo()
+  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
+  const { data, refetch, isLoading, isFetching } = useApiQuery({
+    queryFn: getAllMemo,
+  })
 
   // function
   const addMemo = async () => {

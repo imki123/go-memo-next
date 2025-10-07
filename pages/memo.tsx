@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { Button } from 'go-storybook'
 import { produce } from 'immer'
@@ -8,16 +7,16 @@ import OpenColor from 'open-color'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getMemo } from '../apis/memo'
+import { checkLogin } from '../apis/user'
 import Header from '../components/molecules/Header'
 import { Memo, MemoType } from '../components/molecules/Memo'
-import { useGetCheckLogin } from '../hooks/useGetCheckLogin'
-import { queryKeys } from '../queryClient'
+import { useApiQuery } from '../lib/queryUtils'
 import { HEADER_HEIGHT } from '../styles/GlobalStyle'
 import { useMemoHistoryStore, useMemoStore } from '../zustand'
 
 export default function MemoPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: isLogin } = useGetCheckLogin()
+  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
   const router = useRouter()
   const memoId = Number(router.query.memoId || 0)
 
@@ -36,19 +35,14 @@ export default function MemoPage() {
   const memo = memos?.find((item: MemoType) => item.memoId === memoId)
 
   // 서버에서 불러온 memo data
-  const { data, refetch, isError, isFetched, isFetching } = useQuery(
-    queryKeys.getMemo,
-    () => getMemo(memoId),
-    {
+  const { data, refetch, isError, isFetched, isFetching } = useApiQuery({
+    queryFn: getMemo,
+    payload: memoId,
+    options: {
       enabled: false,
       staleTime: 0,
-      cacheTime: 0,
-      onSuccess: (res) => {
-        if (memoId > 0) updateMemos(res)
-        else setNotFound(true)
-      },
-    }
-  )
+    },
+  })
   const title = memo?.text?.split('\n')[0].slice(0, 50)
 
   const {
@@ -82,6 +76,21 @@ export default function MemoPage() {
     },
     [memoId, memos, setMemos]
   )
+
+  // effect
+  useEffect(() => {
+    if (
+      data &&
+      memoId > 0 &&
+      typeof data === 'object' &&
+      data !== null &&
+      'memoId' in data
+    ) {
+      updateMemos(data)
+    } else if (data && memoId === 0) {
+      setNotFound(true)
+    }
+  }, [data, memoId, updateMemos])
 
   const clickBack = () => {
     backHistory()
@@ -123,13 +132,19 @@ export default function MemoPage() {
   // 히스토리에 첫 데이터 저장
   useEffect(() => {
     if (index === -1 && memoId) {
-      if (isFetched) {
-        pushHistory(data?.text || '')
+      if (
+        isFetched &&
+        data &&
+        typeof data === 'object' &&
+        data !== null &&
+        'text' in data
+      ) {
+        pushHistory(data.text || '')
       } else {
         pushHistory(memo?.text || '')
       }
     }
-  }, [data?.text, index, isFetched, memo?.text, memoId, pushHistory])
+  }, [data, index, isFetched, memo?.text, memoId, pushHistory])
 
   return (
     <>

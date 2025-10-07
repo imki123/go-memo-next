@@ -3,7 +3,6 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
@@ -11,7 +10,7 @@ import React, { ReactNode } from 'react'
 
 import { checkLogin } from '../../apis/user'
 import useModal from '../../hooks/useModal'
-import { queryKeys } from '../../queryClient'
+import { useApiQuery } from '../../lib/queryUtils'
 import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../../styles/GlobalStyle'
 import { useThemeStore } from '../../zustand'
 
@@ -35,7 +34,7 @@ export default function Header({
   const { theme, setState: setTheme } = useThemeStore()
 
   const router = useRouter()
-  const { data: isLogin } = useQuery(queryKeys.checkLogin, checkLogin)
+  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
   const { openModal, Modal, setTitle } = useModal()
   const right = rightItems.concat([
     <>

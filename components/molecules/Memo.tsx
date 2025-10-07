@@ -14,10 +14,10 @@ import React, {
   forwardRef,
 } from 'react'
 
-import { deleteMemo, patchMemo } from '../../apis/memo'
-import { useGetAllMemo } from '../../hooks/useGetAllMemo'
-import { useGetCheckLogin } from '../../hooks/useGetCheckLogin'
+import { deleteMemo, patchMemo, getAllMemo } from '../../apis/memo'
+import { checkLogin } from '../../apis/user'
 import useModal from '../../hooks/useModal'
+import { useApiQuery } from '../../lib/queryUtils'
 import { routes } from '../../pages'
 import { addSnackBar } from '../../utils/util'
 import { useMemoHistoryStore, useMemoStore } from '../../zustand'
@@ -55,10 +55,16 @@ function _Memo(
   const [time, setTime] = useState(
     dayjs(editedAt || createdAt).format('YYYY-MM-DD HH:mm')
   )
-  const { data: isLogin } = useGetCheckLogin()
+  const { data: isLogin } = useApiQuery({ queryFn: checkLogin })
   const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
   const { memos, setMemos } = useMemoStore()
-  const { refetch } = useGetAllMemo({ staleTime: 0, enabled: false })
+  const { refetch } = useApiQuery({
+    queryFn: getAllMemo,
+    options: {
+      staleTime: 0,
+      enabled: false,
+    },
+  })
   const { memoHistory, index, pushHistory } = useMemoHistoryStore()
 
   const updateMemo = useCallback(
