@@ -5,12 +5,11 @@
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build",
-    "export": "next export",
     "start": "next start",
     "lint": "next lint",
     "type": "tsc --noEmit --watch",
     "checkEnv": "node ./checkEnv.mjs",
-    "gh-deploy": "rm -rf node_modules/.cache && pnpm checkEnv && next build && next export && touch out/.nojekyll && git add -f out/ && git checkout -b temp-for-deploy-gh-pages && git commit -m \"Deploy Next.js to gh-pages\" && git subtree split --prefix out -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git checkout main && git branch -D temp-for-deploy-gh-pages"
+    "gh-deploy": "rm -rf node_modules/.cache && pnpm checkEnv && next build && touch out/.nojekyll && git add -f out/ && git checkout -b temp-for-deploy-gh-pages && git commit -m \"Deploy Next.js to gh-pages\" && git subtree split --prefix out -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git checkout main && git branch -D temp-for-deploy-gh-pages"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

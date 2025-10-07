@@ -14,6 +14,7 @@ try {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: 'export',
   basePath: '/go-memo-next',
   images: {
     domains: ['localhost', 'github.githubassets.com', '*'],
