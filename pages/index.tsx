@@ -16,6 +16,7 @@ import FloatingButtonsLayout from '../components/layouts/FloatingButtonsLayout'
 import { MemoGrid } from '../components/layouts/MemoGrid'
 import Splash from '../components/layouts/Splash'
 import Header from '../components/molecules/Header'
+import { Input } from '../components/ui/input'
 import { useGetAllMemo } from '../hooks/useGetAllMemo'
 import useModal from '../hooks/useModal'
 import { queryKeys } from '../queryClient'
@@ -110,11 +111,16 @@ export default function IndexPage() {
 
       <Header title='고영이 메모장🐈' backButton={false} />
 
+      <button className='bg-blue-500 text-white px-4 py-2 rounded transition-colors'>
+        테스트
+      </button>
+
       <ButtonDiv>
-        <StyledSearchInput
+        <Input
           placeholder='메모 검색'
           value={searchValue}
           onChange={(e) => setSearchValue(e.currentTarget.value)}
+          className='w-full max-w-[200px] flex-shrink'
         />
 
         <Button onClick={addMemo}>메모추가</Button>
@@ -142,18 +148,6 @@ const ButtonDiv = styled.div`
   align-items: center;
   margin: 20px;
   gap: 20px;
-`
-const StyledSearchInput = styled.input`
-  ${({ theme }) =>
-    theme.theme === 'dark' &&
-    `background: ${OpenColor.gray[9]};
-    color: ${OpenColor.gray[3]};
-    &::placeholder {
-      color: ${OpenColor.gray[5]};
-    }`};
-  width: 100%;
-  max-width: 200px;
-  flex-shrink: 1;
 `
 
 export const routes = {
