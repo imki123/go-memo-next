@@ -47,18 +47,14 @@ function useModal() {
             }}
           >
             <div
-              className={`flex flex-col justify-center items-center w-[80%] max-w-[400px] max-h-[80%] min-h-[120px] bg-white rounded-[20px] p-5 shadow-[0px_0px_4px_1px_rgba(0,0,0,0.5)] ${
-                theme === 'dark' ? 'bg-gray-900' : ''
+              className={`flex flex-col justify-center items-center w-[80%] max-w-[400px] max-h-[80%] min-h-[120px] rounded-[20px] p-5 shadow-[0px_0px_4px_1px_rgba(0,0,0,0.5)] ${
+                theme === 'dark' ? 'bg-gray-800' : 'bg-white'
               }`}
               onClick={(e) => e.stopPropagation()}
             >
-              {title && (
-                <div className='text-base font-bold break-all'>{title}</div>
-              )}
+              {title && <div className='font-bold break-all'>{title}</div>}
 
-              {description && (
-                <div className='text-base break-all'>{description}</div>
-              )}
+              {description && <div className='break-all'>{description}</div>}
 
               {buttons && (
                 <div className='flex justify-center items-center gap-3 mt-[30px]'>
