@@ -24,14 +24,10 @@ export default function IndexPage() {
   const router = useRouter()
 
   const { allMemos, setAllMemos } = useAllMemosStore()
-  const { initial, setState: setInitial } = useSplashStore()
-  const initialTimeoutId = useRef<NodeJS.Timeout>()
-  const [splashOpened, setSplashOpened] = useState(true)
+  const { visible: splashVisible, setVisible: setSplashVisible } =
+    useSplashStore()
+  const { openModal, closeModal, Modal, visible } = useModal()
 
-  // hook
-  const { openModal, Modal, setTitle } = useModal()
-
-  // query
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
   const {
     data: allMemosData,
@@ -46,7 +42,11 @@ export default function IndexPage() {
     },
   })
 
-  // function
+  const initialTimeoutId = useRef<NodeJS.Timeout>()
+
+  const [splashOpened, setSplashOpened] = useState(true)
+  const [errorTitle, setErrorTitle] = useState<string>()
+
   async function addMemo() {
     try {
       const response = await memoApi.postMemo()
@@ -62,8 +62,8 @@ export default function IndexPage() {
       } else {
         title = '메모 추가에 실패했습니다. 😥'
       }
+      setErrorTitle(title)
       openModal()
-      setTitle(title)
     }
   }
 
@@ -75,20 +75,21 @@ export default function IndexPage() {
   }, [isLogin, allMemosData, setAllMemos, isFetched])
 
   useEffect(() => {
-    // 스플래시 노출
-    if (initial === undefined) {
-      setInitial(true)
-      // 페이지 열리고 1초 후 스플래시 fadeout
-      initialTimeoutId.current = setTimeout(() => setInitial(false), 1 * 1000)
+    // NOTE: 스플래시 노출
+    if (splashVisible === undefined) {
+      setSplashVisible(true)
+      initialTimeoutId.current = setTimeout(
+        () => setSplashVisible(false),
+        1 * 1000
+      )
     }
-    if (initial === false) {
-      // 스플래시 fadeout되고 0.3초 후 제거
+    if (splashVisible === false) {
       setTimeout(() => setSplashOpened(false), 300)
     }
-  }, [initial, setInitial])
+  }, [splashVisible, setSplashVisible])
 
-  // 언마운트시 타임아웃 제거
   useEffect(() => {
+    // NOTE: 언마운트시 타임아웃 제거
     return () => {
       clearTimeout(initialTimeoutId.current)
     }
@@ -109,13 +110,13 @@ export default function IndexPage() {
     return memo.text?.includes(searchValue)
   })
 
-  if (initial === undefined) {
+  if (splashVisible === undefined) {
     return null
   }
 
   return (
     <>
-      {splashOpened && <Splash visible={initial} />}
+      {splashOpened && <Splash visible={splashVisible} />}
 
       <Header title='고영이 메모장🐈' backButton={false} />
 
@@ -147,7 +148,7 @@ export default function IndexPage() {
         />
       </FloatingButtonsLayout>
 
-      <Modal />
+      <Modal visible={visible} title={errorTitle} onClose={closeModal} />
     </>
   )
 }

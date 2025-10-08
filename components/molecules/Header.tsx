@@ -37,7 +37,7 @@ export default function Header({
 
   const router = useRouter()
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
-  const { openModal, Modal, setTitle } = useModal()
+  const { openModal, closeModal, Modal, visible } = useModal()
   const right = rightItems.concat([
     <>
       {theme === 'dark' ? (
@@ -63,7 +63,6 @@ export default function Header({
     <StyledLockOpenIcon
       onClick={() => {
         openModal()
-        setTitle('준비중입니다 😄')
       }}
     />,
     isLogin ? (
@@ -99,7 +98,7 @@ export default function Header({
           </RightItems>
         </HeaderWrapper>
       </HeaderFixed>
-      <Modal />
+      <Modal visible={visible} title='준비중입니다 😄' onClose={closeModal} />
     </>
   )
 }

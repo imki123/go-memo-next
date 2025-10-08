@@ -38,7 +38,7 @@ function _Memo(
   const router = useRouter()
 
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
-  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
+  const { openModal, closeModal, Modal, visible } = useModal()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const { fontSize } = useFontSizeStore()
 
@@ -95,31 +95,6 @@ function _Memo(
   function handleDeleteMemo(e: MouseEvent<SVGSVGElement>) {
     e.stopPropagation()
     openModal()
-    setTitle(`메모를 삭제하시겠습니까?`)
-    setButtons([
-      {
-        text: '취소',
-        onClick: closeModal,
-      },
-      {
-        text: '삭제',
-        onClick: async () => {
-          closeModal()
-          if (isLogin) {
-            try {
-              await memoApi.deleteMemo(memoId)
-              addSnackBar('메모 삭제 성공')
-              invalidateQuery({ queryFn: memoApi.getAllMemo })
-              if (!readOnly) router.replace(routes.root)
-            } catch (err) {
-              addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
-            }
-          } else {
-            deleteMemo(memoId)
-          }
-        },
-      },
-    ])
   }
 
   const memoTime = currentMemo
@@ -148,7 +123,35 @@ function _Memo(
         />
       </StyledMemo>
 
-      <Modal />
+      <Modal
+        visible={visible}
+        title='메모를 삭제하시겠습니까?'
+        buttons={[
+          {
+            text: '취소',
+            onClick: closeModal,
+          },
+          {
+            text: '삭제',
+            onClick: async () => {
+              closeModal()
+              if (isLogin) {
+                try {
+                  await memoApi.deleteMemo(memoId)
+                  addSnackBar('메모 삭제 성공')
+                  invalidateQuery({ queryFn: memoApi.getAllMemo })
+                  if (!readOnly) router.replace(routes.root)
+                } catch (err) {
+                  addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
+                }
+              } else {
+                deleteMemo(memoId)
+              }
+            },
+          },
+        ]}
+        onClose={closeModal}
+      />
     </>
   )
 }

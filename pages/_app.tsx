@@ -85,6 +85,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Head>
           <title>고영이메모장🐈</title>
           <meta name='description' content='next.js로 만들어진 간단한 메모장' />
+          <meta
+            // 키보드가 올라올 때 UI 자동 조정
+            name='viewport'
+            content='width=device-width, initial-scale=1.0, interactive-widget=resizes-content'
+          />
           <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
           <link rel='manifest' href='/go-memo-next/manifest.json' />
         </Head>

@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import { dummyMemos } from '../../apis/dummyMemos'
 import { memoApi } from '../../apis/memoApi'
-import { userApi, LoginResponseType } from '../../apis/userApi'
+import { LoginResponseType, userApi } from '../../apis/userApi'
 import useModal from '../../hooks/useModal'
 import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
@@ -20,57 +20,32 @@ const Avatar = ({
   avatar: LoginResponseType
   onClick?: () => void
 }) => {
-  const [defaultImage, setDefaultImage] = useState(false)
-  const { openModal, closeModal, Modal, setTitle, setButtons } = useModal()
-  const { setAllMemos: setMemos } = useAllMemosStore()
+  const router = useRouter()
+
+  const { openModal, closeModal, Modal, visible } = useModal()
+  const { setAllMemos } = useAllMemosStore()
   const { invalidateQuery } = useInvalidation()
+
   const { refetch } = useApiQuery({
     queryFn: userApi.checkLogin,
     options: {
       enabled: false,
     },
   })
-  const router = useRouter()
 
-  const click =
+  const [defaultImage, setDefaultImage] = useState(false)
+
+  const setUpAndOpenModal =
     onClick ||
     (() => {
       openModal()
-      setTitle('로그아웃 하시겠습니까?')
-      setButtons([
-        {
-          text: '취소',
-          onClick: () => {
-            closeModal()
-          },
-        },
-        {
-          text: '확인',
-          onClick: () => {
-            closeModal()
-            // 로그아웃
-            userApi
-              .logout()
-              .then(() => {
-                addSnackBar('로그아웃 성공')
-                refetch() // checkLogin
-                invalidateQuery({ queryFn: memoApi.getAllMemo })
-                setMemos(dummyMemos)
-                router.replace(routes.root)
-              })
-              .catch((err) => {
-                addSnackBar(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)
-              })
-          },
-        },
-      ])
     })
 
   return (
     <>
       <StyledAvatar>
         {defaultImage ? (
-          <DefaultImage onClick={click} />
+          <DefaultImage onClick={setUpAndOpenModal} />
         ) : (
           <Image
             unoptimized={true} // 외부 url
@@ -79,12 +54,48 @@ const Avatar = ({
             height='30'
             alt='avatar'
             onError={() => setDefaultImage(true)}
-            onClick={click}
+            onClick={setUpAndOpenModal}
           />
         )}
         <StyledName>{avatar.name}</StyledName>
       </StyledAvatar>
-      <Modal />
+
+      <Modal
+        visible={visible}
+        title='로그아웃 하시겠습니까?'
+        buttons={[
+          {
+            text: '취소',
+            onClick: () => {
+              closeModal()
+            },
+          },
+          {
+            text: '확인',
+            onClick: () => {
+              closeModal()
+
+              userApi
+                .logout()
+                .then(() => {
+                  addSnackBar('로그아웃 성공')
+
+                  refetch() // checkLogin
+
+                  invalidateQuery({ queryFn: memoApi.getAllMemo })
+
+                  setAllMemos(dummyMemos)
+
+                  router.replace(routes.root)
+                })
+                .catch((err) => {
+                  addSnackBar(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)
+                })
+            },
+          },
+        ]}
+        onClose={closeModal}
+      />
     </>
   )
 }
