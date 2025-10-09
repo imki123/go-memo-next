@@ -1,17 +1,13 @@
-import axios from 'axios'
+import { axiosWithCredentials } from './axios'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
-
-export const axiosWithCredentials = axios.create({
-  baseURL: BE_URL + '/memo/user',
-  withCredentials: true,
-})
+const baseUrl = '/memo/user'
 
 const urls = {
-  root: '/',
-  login: '/login',
-  logout: '/logout',
-  checkLogin: '/checkLogin',
+  root: `${baseUrl}/`,
+  login: `${baseUrl}/login`,
+  logout: `${baseUrl}/logout`,
+  checkLogin: `${baseUrl}/checkLogin`,
 }
 
 export const userApi = {

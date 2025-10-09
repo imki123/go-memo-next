@@ -1,17 +1,11 @@
-import axios from 'axios'
-
 import { MemoType } from '../components/Memo'
 
-import { BE_URL } from './userApi'
-
-const axiosWithCredentials = axios.create({
-  baseURL: BE_URL + '/memo/memo',
-  withCredentials: true,
-})
+import { axiosWithCredentials } from './axios'
+const baseUrl = '/memo/memo'
 
 const urls = {
-  root: '/',
-  allIds: '/allIds',
+  root: `${baseUrl}/`,
+  allIds: `${baseUrl}/allIds`,
 }
 
 export const memoApi = {
