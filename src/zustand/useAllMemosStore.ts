@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { create } from 'zustand/react'
 
 import { dummyMemos } from '../apis/dummyMemos'
-import { MemoType } from '../components/molecules/Memo'
+import { MemoType } from '../components/Memo'
 
 // 메모스토어
 export type AllMemoStateType = {

@@ -10,11 +10,11 @@ import React, { ReactNode } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
 
-import { userApi } from '../../apis/userApi'
-import useModal from '../../hooks/useModal'
-import { useApiQuery } from '../../lib/queryUtils'
-import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../../styles/GlobalStyle'
-import { useThemeStore } from '../../zustand/useThemeStore'
+import { userApi } from '../apis/userApi'
+import useModal from '../hooks/useModal'
+import { useApiQuery } from '../lib/queryUtils'
+import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../styles/GlobalStyle'
+import { useThemeStore } from '../zustand/useThemeStore'
 
 import Avatar from './Avatar'
 

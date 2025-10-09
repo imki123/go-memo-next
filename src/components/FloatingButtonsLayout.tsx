@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { ReactNode } from 'react'
 
-import { MAX_WIDTH, mediaBiggerThan } from '../../styles/GlobalStyle'
+import { MAX_WIDTH, mediaBiggerThan } from '../styles/GlobalStyle'
 
 /**
  * FloatingButtonsLayout 컴포넌트

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { MemoType } from '../components/molecules/Memo'
+import { MemoType } from '../components/Memo'
 
 import { BE_URL } from './userApi'
 

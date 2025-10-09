@@ -5,15 +5,15 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import React, { ChangeEvent, MouseEvent, forwardRef, useRef } from 'react'
 
-import { memoApi } from '../../apis/memoApi'
-import { userApi } from '../../apis/userApi'
-import useModal from '../../hooks/useModal'
-import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
-import { addSnackBar } from '../../utils/util'
-import { useAllMemosStore } from '../../zustand/useAllMemosStore'
-import { useFontSizeStore } from '../../zustand/useFontSizeStore'
-import { useMemoHistoryStore } from '../../zustand/useMemoHistoryStore'
+import { memoApi } from '../apis/memoApi'
+import { userApi } from '../apis/userApi'
+import useModal from '../hooks/useModal'
+import { useApiQuery, useInvalidation } from '../lib/queryUtils'
+import { addSnackBar } from '../utils/util'
+import { useAllMemosStore } from '../zustand/useAllMemosStore'
+import { useFontSizeStore } from '../zustand/useFontSizeStore'
+import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
 
 export type MemoType = {
   memoId: number

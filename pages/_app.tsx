@@ -7,13 +7,13 @@ import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { useEffect, useState } from 'react'
 
-import { BE_URL, userApi } from '../apis/userApi'
-import { queryClient } from '../queryClient'
-import GlobalStyle from '../styles/GlobalStyle'
-import '../styles/globals.css'
-import { initGoogle } from '../utils/googleLogin'
-import { addSnackBar } from '../utils/util'
-import { useThemeStore } from '../zustand/useThemeStore'
+import { BE_URL, userApi } from '../src/apis/userApi'
+import { queryClient } from '../src/lib/queryClient'
+import GlobalStyle from '../src/styles/GlobalStyle'
+import '../src/styles/globals.css'
+import { initGoogle } from '../src/utils/googleLogin'
+import { addSnackBar } from '../src/utils/util'
+import { useThemeStore } from '../src/zustand/useThemeStore'
 
 import { routes } from '.'
 
@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     userApi
       .checkLogin()
-      .then((res) => {
+      .then((res: any) => {
         if (res) {
           addSnackBar('로그인 성공 😄')
           router.replace(routes.root)
@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           addSnackBar('로그인 실패 😥')
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         addSnackBar('로그인 실패 😥<br/>' + JSON.stringify(err))
       })
       .finally(() => {

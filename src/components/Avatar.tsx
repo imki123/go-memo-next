@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useState } from 'react'
 
-import { dummyMemos } from '../../apis/dummyMemos'
-import { memoApi } from '../../apis/memoApi'
-import { LoginResponseType, userApi } from '../../apis/userApi'
-import useModal from '../../hooks/useModal'
-import { useApiQuery, useInvalidation } from '../../lib/queryUtils'
 import { routes } from '../../pages'
-import { addSnackBar } from '../../utils/util'
-import { useAllMemosStore } from '../../zustand/useAllMemosStore'
+import { dummyMemos } from '../apis/dummyMemos'
+import { memoApi } from '../apis/memoApi'
+import { LoginResponseType, userApi } from '../apis/userApi'
+import useModal from '../hooks/useModal'
+import { useApiQuery, useInvalidation } from '../lib/queryUtils'
+import { addSnackBar } from '../utils/util'
+import { useAllMemosStore } from '../zustand/useAllMemosStore'
 
 const Avatar = ({
   avatar,

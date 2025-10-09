@@ -5,20 +5,20 @@ import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { memoApi } from '../apis/memoApi'
-import { userApi } from '../apis/userApi'
-import Loading from '../components/atoms/Loading'
-import Reload from '../components/atoms/Reload'
-import FloatingButtonsLayout from '../components/layouts/FloatingButtonsLayout'
-import { MemoGrid } from '../components/layouts/MemoGrid'
-import Splash from '../components/layouts/Splash'
-import Header from '../components/molecules/Header'
-import { Input } from '../components/ui/input'
-import useModal from '../hooks/useModal'
-import { useApiQuery } from '../lib/queryUtils'
-import { addSnackBar } from '../utils/util'
-import { useAllMemosStore } from '../zustand/useAllMemosStore'
-import { useSplashStore } from '../zustand/useSplashStore'
+import { memoApi } from '../src/apis/memoApi'
+import { userApi } from '../src/apis/userApi'
+import FloatingButtonsLayout from '../src/components/FloatingButtonsLayout'
+import Header from '../src/components/Header'
+import Loading from '../src/components/Loading'
+import { MemoGrid } from '../src/components/MemoGrid'
+import Reload from '../src/components/Reload'
+import Splash from '../src/components/Splash'
+import { Input } from '../src/components/ui/input'
+import useModal from '../src/hooks/useModal'
+import { useApiQuery } from '../src/lib/queryUtils'
+import { addSnackBar } from '../src/utils/util'
+import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
+import { useSplashStore } from '../src/zustand/useSplashStore'
 
 export default function IndexPage() {
   const router = useRouter()
@@ -70,7 +70,7 @@ export default function IndexPage() {
   useEffect(() => {
     // NOTE: 서버에서 받아온 메모로 업데이트
     if (isLogin && allMemosData && isFetched) {
-      setAllMemos(allMemosData)
+      setAllMemos(allMemosData || [])
     }
   }, [isLogin, allMemosData, setAllMemos, isFetched])
 
@@ -124,7 +124,7 @@ export default function IndexPage() {
         <Input
           placeholder='메모 검색'
           value={searchValue}
-          onChange={(e) => setSearchValue(e.currentTarget.value)}
+          onChange={(e: any) => setSearchValue(e.currentTarget.value)}
           className='w-full max-w-[200px] flex-shrink'
         />
 

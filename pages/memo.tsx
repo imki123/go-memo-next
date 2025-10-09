@@ -5,15 +5,15 @@ import { useRouter } from 'next/router'
 import OpenColor from 'open-color'
 import { useEffect, useRef, useState } from 'react'
 
-import { memoApi } from '../apis/memoApi'
-import { userApi } from '../apis/userApi'
-import Header from '../components/molecules/Header'
-import { Memo, MemoType } from '../components/molecules/Memo'
-import { useApiQuery } from '../lib/queryUtils'
-import { HEADER_HEIGHT } from '../styles/GlobalStyle'
-import { useAllMemosStore } from '../zustand/useAllMemosStore'
-import { useFontSizeStore } from '../zustand/useFontSizeStore'
-import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
+import { memoApi } from '../src/apis/memoApi'
+import { userApi } from '../src/apis/userApi'
+import Header from '../src/components/Header'
+import { Memo, MemoType } from '../src/components/Memo'
+import { useApiQuery } from '../src/lib/queryUtils'
+import { HEADER_HEIGHT } from '../src/styles/GlobalStyle'
+import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
+import { useFontSizeStore } from '../src/zustand/useFontSizeStore'
+import { useMemoHistoryStore } from '../src/zustand/useMemoHistoryStore'
 
 export default function MemoPage() {
   const router = useRouter()
@@ -50,15 +50,15 @@ export default function MemoPage() {
     queryFn: memoApi.getMemo,
     payload: memoId,
     options: {
-      enabled: isLogin && memoId > 0,
+      enabled: !!(isLogin && memoId > 0),
     },
   })
 
   useEffect(() => {
     // NOTE: 메모 데이터 가져온 후 스토어 업데이트
     if (memoData && memoId && memoId > 0) {
-      setMemo(memoData)
-      pushHistory(memoData.text || '')
+      setMemo(memoData as MemoType)
+      pushHistory((memoData as MemoType).text || '')
     } else if (memoData && memoId === 0) {
       setNotFound(true)
     }
