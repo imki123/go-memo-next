@@ -9,7 +9,6 @@ import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
 import FloatingButtonsLayout from '../src/components/FloatingButtonsLayout'
 import Header from '../src/components/Header'
-import Loading from '../src/components/Loading'
 import { MemoGrid } from '../src/components/MemoGrid'
 import Reload from '../src/components/Reload'
 import Splash from '../src/components/Splash'
@@ -97,7 +96,7 @@ export default function IndexPage() {
 
   const sortedMemos = useMemo(
     () =>
-      [...(allMemos || [])]?.sort((a, b) => {
+      (allMemos || [])?.sort((a, b) => {
         const timeA = dayjs(a.editedAt).valueOf()
         const timeB = dayjs(b.editedAt).valueOf()
         return timeB - timeA
@@ -124,7 +123,7 @@ export default function IndexPage() {
         <Input
           placeholder='메모 검색'
           value={searchValue}
-          onChange={(e: any) => setSearchValue(e.currentTarget.value)}
+          onChange={(e) => setSearchValue(e.currentTarget.value)}
           className='w-full max-w-[200px] flex-shrink'
         />
 
@@ -132,7 +131,10 @@ export default function IndexPage() {
       </ButtonDiv>
 
       {isLoading ? (
-        <Loading />
+        <div className='flex flex-col items-center justify-center h-[200px]'>
+          <div>로딩 중...</div>
+          <div>서버 재시작 중에는 1분 정도 소요될 수 있습니다.</div>
+        </div>
       ) : (
         <MemoGrid
           memoData={filteredMemos.map((memo) => ({ memoId: memo.memoId }))}
