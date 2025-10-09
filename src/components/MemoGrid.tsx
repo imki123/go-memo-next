@@ -1,5 +1,3 @@
-import styled from '@emotion/styled'
-
 import { Memo } from './Memo'
 
 /**
@@ -15,19 +13,11 @@ type MemoGridModelType = {
 export function MemoGrid({ memoData }: MemoGridModelType) {
   return (
     <>
-      <Grid>
+      <div className='flex flex-wrap gap-5 px-5 pb-5'>
         {memoData?.map(({ memoId }) => (
           <Memo key={memoId} memoId={memoId} readOnly={true} />
         ))}
-      </Grid>
+      </div>
     </>
   )
 }
-
-const Grid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 40px 20px;
-  padding: 0 20px 20px;
-`

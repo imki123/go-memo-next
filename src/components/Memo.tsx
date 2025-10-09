@@ -1,16 +1,14 @@
-import styled from '@emotion/styled'
-import ClearIcon from '@mui/icons-material/Clear'
 import dayjs from 'dayjs'
+import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
-import OpenColor from 'open-color'
 import React, { ChangeEvent, MouseEvent, forwardRef, useRef } from 'react'
+import { toast } from 'sonner'
 
 import { routes } from '../../pages'
 import { memoApi } from '../apis/memoApi'
 import { userApi } from '../apis/userApi'
 import useModal from '../hooks/useModal'
 import { useApiQuery, useInvalidation } from '../lib/queryUtils'
-import { addSnackBar } from '../utils/util'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 import { useFontSizeStore } from '../zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
@@ -78,7 +76,7 @@ function _Memo(
           await memoApi.patchMemo(newMemo)
           invalidateQuery({ queryFn: memoApi.getAllMemo })
 
-          addSnackBar('수정완료')
+          toast.success('수정완료')
         } catch (error) {
           console.error('메모 수정 실패:', error)
         }
@@ -104,45 +102,57 @@ function _Memo(
     : ''
   return (
     <>
-      <StyledMemo
+      <div
         onClick={() => clickMemo(memoId)}
-        readOnly={readOnly}
-        fetching={fetching}
+        className={`relative min-w-[250px] bg-yellow-50 border-2 border-yellow-300 rounded-lg hover:border-yellow-500 active:border-yellow-500 ${
+          readOnly
+            ? 'h-[300px] cursor-pointer w-full sm:w-[calc(50%-10px)]'
+            : 'h-full min-h-[250px] w-full'
+        } ${
+          fetching ? 'animate-pulse' : ''
+        } dark:bg-yellow-900 dark:border-yellow-600`}
       >
-        <StyledMemoHeader>
+        <div className='absolute top-0 right-1 flex items-center text-xs text-gray-600 dark:text-gray-400'>
           {memoTime}
-          <StyledClearIcon onClick={handleDeleteMemo} />
-        </StyledMemoHeader>
+          <X
+            onClick={handleDeleteMemo}
+            className='ml-1 cursor-pointer text-red-600'
+            size={16}
+          />
+        </div>
 
-        <StyledTextarea
+        <textarea
           value={memoText}
           onChange={setMemoAndPushHistory}
           readOnly={readOnly}
           ref={forwardedRef}
-          fontSize={fontSize}
+          style={{ fontSize: fontSize }}
+          className={`w-full p-2 pt-6 border-0 outline-0 resize-none bg-transparent ${
+            readOnly ? 'h-full cursor-pointer' : 'h-full min-h-[200px]'
+          }`}
         />
-      </StyledMemo>
+      </div>
 
       <Modal
         visible={visible}
         title='메모를 삭제하시겠습니까?'
         buttons={[
           {
-            text: '취소',
+            children: '취소',
             onClick: closeModal,
           },
           {
-            text: '삭제',
+            children: '삭제',
             onClick: async () => {
               closeModal()
               if (isLogin) {
                 try {
                   await memoApi.deleteMemo(memoId)
-                  addSnackBar('메모 삭제 성공')
+                  toast.success('메모 삭제 성공')
                   invalidateQuery({ queryFn: memoApi.getAllMemo })
                   if (!readOnly) router.replace(routes.root)
                 } catch (err) {
-                  addSnackBar(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
+                  toast.error(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
                 }
               } else {
                 deleteMemo(memoId)
@@ -155,71 +165,3 @@ function _Memo(
     </>
   )
 }
-
-const StyledMemo = styled.div<{
-  readOnly?: boolean
-  fetching?: boolean
-  theme?: 'dark'
-}>`
-  position: relative;
-  flex: 1 0 250px;
-  height: 100%;
-  width: 100%;
-  min-height: 250px;
-  background: ${OpenColor.yellow[0]};
-  border: 2px solid ${OpenColor.yellow[3]};
-  border-radius: 8px;
-  padding-left: 10px;
-  :hover,
-  :active {
-    border: 2px solid ${OpenColor.yellow[5]};
-  }
-
-  ${({ readOnly }) =>
-    readOnly &&
-    `
-    padding-left: 10px;
-    height: auto;
-    cursor: pointer;
-  `}
-  ${({ fetching }) => fetching && `animation: skeleton 1s linear infinite;`}
-  ${({ theme }) =>
-    theme.theme === 'dark' &&
-    `
-    background: #292913;
-    border-color: #404030 !important;
-  `}
-`
-const StyledMemoHeader = styled.div`
-  position: absolute;
-  top: 0;
-  right: 4px;
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: ${OpenColor.gray[7]};
-  text-align: right;
-`
-const StyledClearIcon = styled(ClearIcon)`
-  color: ${OpenColor.red[8]};
-  margin-left: 4px;
-`
-const StyledTextarea = styled.textarea<{ fontSize?: number }>`
-  height: 100%;
-  padding-top: 18px;
-  width: 100%;
-  border: 0;
-  border-radius: 8px;
-  color: inherit;
-  background: inherit;
-  resize: none;
-  outline: none;
-  overflow: auto;
-  word-break: break-all;
-  ${({ fontSize }) =>
-    fontSize ? `font-size: ${fontSize}px;` : `font-size: 14px;`}
-  ${({ readOnly }) =>
-    readOnly &&
-    `cursor: pointer;
-    overflow: hidden;`}
-`

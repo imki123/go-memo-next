@@ -1,5 +1,3 @@
-import { css } from '@emotion/react'
-
 export function Space({
   height = 16,
   width = height,
@@ -9,10 +7,10 @@ export function Space({
 }) {
   return (
     <div
-      css={css`
-        height: ${height}px;
-        width: ${width}px;
-      `}
+      style={{
+        height: `${height}px`,
+        width: `${width}px`,
+      }}
     ></div>
   )
 }

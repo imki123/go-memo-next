@@ -1,16 +1,14 @@
-import styled from '@emotion/styled'
 import dayjs from 'dayjs'
-import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
-import OpenColor from 'open-color'
 import { useEffect, useRef, useState } from 'react'
+
+import { Button } from '@/components/ui/button'
 
 import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
 import Header from '../src/components/Header'
 import { Memo, MemoType } from '../src/components/Memo'
 import { useApiQuery } from '../src/lib/queryUtils'
-import { HEADER_HEIGHT } from '../src/styles/GlobalStyle'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { useFontSizeStore } from '../src/zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../src/zustand/useMemoHistoryStore'
@@ -92,25 +90,34 @@ export default function MemoPage() {
     <>
       <Header
         title={title}
+        backButtonSize={24}
         onTitleClick={() => {
           textareaRef.current?.scrollTo(0, 0)
         }}
       />
 
-      <StyledPageDiv>
+      <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
         {isError || (isLogin && notFound) ? (
-          <StyledCenter>메모 불러오기 실패 😥</StyledCenter>
+          <div className='text-center'>메모 불러오기 실패 😥</div>
         ) : (
           <>
-            <ButtonDiv>
-              <Button onClick={increaseFontSize}>글씨+</Button>
+            <div className='flex items-center gap-[10px] pt-[10px]'>
+              <Button onClick={increaseFontSize} size='sm' variant='secondary'>
+                글씨+
+              </Button>
 
-              <Button onClick={decreaseFontSize}>글씨-</Button>
+              <Button onClick={decreaseFontSize} size='sm' variant='secondary'>
+                글씨-
+              </Button>
 
-              <Button onClick={backHistory}>뒤로</Button>
+              <Button onClick={backHistory} size='sm' variant='secondary'>
+                뒤로
+              </Button>
 
-              <Button onClick={nextHistory}>앞으로</Button>
-            </ButtonDiv>
+              <Button onClick={nextHistory} size='sm' variant='secondary'>
+                앞으로
+              </Button>
+            </div>
 
             <Memo
               memoId={memoId || 0}
@@ -119,34 +126,7 @@ export default function MemoPage() {
             />
           </>
         )}
-      </StyledPageDiv>
+      </div>
     </>
   )
 }
-
-const StyledPageDiv = styled.div`
-  height: calc(100dvh - ${HEADER_HEIGHT}px - env(safe-area-inset-bottom));
-  padding: 0 15px 15px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`
-const StyledCenter = styled.div`
-  text-align: center;
-`
-
-const ButtonDiv = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 10px;
-  button {
-    font-size: 10px;
-    width: 40px;
-    height: 30px;
-    padding: 0;
-    background: ${OpenColor.yellow[7]};
-  }
-`

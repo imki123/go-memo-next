@@ -1,13 +1,7 @@
-import styled from '@emotion/styled'
-
 /**
  * Password 컴포넌트
  * @params
  */
-function Password() {
-  return <StyledPassword>Password</StyledPassword>
+export function Password() {
+  return <div>Password</div>
 }
-
-export default Password
-
-const StyledPassword = styled.div``

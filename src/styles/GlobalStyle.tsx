@@ -1,7 +1,5 @@
 import 'pretendard/dist/web/variable/pretendardvariable.css'
 
-import { Global, css } from '@emotion/react'
-import OpenColor from 'open-color'
 import { useEffect } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
@@ -12,64 +10,6 @@ export const HEADER_HEIGHT = 60
 // 최대 너비
 export const MAX_WIDTH = 800
 
-// 드래그, 선택 막아주는 스타일
-export const noSelect = css`
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-`
-
-// media 유틸
-export const mediaBiggerThan = (
-  size: number,
-  css: string,
-  isBigger = true,
-  isWidth = true
-) => {
-  let mediaType = 'min-width'
-  if (isBigger && !isWidth) mediaType = 'min-height'
-  else if (!isBigger && isWidth) mediaType = 'max-width'
-  else if (!isBigger && !isWidth) mediaType = 'max-height'
-  return `
-    @media (${mediaType}: ${size}px) {
-      ${css};
-    }
-  `
-}
-
-function setSkeleton() {
-  // 애니메이션 설정
-  return css`
-    @keyframes skeleton {
-      0% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.3;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-  `
-}
-
-function setGlobalDarkTheme(theme: 'dark' | undefined) {
-  // 다크 테마 설정
-  return theme === 'dark'
-    ? css`
-        html,
-        body,
-        #__next {
-          background: ${OpenColor.gray[9]};
-          color: ${OpenColor.gray[3]};
-        }
-      `
-    : ''
-}
 export default function GlobalStyle() {
   // 로컬 테마
   const { theme: storeTheme, setState: setStoreTheme } = useThemeStore()
@@ -88,104 +28,19 @@ export default function GlobalStyle() {
       localStorageKeys.memoTheme
     ) as 'dark' | undefined
     setStoreTheme(localTheme)
-    setMetaThemeColor(localTheme === 'dark' ? OpenColor.gray[9] : 'white')
+    setMetaThemeColor(localTheme === 'dark' ? '#111827' : 'white')
   }, [setStoreTheme])
 
   useEffect(() => {
-    setMetaThemeColor(storeTheme === 'dark' ? OpenColor.gray[9] : 'white')
+    setMetaThemeColor(storeTheme === 'dark' ? '#111827' : 'white')
+    
+    // 다크 테마 클래스 적용
+    if (storeTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
   }, [storeTheme])
 
-  return (
-    <Global
-      styles={css`
-        ${setSkeleton()}
-
-        * {
-          font-family: 'Pretendard Variable', Pretendard, -apple-system,
-            BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
-            'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
-            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
-
-          box-sizing: border-box;
-          ::-webkit-scrollbar {
-            width: 5px;
-            border-radius: 3px;
-          }
-          ::-webkit-scrollbar-thumb {
-            background: ${OpenColor.yellow[5]};
-            border-radius: 3px;
-          }
-        }
-
-        html {
-          width: 100vw; // 스크롤바 때문에 쉬프팅 생겨서 고정
-        }
-
-        html,
-        body {
-          height: 100%;
-        }
-
-        #__next {
-          background: white;
-        }
-
-        html,
-        body,
-        #__next {
-          min-height: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          position: relative;
-        }
-
-        html {
-          ${mediaBiggerThan(
-            MAX_WIDTH,
-            `
-              background: ${OpenColor.blue[0]};
-            `
-          )}
-        }
-
-        body,
-        button,
-        textarea {
-          font-size: 14px;
-        }
-
-        body {
-          width: 100vw;
-          overflow-x: hidden;
-          ${mediaBiggerThan(
-            MAX_WIDTH,
-            `min-height: 100vh;
-              max-width: ${MAX_WIDTH}px;
-              margin: auto;
-              background: white;
-            `
-          )}
-        }
-
-        a {
-          text-decoration: underline;
-          color: ${OpenColor.blue[7]};
-          font-size: inherit;
-        }
-
-        button,
-        a {
-          cursor: pointer;
-        }
-
-        button,
-        img {
-          ${noSelect}
-        }
-
-        ${setGlobalDarkTheme(storeTheme)}
-      `}
-    />
-  )
+  return null
 }

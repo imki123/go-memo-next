@@ -1,4 +1,3 @@
-import styled from '@emotion/styled'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
@@ -18,25 +17,11 @@ export default function NotFound404() {
   }, [router])
 
   return (
-    <CenterDiv>
+    <div className="flex flex-col gap-5 justify-center items-center fixed top-0 bottom-0 left-0 right-0 text-xl">
       <div>404 | Not Found Page.</div>
       <Link href={routes.root} replace>
         Go home
       </Link>
-    </CenterDiv>
+    </div>
   )
 }
-
-const CenterDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  font-size: 20px;
-`

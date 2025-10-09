@@ -1,19 +1,13 @@
-import styled from '@emotion/styled'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import DarkModeIcon from '@mui/icons-material/DarkMode'
-import LightModeIcon from '@mui/icons-material/LightMode'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
+import { ChevronLeft, Lock, Moon, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import OpenColor from 'open-color'
-import React, { ReactNode } from 'react'
+import { Children, ReactNode } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
 
 import { userApi } from '../apis/userApi'
 import useModal from '../hooks/useModal'
 import { useApiQuery } from '../lib/queryUtils'
-import { HEADER_HEIGHT, MAX_WIDTH, noSelect } from '../styles/GlobalStyle'
 import { useThemeStore } from '../zustand/useThemeStore'
 
 import Avatar from './Avatar'
@@ -22,6 +16,7 @@ type HeaderType = {
   fixed?: boolean
   title?: string | number
   backButton?: boolean
+  backButtonSize?: number
   rightItems?: ReactNode[]
   onTitleClick?: () => void
 }
@@ -29,6 +24,7 @@ export default function Header({
   fixed = true,
   title,
   backButton = true,
+  backButtonSize = 20,
   rightItems = [],
   onTitleClick,
 }: HeaderType) {
@@ -41,130 +37,82 @@ export default function Header({
   const right = rightItems.concat([
     <>
       {theme === 'dark' ? (
-        <DarkModeIcon
-          fontSize='small'
+        <Moon
+          size={20}
           onClick={() => {
             setTheme(undefined)
             window.localStorage.removeItem(localStorageKeys.memoTheme)
           }}
-          style={{ cursor: 'pointer' }}
+          className='cursor-pointer'
         />
       ) : (
-        <LightModeIcon
-          fontSize='small'
+        <Sun
+          size={20}
           onClick={() => {
             setTheme('dark')
             window.localStorage.setItem(localStorageKeys.memoTheme, 'dark')
           }}
-          style={{ cursor: 'pointer' }}
+          className='cursor-pointer'
         />
       )}
     </>,
-    <StyledLockOpenIcon
+    <Lock
+      size={20}
       onClick={() => {
         openModal()
       }}
+      className='cursor-pointer'
     />,
     isLogin ? (
       <Avatar avatar={isLogin} />
     ) : (
-      <LinkWrapper>
-        <Link href='/login' key='login'>
+      <span>
+        <Link
+          href='/login'
+          key='login'
+          className='whitespace-nowrap text-indigo-600 no-underline font-inherit text-sm'
+        >
           로그인
         </Link>
-      </LinkWrapper>
+      </span>
     ),
   ])
 
   return (
     <>
-      {fixed && <HeaderPadding />}
-      <HeaderFixed fixed={fixed}>
-        <HeaderWrapper>
-          <LeftItems onClick={() => window.scrollTo(0, 0)}>
+      {fixed && <div className='h-[60px]' />}
+      <div
+        className={`fixed z-10 top-0 left-1/2 -translate-x-1/2 h-[60px] w-screen max-w-[800px] mx-auto ${
+          !fixed ? 'relative' : ''
+        }`}
+      >
+        <div
+          className={`h-[calc(100%-4px)] flex items-center justify-between gap-5 p-5 font-bold shadow-md bg-white dark:bg-gray-900 ${
+            !fixed ? 'relative' : ''
+          }`}
+        >
+          <div
+            className='flex-shrink-0 select-none cursor-pointer flex items-center gap-2'
+            onClick={() => window.scrollTo(0, 0)}
+          >
             {backButton && (
-              <StyledArrowBackIosNewIcon
-                fontSize='inherit'
+              <ChevronLeft
+                size={backButtonSize}
                 onClick={router.back}
+                className='hover:cursor-pointer'
               />
             )}
-            <StyledTitleSpan onClick={() => onTitleClick?.()}>
+            <span className='flex-shrink-0' onClick={() => onTitleClick?.()}>
               {title}
-            </StyledTitleSpan>
-          </LeftItems>
+            </span>
+          </div>
 
-          <RightItems>
-            {React.Children.toArray(right?.map((item) => item))}
-          </RightItems>
-        </HeaderWrapper>
-      </HeaderFixed>
+          <div className='flex flex-1 items-center justify-end gap-4'>
+            {Children.toArray(right?.map((item) => item))}
+          </div>
+        </div>
+      </div>
       <Modal visible={visible} title='준비중입니다 😄' onClose={closeModal} />
     </>
   )
 }
-
-const HeaderPadding = styled.div`
-  height: ${HEADER_HEIGHT}px;
-`
-const HeaderFixed = styled.div<{ fixed?: boolean }>`
-  position: fixed;
-  z-index: 10;
-  top: 0;
-  left: calc(50vw);
-  transform: translateX(-50%);
-  height: ${HEADER_HEIGHT}px;
-  width: 100vw;
-  max-width: ${MAX_WIDTH}px;
-  margin: 0 auto;
-`
-const HeaderWrapper = styled.div<{ fixed?: boolean }>`
-  height: calc(100% - 4px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 20px;
-  font-weight: bold;
-  box-shadow: 0 1px 5px rgba(57, 63, 72, 0.3);
-  background: white;
-  ${({ fixed }) => !fixed && `position: relative;`}
-  ${({ theme }) =>
-    theme.theme === 'dark' && `background: ${OpenColor.gray[9]};`}
-`
-const LeftItems = styled.div`
-  flex-shrink: 0;
-  ${noSelect}
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const StyledTitleSpan = styled.span`
-  flex-shrink: 0;
-`
-
-const RightItems = styled.div`
-  display: flex;
-  flex-shrink: 1;
-  align-items: center;
-  gap: 16px;
-`
-const StyledArrowBackIosNewIcon = styled(ArrowBackIosNewIcon)`
-  :hover {
-    cursor: pointer;
-  }
-`
-export const LinkWrapper = styled.span`
-  a {
-    white-space: nowrap;
-    color: ${OpenColor.indigo[6]};
-    text-decoration: none;
-    font: inherit;
-    font-size: 14px;
-  }
-`
-
-export const StyledLockOpenIcon = styled(LockOpenIcon)`
-  cursor: pointer;
-`

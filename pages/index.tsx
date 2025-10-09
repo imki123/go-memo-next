@@ -1,9 +1,10 @@
-import styled from '@emotion/styled'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
-import { Button } from 'go-storybook'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
+
+import { Button } from '@/components/ui/button'
 
 import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
@@ -15,9 +16,14 @@ import Splash from '../src/components/Splash'
 import { Input } from '../src/components/ui/input'
 import useModal from '../src/hooks/useModal'
 import { useApiQuery } from '../src/lib/queryUtils'
-import { addSnackBar } from '../src/utils/util'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { useSplashStore } from '../src/zustand/useSplashStore'
+
+export const routes = {
+  root: '/',
+  login: '/login',
+  memo: '/memo',
+}
 
 export default function IndexPage() {
   const router = useRouter()
@@ -50,8 +56,8 @@ export default function IndexPage() {
     try {
       const response = await memoApi.postMemo()
       router.push(`/memo?memoId=${response.memoId}`)
-      await refetch() // refetch 완료 후 스낵바 표시
-      addSnackBar('메모 추가 성공')
+      await refetch() // refetch 완료 후 토스트 표시
+      toast.success('메모 추가 성공')
     } catch (err) {
       console.error(err)
       const error = err as AxiosError
@@ -96,7 +102,7 @@ export default function IndexPage() {
 
   const sortedMemos = useMemo(
     () =>
-      (allMemos || [])?.sort((a, b) => {
+      [...(allMemos || [])].sort((a, b) => {
         const timeA = dayjs(a.editedAt).valueOf()
         const timeB = dayjs(b.editedAt).valueOf()
         return timeB - timeA
@@ -119,7 +125,7 @@ export default function IndexPage() {
 
       <Header title='고영이 메모장🐈' backButton={false} />
 
-      <ButtonDiv>
+      <div className='flex justify-between items-center mx-5 gap-5 my-4'>
         <Input
           placeholder='메모 검색'
           value={searchValue}
@@ -127,8 +133,10 @@ export default function IndexPage() {
           className='w-full max-w-[200px] flex-shrink'
         />
 
-        <Button onClick={addMemo}>메모추가</Button>
-      </ButtonDiv>
+        <Button onClick={addMemo} size='sm'>
+          메모추가
+        </Button>
+      </div>
 
       {isLoading ? (
         <div className='flex flex-col items-center justify-center h-[200px]'>
@@ -145,7 +153,8 @@ export default function IndexPage() {
         <Reload
           isReloading={isFetching}
           onClick={() => {
-            if (!isFetching) refetch().then(() => addSnackBar('새로고침 성공'))
+            if (!isFetching)
+              refetch().then(() => toast.success('새로고침 성공'))
           }}
         />
       </FloatingButtonsLayout>
@@ -153,18 +162,4 @@ export default function IndexPage() {
       <Modal visible={visible} title={errorTitle} onClose={closeModal} />
     </>
   )
-}
-
-const ButtonDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px;
-  gap: 20px;
-`
-
-export const routes = {
-  root: '/',
-  login: '/login',
-  memo: '/memo',
 }

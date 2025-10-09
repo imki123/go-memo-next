@@ -1,17 +1,14 @@
-import Button, { ButtonTypes } from 'go-storybook/dist/component/atom/Button'
-import { ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
 export type ModalProps = {
   visible: boolean
   title?: ReactNode
   description?: ReactNode
-  buttons?: {
-    text: string
-    onClick: () => void
-  }[]
+  buttons?: ComponentProps<typeof Button>[]
   onClose: () => void
 }
 
@@ -58,16 +55,9 @@ function useModal() {
 
               {buttons && (
                 <div className='flex justify-center items-center gap-3 mt-[30px]'>
-                  {buttons?.map(({ text, onClick }, i) => (
-                    <Button
-                      buttonType={
-                        i === 0 ? ButtonTypes.Secondary : ButtonTypes.Primary
-                      }
-                      key={text}
-                      onClick={onClick}
-                      cssText='font-size: 14px;'
-                    >
-                      {text}
+                  {buttons?.map(({ children, onClick }, i) => (
+                    <Button key={i} onClick={onClick} className='text-sm'>
+                      {children}
                     </Button>
                   ))}
                 </div>
