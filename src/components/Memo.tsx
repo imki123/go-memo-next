@@ -127,8 +127,10 @@ function _Memo(
           readOnly={readOnly}
           ref={forwardedRef}
           style={{ fontSize: fontSize }}
-          className={`w-full p-2 pt-6 border-0 outline-0 resize-none bg-transparent ${
-            readOnly ? 'h-full cursor-pointer' : 'h-full min-h-[200px]'
+          className={`w-full p-2 pt-3 border-0 outline-0 resize-none bg-transparent ${
+            readOnly
+              ? 'h-full cursor-pointer overflow-hidden'
+              : 'h-full min-h-[200px]'
           }`}
         />
       </div>
