@@ -1,3 +1,5 @@
+import { useLoginStore } from '@/zustand/useLoginStore'
+
 import { axiosWithCredentials } from './axios'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
@@ -12,9 +14,29 @@ const urls = {
 
 export const userApi = {
   async login(credential: string, afterLogin?: () => void) {
-    const res = await axiosWithCredentials.post(urls.login, { credential })
-    const data = res.data as LoginResponseType
+    useLoginStore.getState().setIsLoggingIn(true)
+    useLoginStore.getState().setSecondsToLogin(0)
+
+    const loginIntervalId = setInterval(() => {
+      useLoginStore
+        .getState()
+        .setSecondsToLogin(useLoginStore.getState().secondsToLogin + 1)
+    }, 1000)
+
+    useLoginStore.getState().setLoginIntervalId(loginIntervalId)
+
+    const res = await axiosWithCredentials
+      .post(urls.login, { credential })
+      .finally(() => {
+        clearInterval(loginIntervalId)
+        useLoginStore.getState().setLoginIntervalId(undefined)
+        useLoginStore.getState().setSecondsToLogin(0)
+        useLoginStore.getState().setIsLoggingIn(false)
+      })
+
     afterLogin?.()
+
+    const data = res.data as LoginResponseType
     return data
   },
 

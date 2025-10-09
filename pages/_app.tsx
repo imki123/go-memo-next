@@ -5,15 +5,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import { BE_URL, userApi } from '../src/apis/userApi'
-import { queryClient } from '../src/lib/queryClient'
-import GlobalStyle from '../src/styles/GlobalStyle'
-import '../src/styles/globals.css'
-import { initGoogle } from '../src/utils/googleLogin'
-import { addSnackBar } from '../src/utils/util'
-import { useThemeStore } from '../src/zustand/useThemeStore'
+import { BE_URL, userApi } from '@/apis/userApi'
+import { queryClient } from '@/lib/queryClient'
+import GlobalStyle from '@/styles/GlobalStyle'
+import '@/styles/globals.css'
+import { initGoogle } from '@/utils/googleLogin'
+import { addSnackBar } from '@/utils/util'
+import { useThemeStore } from '@/zustand/useThemeStore'
 
 import { routes } from '.'
 
@@ -32,14 +32,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('>>> MyApp:', router.pathname)
   }, [router.pathname])
 
-  // 로그인 로직
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
   function afterLogin() {
-    setIsLoggingIn(true)
-
     userApi
       .checkLogin()
-      .then((res: any) => {
+      .then((res) => {
         if (res) {
           addSnackBar('로그인 성공 😄')
           router.replace(routes.root)
@@ -47,11 +43,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           addSnackBar('로그인 실패 😥')
         }
       })
-      .catch((err: any) => {
+      .catch((err) => {
         addSnackBar('로그인 실패 😥<br/>' + JSON.stringify(err))
-      })
-      .finally(() => {
-        setIsLoggingIn(false)
       })
   }
 
@@ -93,12 +86,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
           <link rel='manifest' href='/go-memo-next/manifest.json' />
         </Head>
-
-        {isLoggingIn && (
-          <div>
-            로그인 중... 서버가 재시작될 경우 최대 5분정도 소요될 수 있습니다.
-          </div>
-        )}
 
         <Component {...pageProps} />
 
