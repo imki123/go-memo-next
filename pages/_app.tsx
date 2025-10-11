@@ -45,23 +45,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       })
   }
 
-  useEffect(() => {
-    function updateHeight() {
-      if (window.visualViewport) {
-        document.documentElement.style.height = `${window.visualViewport.height}px`
-        document.body.style.height = `${window.visualViewport.height}px`
-      }
-    }
-
-    updateHeight() // 초기 실행
-    window.visualViewport?.addEventListener('resize', updateHeight)
-    return () => {
-      window.visualViewport?.removeEventListener('resize', updateHeight)
-      document.documentElement.style.height = ''
-      document.body.style.height = ''
-    }
-  }, [])
-
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalStyle />

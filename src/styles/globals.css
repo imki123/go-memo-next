@@ -90,6 +90,7 @@
     margin: 0;
     padding: 0;
     position: relative;
+    overflow-x: hidden;
   }
 
   html {
@@ -102,11 +103,6 @@
   button,
   textarea {
     font-size: 14px;
-  }
-
-  body {
-    width: 100vw;
-    overflow-x: hidden;
   }
 
   @media (min-width: 800px) {
@@ -149,10 +145,18 @@
     -ms-user-select: none;
     user-select: none;
   }
+
+  .no-drag {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+  }
 }
 
 /* 다크 테마 */
-.dark html,
+html.dark,
 .dark body,
 .dark #__next {
   background: #111827;

@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
-export type ModalProps = {
+export type CommonModalProps = {
   visible: boolean
   title?: ReactNode
   description?: ReactNode
@@ -12,17 +12,19 @@ export type ModalProps = {
   onClose: () => void
 }
 
-function useModal() {
+function useCommonModal() {
   const [visible, setVisible] = useState(false)
   const { theme } = useThemeStore()
 
   function openModal() {
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     setVisible(true)
   }
 
   function closeModal() {
-    document.body.removeAttribute('style')
+    document.body.style.overflow = ''
+    document.documentElement.style.overflow = ''
     setVisible(false)
   }
 
@@ -32,7 +34,7 @@ function useModal() {
     description,
     buttons,
     onClose,
-  }: ModalProps) {
+  }: CommonModalProps) {
     const ModalContent = () => (
       <>
         {visible && (
@@ -45,7 +47,7 @@ function useModal() {
           >
             <div
               className={`flex flex-col justify-center items-center w-[80%] max-w-[400px] max-h-[80%] min-h-[120px] rounded-[20px] p-5 shadow-[0px_0px_4px_1px_rgba(0,0,0,0.5)] ${
-                theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+                theme === 'dark' ? 'bg-gray-700' : 'bg-white'
               }`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -56,7 +58,12 @@ function useModal() {
               {buttons && (
                 <div className='flex justify-center items-center gap-3 mt-[30px]'>
                   {buttons?.map(({ children, onClick }, i) => (
-                    <Button key={i} onClick={onClick} className='text-sm'>
+                    <Button
+                      key={i}
+                      onClick={onClick}
+                      className='text-sm'
+                      variant={i === 0 ? 'secondary' : 'default'}
+                    >
                       {children}
                     </Button>
                   ))}
@@ -89,4 +96,4 @@ function useModal() {
   }
 }
 
-export default useModal
+export default useCommonModal

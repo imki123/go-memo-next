@@ -7,7 +7,7 @@ import { routes } from '../../pages'
 import { dummyMemos } from '../apis/dummyMemos'
 import { memoApi } from '../apis/memoApi'
 import { LoginResponseType, userApi } from '../apis/userApi'
-import useModal from '../hooks/useModal'
+import useCommonModal from '../hooks/useCommonModal'
 import { useApiQuery, useInvalidation } from '../lib/queryUtils'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 
@@ -20,7 +20,7 @@ const Avatar = ({
 }) => {
   const router = useRouter()
 
-  const { openModal, closeModal, Modal, visible } = useModal()
+  const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { setAllMemos } = useAllMemosStore()
   const { invalidateQuery } = useInvalidation()
 

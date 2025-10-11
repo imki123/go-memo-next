@@ -5,16 +5,18 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { PasswordScreen } from '@/feature/home/PasswordScreen'
+import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 
 import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
-import FloatingButtonsLayout from '../src/components/FloatingButtonsLayout'
 import Header from '../src/components/Header'
-import { MemoGrid } from '../src/components/MemoGrid'
-import ReloadButton from '../src/components/ReloadButton'
-import Splash from '../src/components/Splash'
 import { Input } from '../src/components/ui/input'
-import useModal from '../src/hooks/useModal'
+import FloatingButtonsLayout from '../src/feature/home/FloatingButtonsLayout'
+import { MemoGrid } from '../src/feature/home/MemoGrid'
+import ReloadButton from '../src/feature/home/ReloadButton'
+import { SplashScreen } from '../src/feature/home/SplashScreen'
+import useCommonModal from '../src/hooks/useCommonModal'
 import { useApiQuery } from '../src/lib/queryUtils'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { useSplashStore } from '../src/zustand/useSplashStore'
@@ -31,7 +33,8 @@ export default function IndexPage() {
   const { allMemos, setAllMemos } = useAllMemosStore()
   const { visible: splashVisible, setVisible: setSplashVisible } =
     useSplashStore()
-  const { openModal, closeModal, Modal, visible } = useModal()
+  const { openModal, closeModal, Modal, visible } = useCommonModal()
+  const { passwordScreenOpened } = usePasswordScreenStore()
 
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
   const {
@@ -121,7 +124,9 @@ export default function IndexPage() {
 
   return (
     <>
-      {splashOpened && <Splash visible={splashVisible} />}
+      {splashOpened && <SplashScreen visible={splashVisible} />}
+
+      {passwordScreenOpened && <PasswordScreen />}
 
       <Header title='고영이 메모장🐈' backButton={false} />
 

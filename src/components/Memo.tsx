@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { routes } from '../../pages'
 import { memoApi } from '../apis/memoApi'
 import { userApi } from '../apis/userApi'
-import useModal from '../hooks/useModal'
+import useCommonModal from '../hooks/useCommonModal'
 import { useApiQuery, useInvalidation } from '../lib/queryUtils'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 import { useFontSizeStore } from '../zustand/useFontSizeStore'
@@ -36,7 +36,7 @@ function _Memo(
   const router = useRouter()
 
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
-  const { openModal, closeModal, Modal, visible } = useModal()
+  const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const { fontSize } = useFontSizeStore()
 

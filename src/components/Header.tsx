@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 import { Children, ReactNode } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
+import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 
 import { userApi } from '../apis/userApi'
-import useModal from '../hooks/useModal'
+import useCommonModal from '../hooks/useCommonModal'
 import { useApiQuery } from '../lib/queryUtils'
 import { useThemeStore } from '../zustand/useThemeStore'
 
@@ -29,12 +30,14 @@ export default function Header({
   onTitleClick,
 }: HeaderType) {
   // 테마 지정
-  const { theme, setState: setTheme } = useThemeStore()
+  const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
-  const { openModal, closeModal, Modal, visible } = useModal()
-  const right = rightItems.concat([
+  const { openModal, closeModal, Modal, visible } = useCommonModal()
+  const { openPasswordScreen } = usePasswordScreenStore()
+
+  const defaultRightItems = [
     <>
       {theme === 'dark' ? (
         <Moon
@@ -76,13 +79,15 @@ export default function Header({
         </Link>
       </span>
     ),
-  ])
+  ]
+
+  const allRightItems = rightItems.concat(defaultRightItems)
 
   return (
     <>
       {fixed && <div className='h-[60px]' />}
       <div
-        className={`fixed z-10 top-0 left-1/2 -translate-x-1/2 h-[60px] w-screen max-w-[800px] mx-auto ${
+        className={`fixed z-10 top-0 left-1/2 -translate-x-1/2 h-[60px] w-full max-w-[800px] mx-auto ${
           !fixed ? 'relative' : ''
         }`}
       >
@@ -108,11 +113,31 @@ export default function Header({
           </div>
 
           <div className='flex flex-1 items-center justify-end gap-4'>
-            {Children.toArray(right?.map((item) => item))}
+            {Children.toArray(allRightItems?.map((item) => item))}
           </div>
         </div>
       </div>
-      <Modal visible={visible} title='준비중입니다 😄' onClose={closeModal} />
+
+      <Modal
+        visible={visible}
+        onClose={closeModal}
+        title='잠금 비밀번호를 설정하시겠어요?'
+        buttons={[
+          {
+            children: '취소',
+            onClick: () => {
+              closeModal()
+            },
+          },
+          {
+            children: '설정',
+            onClick: () => {
+              closeModal()
+              openPasswordScreen('setup')
+            },
+          },
+        ]}
+      />
     </>
   )
 }
