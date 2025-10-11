@@ -11,7 +11,7 @@ import { userApi } from '../src/apis/userApi'
 import FloatingButtonsLayout from '../src/components/FloatingButtonsLayout'
 import Header from '../src/components/Header'
 import { MemoGrid } from '../src/components/MemoGrid'
-import Reload from '../src/components/Reload'
+import ReloadButton from '../src/components/ReloadButton'
 import Splash from '../src/components/Splash'
 import { Input } from '../src/components/ui/input'
 import useModal from '../src/hooks/useModal'
@@ -150,7 +150,7 @@ export default function IndexPage() {
       )}
 
       <FloatingButtonsLayout>
-        <Reload
+        <ReloadButton
           isReloading={isFetching}
           onClick={() => {
             if (!isFetching)
