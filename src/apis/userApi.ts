@@ -10,6 +10,8 @@ const urls = {
   login: `${baseUrl}/login`,
   logout: `${baseUrl}/logout`,
   checkLogin: `${baseUrl}/checkLogin`,
+  setLock: `${baseUrl}/setLock`,
+  unlock: `${baseUrl}/unlock`,
 }
 
 export const userApi = {
@@ -49,6 +51,16 @@ export const userApi = {
     const res = await axiosWithCredentials.post(urls.checkLogin)
     return res.data as LoginResponseType
   },
+
+  async setLock(password: string) {
+    const res = await axiosWithCredentials.post(urls.setLock, { password })
+    return res.data
+  },
+
+  async unlock(password: string) {
+    const res = await axiosWithCredentials.post(urls.unlock, { password })
+    return res.data
+  },
 }
 
 export type LoginResponseType = {
@@ -56,4 +68,5 @@ export type LoginResponseType = {
   sub: string
   name?: string
   picture?: string
+  locked?: boolean
 }

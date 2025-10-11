@@ -1,12 +1,10 @@
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { PasswordScreen } from '@/feature/home/PasswordScreen'
-import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 
 import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
@@ -15,11 +13,9 @@ import { Input } from '../src/components/ui/input'
 import FloatingButtonsLayout from '../src/feature/home/FloatingButtonsLayout'
 import { MemoGrid } from '../src/feature/home/MemoGrid'
 import ReloadButton from '../src/feature/home/ReloadButton'
-import { SplashScreen } from '../src/feature/home/SplashScreen'
 import useCommonModal from '../src/hooks/useCommonModal'
 import { useApiQuery } from '../src/lib/queryUtils'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
-import { useSplashStore } from '../src/zustand/useSplashStore'
 
 export const routes = {
   root: '/',
@@ -31,10 +27,8 @@ export default function IndexPage() {
   const router = useRouter()
 
   const { allMemos, setAllMemos } = useAllMemosStore()
-  const { visible: splashVisible, setVisible: setSplashVisible } =
-    useSplashStore()
+
   const { openModal, closeModal, Modal, visible } = useCommonModal()
-  const { passwordScreenOpened } = usePasswordScreenStore()
 
   const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
   const {
@@ -50,9 +44,6 @@ export default function IndexPage() {
     },
   })
 
-  const initialTimeoutId = useRef<NodeJS.Timeout>()
-
-  const [splashOpened, setSplashOpened] = useState(true)
   const [errorTitle, setErrorTitle] = useState<string>()
 
   async function addMemo() {
@@ -82,27 +73,6 @@ export default function IndexPage() {
     }
   }, [isLogin, allMemosData, setAllMemos, isFetched])
 
-  useEffect(() => {
-    // NOTE: 스플래시 노출
-    if (splashVisible === undefined) {
-      setSplashVisible(true)
-      initialTimeoutId.current = setTimeout(
-        () => setSplashVisible(false),
-        1 * 1000
-      )
-    }
-    if (splashVisible === false) {
-      setTimeout(() => setSplashOpened(false), 300)
-    }
-  }, [splashVisible, setSplashVisible])
-
-  useEffect(() => {
-    // NOTE: 언마운트시 타임아웃 제거
-    return () => {
-      clearTimeout(initialTimeoutId.current)
-    }
-  }, [])
-
   const sortedMemos = useMemo(
     () =>
       [...(allMemos || [])].sort((a, b) => {
@@ -118,16 +88,8 @@ export default function IndexPage() {
     return memo.text?.includes(searchValue)
   })
 
-  if (splashVisible === undefined) {
-    return null
-  }
-
   return (
     <>
-      {splashOpened && <SplashScreen visible={splashVisible} />}
-
-      {passwordScreenOpened && <PasswordScreen />}
-
       <Header title='고영이 메모장🐈' backButton={false} />
 
       <div className='flex justify-between items-center mx-5 gap-5 my-4'>

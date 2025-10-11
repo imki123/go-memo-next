@@ -1,9 +1,15 @@
+import { AxiosError } from 'axios'
 import { X } from 'lucide-react'
 import { useEffect, useReducer } from 'react'
+import { toast } from 'sonner'
 
+import { userApi } from '@/apis/userApi'
 import { zIndex } from '@/utils/util'
 import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 import { useThemeStore } from '@/zustand/useThemeStore'
+
+const MIN_PASSWORD_LENGTH = 4
+const MAX_PASSWORD_LENGTH = 6
 
 export function PasswordScreen() {
   useEffect(() => {
@@ -28,11 +34,8 @@ export function PasswordScreen() {
   const { closePasswordScreen, passwordScreenType } = usePasswordScreenStore()
   const { theme } = useThemeStore()
 
-  const validPassword = '0000'
-
   const [password, dispatchPassword] = useReducer(
     (state: string, payload: string) => {
-      console.debug(state, payload)
       const validValues = [
         '1',
         '2',
@@ -53,18 +56,19 @@ export function PasswordScreen() {
         return state
       }
 
-      if (payload === 'CLEAR') {
-        return ''
-      }
-
       if (payload === 'DEL') {
         return state.slice(0, -1)
       }
+
       if (payload === 'SEND') {
         return state
       }
 
-      if ((state + payload).length > 8) {
+      if (payload === 'CLEAR') {
+        return ''
+      }
+
+      if ((state + payload).length > MAX_PASSWORD_LENGTH) {
         return state
       }
 
@@ -90,7 +94,9 @@ export function PasswordScreen() {
       />
 
       <div className='text-2xl font-bold'>
-        {passwordScreenType === 'setup' ? '비밀번호 설정' : '메모 잠금'}
+        {passwordScreenType === 'setup'
+          ? '비밀번호 설정 (4~6자리)'
+          : '메모 잠금 해제 (4~6자리)'}
       </div>
 
       <div className='text-3xl font-bold py-2 px-4 h-[60px]'>
@@ -113,33 +119,45 @@ export function PasswordScreen() {
           width: 'min(90vw, 50vh)',
           maxWidth: '300px',
         }}
-        onClick={(e) => {
+        onClick={async (e) => {
           e.stopPropagation()
 
           const clickedElement = e.target as HTMLSpanElement
           const value = clickedElement?.innerText
 
           if (value === 'SEND') {
-            if (password.length === 0) {
+            if (password.length < MIN_PASSWORD_LENGTH) {
               return
             }
 
             if (passwordScreenType === 'setup') {
               if (window.confirm('비밀번호를 설정하시겠습니까?')) {
-                dispatchPassword('CLEAR')
-                closePasswordScreen()
+                try {
+                  await userApi.setLock(password)
+                  dispatchPassword('CLEAR')
+                  closePasswordScreen()
+                } catch (err) {
+                  const error = err as AxiosError
+                  console.error(err)
+                  toast.error(`비밀번호 설정에 실패했습니다.\n${error.message}`)
+                  return
+                }
               }
               return
             }
 
-            if (password === validPassword) {
+            try {
+              // NOTE: 잠금 해제
+              await userApi.unlock(password)
               dispatchPassword('CLEAR')
               closePasswordScreen()
               return
+            } catch (err) {
+              const error = err as AxiosError
+              console.error(err)
+              toast.error(`잠금 해제에 실패했습니다.\n${error.message}`)
+              return
             }
-
-            alert('비밀번호가 일치하지 않습니다.')
-            return
           }
 
           dispatchPassword(value)

@@ -16,6 +16,13 @@
   "rules": {
     "no-console": ["warn", { "allow": ["info", "error"] }],
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "import/named": "off",
     "unused-imports/no-unused-imports": "warn",
     "import/order": [
