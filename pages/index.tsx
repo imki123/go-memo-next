@@ -30,7 +30,7 @@ export default function IndexPage() {
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
-  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
   const {
     data: allMemosData,
     refetch,
@@ -40,7 +40,7 @@ export default function IndexPage() {
   } = useApiQuery({
     queryFn: memoApi.getAllMemo,
     options: {
-      enabled: !!isLogin,
+      enabled: !!loginData,
     },
   })
 
@@ -68,10 +68,10 @@ export default function IndexPage() {
 
   useEffect(() => {
     // NOTE: 서버에서 받아온 메모로 업데이트
-    if (isLogin && allMemosData && isFetched) {
+    if (loginData && allMemosData && isFetched) {
       setAllMemos(allMemosData || [])
     }
-  }, [isLogin, allMemosData, setAllMemos, isFetched])
+  }, [loginData, allMemosData, setAllMemos, isFetched])
 
   const sortedMemos = useMemo(
     () =>

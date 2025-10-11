@@ -1,7 +1,7 @@
 import { ChevronLeft, Lock, Moon, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Children, ReactNode } from 'react'
+import { Children, ReactNode, useEffect } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
 import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
@@ -33,9 +33,17 @@ export default function Header({
   const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
-  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
-  const { openModal, closeModal, Modal, visible } = useCommonModal()
+
   const { openPasswordScreen } = usePasswordScreenStore()
+  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+
+  useEffect(() => {
+    if (loginData?.locked) {
+      openPasswordScreen('unlock')
+    }
+  }, [loginData, openPasswordScreen])
+
+  const { openModal, closeModal, Modal, visible } = useCommonModal()
 
   const defaultRightItems = [
     <>
@@ -66,8 +74,8 @@ export default function Header({
       }}
       className='cursor-pointer'
     />,
-    isLogin ? (
-      <Avatar avatar={isLogin} />
+    loginData ? (
+      <Avatar avatar={loginData} />
     ) : (
       <span>
         <Link

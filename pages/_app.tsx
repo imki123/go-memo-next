@@ -25,32 +25,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
 
   useEffect(() => {
-    console.info('>>> ENV:', process.env.NODE_ENV, BE_URL)
-    console.info('>>> hash:', process.env.NEXT_PUBLIC_GIT_COMMIT_HASH)
+    console.info('[ENV]', process.env.NODE_ENV, BE_URL)
+    console.info('[hash]', process.env.NEXT_PUBLIC_GIT_COMMIT_HASH)
   }, [])
 
   useEffect(() => {
-    console.info('>>> MyApp:', router.pathname)
+    console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  function afterLogin() {
-    userApi
-      .checkLogin()
-      .then((res) => {
-        if (res) {
-          toast.success('로그인 성공 😄')
-          router.replace(routes.root)
-        } else {
-          toast.error('로그인 실패 😥')
-        }
-      })
-      .catch((err) => {
-        toast.error('로그인 실패 😥<br/>' + JSON.stringify(err))
-      })
-  }
-
   const { splashVisible, setSplashVisible } = useSplashStore()
-  const { passwordScreenOpened } = usePasswordScreenStore()
+  const { passwordScreenOpened, openPasswordScreen } = usePasswordScreenStore()
 
   const [splashOpened, setSplashOpened] = useState(true)
   const initialTimeoutId = useRef<NodeJS.Timeout>()
@@ -76,13 +60,36 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [])
 
+  function afterLogin() {
+    userApi
+      .checkLogin()
+      .then((loginData) => {
+        if (loginData) {
+          toast.success('로그인 성공 😄')
+
+          if (loginData.locked) {
+            openPasswordScreen('unlock')
+          }
+
+          router.replace(routes.root)
+        } else {
+          toast.error('로그인 실패 😥')
+        }
+      })
+      .catch((err) => {
+        toast.error('로그인 실패 😥<br/>' + JSON.stringify(err))
+      })
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalStyle />
+
       <Script
         src='https://accounts.google.com/gsi/client'
         onLoad={() => initGoogle(userApi.login, afterLogin)}
       ></Script>
+
       <Head>
         <title>고영이메모장🐈</title>
         <meta name='description' content='next.js로 만들어진 간단한 메모장' />

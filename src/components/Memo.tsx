@@ -35,7 +35,7 @@ function _Memo(
 ) {
   const router = useRouter()
 
-  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
   const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const { fontSize } = useFontSizeStore()
@@ -71,7 +71,7 @@ function _Memo(
 
     clearTimeout(fetchTimeoutId.current)
     fetchTimeoutId.current = setTimeout(async () => {
-      if (isLogin) {
+      if (loginData) {
         try {
           await memoApi.patchMemo(newMemo)
           invalidateQuery({ queryFn: memoApi.getAllMemo })
@@ -147,7 +147,7 @@ function _Memo(
             children: '삭제',
             onClick: async () => {
               closeModal()
-              if (isLogin) {
+              if (loginData) {
                 try {
                   await memoApi.deleteMemo(memoId)
                   toast.success('메모 삭제 성공')

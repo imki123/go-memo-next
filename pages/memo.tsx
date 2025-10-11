@@ -17,7 +17,7 @@ export default function MemoPage() {
   const router = useRouter()
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: isLogin } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
 
   const memoId = Number(router.query.memoId) || 0
 
@@ -48,7 +48,7 @@ export default function MemoPage() {
     queryFn: memoApi.getMemo,
     payload: memoId,
     options: {
-      enabled: !!(isLogin && memoId > 0),
+      enabled: !!(loginData && memoId > 0),
     },
   })
 
@@ -97,7 +97,7 @@ export default function MemoPage() {
       />
 
       <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
-        {isError || (isLogin && notFound) ? (
+        {isError || (loginData && notFound) ? (
           <div className='text-center'>메모 불러오기 실패 😥</div>
         ) : (
           <>
@@ -121,7 +121,7 @@ export default function MemoPage() {
 
             <Memo
               memoId={memoId || 0}
-              fetching={!!isLogin && isFetching}
+              fetching={!!loginData && isFetching}
               ref={textareaRef}
             />
           </>
