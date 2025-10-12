@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
 import Header from '../src/components/Header'
+import { ProtectedContent } from '../src/components/ProtectedContent'
 import { Input } from '../src/components/ui/input'
 import FloatingButtonsLayout from '../src/feature/home/FloatingButtonsLayout'
 import { MemoGrid } from '../src/feature/home/MemoGrid'
@@ -16,6 +17,7 @@ import ReloadButton from '../src/feature/home/ReloadButton'
 import useCommonModal from '../src/hooks/useCommonModal'
 import { useApiQuery } from '../src/lib/queryUtils'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
+import { usePasswordScreenStore } from '../src/zustand/usePasswordScreenStore'
 
 export const routes = {
   root: '/',
@@ -27,6 +29,7 @@ export default function IndexPage() {
   const router = useRouter()
 
   const { allMemos, setAllMemos } = useAllMemosStore()
+  const { isLocked } = usePasswordScreenStore()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -40,7 +43,7 @@ export default function IndexPage() {
   } = useApiQuery({
     queryFn: memoApi.getAllMemo,
     options: {
-      enabled: !!loginData,
+      enabled: !!loginData && !isLocked,
     },
   })
 
@@ -92,39 +95,41 @@ export default function IndexPage() {
     <>
       <Header title='고영이 메모장🐈' backButton={false} />
 
-      <div className='flex justify-between items-center mx-5 gap-5 my-4'>
-        <Input
-          placeholder='메모 검색'
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.currentTarget.value)}
-          className='w-full max-w-[200px] flex-shrink'
-        />
+      <ProtectedContent>
+        <div className='flex justify-between items-center mx-5 gap-5 my-4'>
+          <Input
+            placeholder='메모 검색'
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.currentTarget.value)}
+            className='w-full max-w-[200px] flex-shrink'
+          />
 
-        <Button onClick={addMemo} size='sm'>
-          메모추가
-        </Button>
-      </div>
-
-      {isLoading ? (
-        <div className='flex flex-col items-center justify-center h-[200px]'>
-          <div>로딩 중...</div>
-          <div>서버 재시작 중에는 1분 정도 소요될 수 있습니다.</div>
+          <Button onClick={addMemo} size='sm'>
+            메모추가
+          </Button>
         </div>
-      ) : (
-        <MemoGrid
-          memoData={filteredMemos.map((memo) => ({ memoId: memo.memoId }))}
-        />
-      )}
 
-      <FloatingButtonsLayout>
-        <ReloadButton
-          isReloading={isFetching}
-          onClick={() => {
-            if (!isFetching)
-              refetch().then(() => toast.success('새로고침 성공'))
-          }}
-        />
-      </FloatingButtonsLayout>
+        {isLoading ? (
+          <div className='flex flex-col items-center justify-center h-[200px]'>
+            <div>로딩 중...</div>
+            <div>서버 재시작 중에는 1분 정도 소요될 수 있습니다.</div>
+          </div>
+        ) : (
+          <MemoGrid
+            memoData={filteredMemos.map((memo) => ({ memoId: memo.memoId }))}
+          />
+        )}
+
+        <FloatingButtonsLayout>
+          <ReloadButton
+            isReloading={isFetching}
+            onClick={() => {
+              if (!isFetching)
+                refetch().then(() => toast.success('새로고침 성공'))
+            }}
+          />
+        </FloatingButtonsLayout>
+      </ProtectedContent>
 
       <Modal visible={visible} title={errorTitle} onClose={closeModal} />
     </>

@@ -2,6 +2,7 @@ import { ComponentProps, ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { zIndex } from '@/utils/util'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
 export type CommonModalProps = {
@@ -39,7 +40,7 @@ function useCommonModal() {
       <>
         {visible && (
           <div
-            className='fixed z-[999] top-0 left-0 h-screen w-screen flex justify-center items-center text-center bg-black bg-opacity-60 transition-all duration-300 ease-in-out'
+            className={`fixed ${zIndex.commonModal} top-0 left-0 h-screen w-screen flex justify-center items-center text-center bg-black bg-opacity-60 transition-all duration-300 ease-in-out ${zIndex.commonModal}`}
             onClick={(e) => {
               e.stopPropagation()
               onClose()
@@ -57,12 +58,12 @@ function useCommonModal() {
 
               {buttons && (
                 <div className='flex justify-center items-center gap-3 mt-[30px]'>
-                  {buttons?.map(({ children, onClick }, i) => (
+                  {buttons?.map(({ children, onClick, variant }, i) => (
                     <Button
                       key={i}
                       onClick={onClick}
                       className='text-sm'
-                      variant={i === 0 ? 'secondary' : 'default'}
+                      variant={variant || (i === 0 ? 'secondary' : 'default')}
                     >
                       {children}
                     </Button>

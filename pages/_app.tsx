@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, userApi } from '@/apis/userApi'
-import { PasswordScreen } from '@/feature/home/PasswordScreen'
+import { PasswordScreen } from '@/components/PasswordScreen'
 import { SplashScreen } from '@/feature/home/SplashScreen'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
@@ -34,7 +34,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.pathname])
 
   const { splashVisible, setSplashVisible } = useSplashStore()
-  const { passwordScreenOpened, openPasswordScreen } = usePasswordScreenStore()
+  const { passwordScreenOpened, isLocked, setIsLocked } =
+    usePasswordScreenStore()
 
   const [splashOpened, setSplashOpened] = useState(true)
   const initialTimeoutId = useRef<NodeJS.Timeout>()
@@ -67,8 +68,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         if (loginData) {
           toast.success('로그인 성공 😄')
 
-          if (loginData.locked) {
-            openPasswordScreen('unlock')
+          if (loginData.locked && (isLocked || isLocked === undefined)) {
+            setIsLocked(true)
           }
 
           router.replace(routes.root)
@@ -108,7 +109,16 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <Component {...pageProps} />
 
-      <Toaster position='bottom-center' richColors />
+      <Toaster
+        position='top-right'
+        richColors
+        offset={0}
+        style={{
+          maxWidth: '60vw',
+          right: 0,
+          left: 'auto',
+        }}
+      />
 
       <a
         href='https://github.com/imki123'

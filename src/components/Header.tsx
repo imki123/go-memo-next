@@ -1,7 +1,7 @@
 import { ChevronLeft, Lock, Moon, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Children, ReactNode, useEffect } from 'react'
+import { Children, ComponentProps, ReactNode } from 'react'
 
 import { localStorageKeys } from '@/utils/localStorageKeys'
 import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
@@ -12,6 +12,7 @@ import { useApiQuery } from '../lib/queryUtils'
 import { useThemeStore } from '../zustand/useThemeStore'
 
 import Avatar from './Avatar'
+import { Button } from './ui/button'
 
 type HeaderType = {
   fixed?: boolean
@@ -35,13 +36,9 @@ export default function Header({
   const router = useRouter()
 
   const { openPasswordScreen } = usePasswordScreenStore()
-  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
-
-  useEffect(() => {
-    if (loginData?.locked) {
-      openPasswordScreen('unlock')
-    }
-  }, [loginData, openPasswordScreen])
+  const { data: loginData } = useApiQuery({
+    queryFn: userApi.checkLogin,
+  })
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -91,6 +88,33 @@ export default function Header({
 
   const allRightItems = rightItems.concat(defaultRightItems)
 
+  const modalButtons: ComponentProps<typeof Button>[] = [
+    {
+      children: '취소',
+      variant: 'secondary',
+      onClick: closeModal,
+    },
+  ]
+
+  if (loginData?.locked) {
+    modalButtons.push({
+      children: '비밀번호 삭제',
+      variant: 'destructive',
+      onClick: () => {
+        closeModal()
+        openPasswordScreen('remove')
+      },
+    })
+  } else {
+    modalButtons.push({
+      children: '비밀번호 설정',
+      onClick: () => {
+        closeModal()
+        openPasswordScreen('setup')
+      },
+    })
+  }
+
   return (
     <>
       {fixed && <div className='h-[60px]' />}
@@ -129,22 +153,12 @@ export default function Header({
       <Modal
         visible={visible}
         onClose={closeModal}
-        title='잠금 비밀번호를 설정하시겠어요?'
-        buttons={[
-          {
-            children: '취소',
-            onClick: () => {
-              closeModal()
-            },
-          },
-          {
-            children: '설정',
-            onClick: () => {
-              closeModal()
-              openPasswordScreen('setup')
-            },
-          },
-        ]}
+        title={
+          loginData?.locked
+            ? '잠금 비밀번호를 삭제하시겠어요?'
+            : '잠금 비밀번호를 설정하시겠어요?'
+        }
+        buttons={modalButtons}
       />
     </>
   )

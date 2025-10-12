@@ -8,16 +8,19 @@ import { memoApi } from '../src/apis/memoApi'
 import { userApi } from '../src/apis/userApi'
 import Header from '../src/components/Header'
 import { Memo, MemoType } from '../src/components/Memo'
+import { ProtectedContent } from '../src/components/ProtectedContent'
 import { useApiQuery } from '../src/lib/queryUtils'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { useFontSizeStore } from '../src/zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../src/zustand/useMemoHistoryStore'
+import { usePasswordScreenStore } from '../src/zustand/usePasswordScreenStore'
 
 export default function MemoPage() {
   const router = useRouter()
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { isLocked } = usePasswordScreenStore()
 
   const memoId = Number(router.query.memoId) || 0
 
@@ -48,7 +51,7 @@ export default function MemoPage() {
     queryFn: memoApi.getMemo,
     payload: memoId,
     options: {
-      enabled: !!(loginData && memoId > 0),
+      enabled: !!(loginData && memoId > 0 && !isLocked),
     },
   })
 
@@ -96,37 +99,47 @@ export default function MemoPage() {
         }}
       />
 
-      <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
-        {isError || (loginData && notFound) ? (
-          <div className='text-center'>메모 불러오기 실패 😥</div>
-        ) : (
-          <>
-            <div className='flex items-center gap-[10px] pt-[10px]'>
-              <Button onClick={increaseFontSize} size='sm' variant='secondary'>
-                글씨+
-              </Button>
+      <ProtectedContent>
+        <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
+          {isError || (loginData && notFound) ? (
+            <div className='text-center'>메모 불러오기 실패 😥</div>
+          ) : (
+            <>
+              <div className='flex items-center gap-[10px] pt-[10px]'>
+                <Button
+                  onClick={increaseFontSize}
+                  size='sm'
+                  variant='secondary'
+                >
+                  글씨+
+                </Button>
 
-              <Button onClick={decreaseFontSize} size='sm' variant='secondary'>
-                글씨-
-              </Button>
+                <Button
+                  onClick={decreaseFontSize}
+                  size='sm'
+                  variant='secondary'
+                >
+                  글씨-
+                </Button>
 
-              <Button onClick={backHistory} size='sm' variant='secondary'>
-                뒤로
-              </Button>
+                <Button onClick={backHistory} size='sm' variant='secondary'>
+                  뒤로
+                </Button>
 
-              <Button onClick={nextHistory} size='sm' variant='secondary'>
-                앞으로
-              </Button>
-            </div>
+                <Button onClick={nextHistory} size='sm' variant='secondary'>
+                  앞으로
+                </Button>
+              </div>
 
-            <Memo
-              memoId={memoId || 0}
-              fetching={!!loginData && isFetching}
-              ref={textareaRef}
-            />
-          </>
-        )}
-      </div>
+              <Memo
+                memoId={memoId || 0}
+                fetching={!!loginData && isFetching}
+                ref={textareaRef}
+              />
+            </>
+          )}
+        </div>
+      </ProtectedContent>
     </>
   )
 }

@@ -12,6 +12,7 @@ const urls = {
   checkLogin: `${baseUrl}/checkLogin`,
   setLock: `${baseUrl}/setLock`,
   unlock: `${baseUrl}/unlock`,
+  removeLock: `${baseUrl}/removeLock`,
 }
 
 export const userApi = {
@@ -59,6 +60,11 @@ export const userApi = {
 
   async unlock(password: string) {
     const res = await axiosWithCredentials.post(urls.unlock, { password })
+    return res.data
+  },
+
+  async removeLock() {
+    const res = await axiosWithCredentials.post(urls.removeLock)
     return res.data
   },
 }

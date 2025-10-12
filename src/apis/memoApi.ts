@@ -1,7 +1,7 @@
 import { MemoType } from '../components/Memo'
 
 import { axiosWithCredentials } from './axios'
-const baseUrl = '/memo/memo'
+const baseUrl = '/memo/memos'
 
 const urls = {
   root: `${baseUrl}/`,
