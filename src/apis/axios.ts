@@ -31,12 +31,6 @@ axiosWithCredentials.interceptors.response.use(
     return response
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // 401 에러 시 토큰 제거
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem(localStorageKeys.memoAuthToken)
-      }
-    }
     return Promise.reject(error)
   }
 )

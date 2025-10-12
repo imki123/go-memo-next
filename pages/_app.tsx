@@ -110,13 +110,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
 
       <Toaster
-        position='top-right'
+        position='bottom-center'
         richColors
-        offset={0}
         style={{
-          maxWidth: '60vw',
-          right: 0,
-          left: 'auto',
+          maxWidth: '70vw',
         }}
       />
 

@@ -4,12 +4,8 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { routes } from '../../pages'
-import { dummyMemos } from '../apis/dummyMemos'
-import { memoApi } from '../apis/memoApi'
 import { LoginResponseType, userApi } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
-import { useApiQuery, useInvalidation } from '../lib/queryUtils'
-import { useAllMemosStore } from '../zustand/useAllMemosStore'
 
 const Avatar = ({
   avatar,
@@ -21,15 +17,6 @@ const Avatar = ({
   const router = useRouter()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
-  const { setAllMemos } = useAllMemosStore()
-  const { invalidateQuery } = useInvalidation()
-
-  const { refetch } = useApiQuery({
-    queryFn: userApi.checkLogin,
-    options: {
-      enabled: false,
-    },
-  })
 
   const [defaultImage, setDefaultImage] = useState(false)
 
@@ -83,17 +70,15 @@ const Avatar = ({
                 .logout()
                 .then(() => {
                   toast.success('로그아웃 성공')
-
-                  refetch() // checkLogin
-
-                  invalidateQuery({ queryFn: memoApi.getAllMemo })
-
-                  setAllMemos(dummyMemos)
-
-                  router.replace(routes.root)
                 })
                 .catch((err) => {
                   toast.error(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)
+                })
+                .finally(() => {
+                  router.push(routes.root)
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 100)
                 })
             },
           },
