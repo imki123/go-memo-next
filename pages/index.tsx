@@ -16,6 +16,7 @@ import { MemoGrid } from '../src/feature/home/MemoGrid'
 import ReloadButton from '../src/feature/home/ReloadButton'
 import useCommonModal from '../src/hooks/useCommonModal'
 import { useApiQuery } from '../src/lib/queryUtils'
+import { canCallApi } from '../src/utils/util'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { usePasswordScreenStore } from '../src/zustand/usePasswordScreenStore'
 
@@ -43,13 +44,18 @@ export default function IndexPage() {
   } = useApiQuery({
     queryFn: memoApi.getAllMemo,
     options: {
-      enabled: !!loginData && !isLocked,
+      enabled: canCallApi({ loginData, isLocked }),
     },
   })
 
   const [errorTitle, setErrorTitle] = useState<string>()
 
   async function addMemo() {
+    if (!canCallApi({ loginData, isLocked })) {
+      toast.error('계정이 잠겨있습니다. 잠금을 해제해주세요.')
+      return
+    }
+
     try {
       const response = await memoApi.postMemo()
       router.push(`/memo?memoId=${response.memoId}`)

@@ -9,9 +9,11 @@ import { memoApi } from '../apis/memoApi'
 import { userApi } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
 import { useApiQuery, useInvalidation } from '../lib/queryUtils'
+import { canCallApi } from '../utils/util'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 import { useFontSizeStore } from '../zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
+import { usePasswordScreenStore } from '../zustand/usePasswordScreenStore'
 
 export type MemoType = {
   memoId: number
@@ -36,6 +38,7 @@ function _Memo(
   const router = useRouter()
 
   const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { isLocked } = usePasswordScreenStore()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const { fontSize } = useFontSizeStore()
@@ -71,7 +74,7 @@ function _Memo(
 
     clearTimeout(fetchTimeoutId.current)
     fetchTimeoutId.current = setTimeout(async () => {
-      if (loginData) {
+      if (canCallApi({ loginData, isLocked })) {
         try {
           await memoApi.patchMemo(newMemo)
           invalidateQuery({ queryFn: memoApi.getAllMemo })

@@ -1,3 +1,4 @@
+import { localStorageKeys } from '@/utils/localStorageKeys'
 import { useLoginStore } from '@/zustand/useLoginStore'
 
 import { axiosWithCredentials } from './axios'
@@ -37,20 +38,34 @@ export const userApi = {
         useLoginStore.getState().setIsLoggingIn(false)
       })
 
+    const data = res.data as LoginResponseType
+
+    // 토큰이 있으면 로컬스토리지에 저장
+    if (data.token) {
+      localStorage.setItem(localStorageKeys.memoAuthToken, data.token)
+    }
+
     afterLogin?.()
 
-    const data = res.data as LoginResponseType
     return data
   },
 
   async logout() {
+    localStorage.removeItem(localStorageKeys.memoAuthToken)
     const res = await axiosWithCredentials.post(urls.logout)
     return res.data
   },
 
   async checkLogin() {
     const res = await axiosWithCredentials.post(urls.checkLogin)
-    return res.data as LoginResponseType
+    const data = res.data as LoginResponseType
+
+    // 토큰이 있으면 로컬스토리지에 저장
+    if (data.token) {
+      localStorage.setItem(localStorageKeys.memoAuthToken, data.token)
+    }
+
+    return data
   },
 
   async setLock(password: string) {
@@ -75,4 +90,5 @@ export type LoginResponseType = {
   name?: string
   picture?: string
   locked?: boolean
+  token?: string
 }

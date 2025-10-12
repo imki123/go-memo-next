@@ -10,6 +10,7 @@ import Header from '../src/components/Header'
 import { Memo, MemoType } from '../src/components/Memo'
 import { ProtectedContent } from '../src/components/ProtectedContent'
 import { useApiQuery } from '../src/lib/queryUtils'
+import { canCallApi } from '../src/utils/util'
 import { useAllMemosStore } from '../src/zustand/useAllMemosStore'
 import { useFontSizeStore } from '../src/zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../src/zustand/useMemoHistoryStore'
@@ -51,7 +52,7 @@ export default function MemoPage() {
     queryFn: memoApi.getMemo,
     payload: memoId,
     options: {
-      enabled: !!(loginData && memoId > 0 && !isLocked),
+      enabled: canCallApi({ loginData, isLocked }) && memoId > 0,
     },
   })
 
