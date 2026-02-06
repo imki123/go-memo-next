@@ -1,7 +1,4 @@
-import { localStorageKeys } from '@/utils/localStorageKeys'
-import { useLoginStore } from '@/zustand/useLoginStore'
-
-import { axiosWithCredentials } from './axios'
+import { axiosClient } from './axios'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
 const baseUrl = '/memo/user'
@@ -16,74 +13,6 @@ const urls = {
   removeLock: `${baseUrl}/removeLock`,
 }
 
-export const userApi = {
-  async login(credential: string, afterLogin?: () => void) {
-    useLoginStore.getState().setIsLoggingIn(true)
-    useLoginStore.getState().setSecondsToLogin(0)
-
-    const loginIntervalId = setInterval(() => {
-      useLoginStore
-        .getState()
-        .setSecondsToLogin(useLoginStore.getState().secondsToLogin + 1)
-    }, 1000)
-
-    useLoginStore.getState().setLoginIntervalId(loginIntervalId)
-
-    const res = await axiosWithCredentials
-      .post(urls.login, { credential })
-      .finally(() => {
-        clearInterval(loginIntervalId)
-        useLoginStore.getState().setLoginIntervalId(undefined)
-        useLoginStore.getState().setSecondsToLogin(0)
-        useLoginStore.getState().setIsLoggingIn(false)
-      })
-
-    const data = res.data as LoginResponseType
-
-    // 토큰이 있으면 로컬스토리지에 저장
-    if (data.token) {
-      localStorage.setItem(localStorageKeys.memoAuthToken, data.token)
-    }
-
-    afterLogin?.()
-
-    return data
-  },
-
-  async logout() {
-    localStorage.removeItem(localStorageKeys.memoAuthToken)
-    const res = await axiosWithCredentials.post(urls.logout)
-    return res.data
-  },
-
-  async checkLogin() {
-    const res = await axiosWithCredentials.post(urls.checkLogin)
-    const data = res.data as LoginResponseType
-
-    // 토큰이 있으면 로컬스토리지에 저장
-    if (data.token) {
-      localStorage.setItem(localStorageKeys.memoAuthToken, data.token)
-    }
-
-    return data
-  },
-
-  async setLock(password: string) {
-    const res = await axiosWithCredentials.post(urls.setLock, { password })
-    return res.data
-  },
-
-  async unlock(password: string) {
-    const res = await axiosWithCredentials.post(urls.unlock, { password })
-    return res.data
-  },
-
-  async removeLock() {
-    const res = await axiosWithCredentials.post(urls.removeLock)
-    return res.data
-  },
-}
-
 export type LoginResponseType = {
   email: string
   sub: string
@@ -91,4 +20,38 @@ export type LoginResponseType = {
   picture?: string
   locked?: boolean
   token?: string
+}
+
+export const userApi = {
+  async login(credential: string): Promise<LoginResponseType> {
+    const res = await axiosClient.post(urls.login, { credential })
+    const data = res.data as LoginResponseType
+    return data
+  },
+
+  async logout() {
+    const res = await axiosClient.post(urls.logout)
+    return res.data
+  },
+
+  async checkLogin() {
+    const res = await axiosClient.post(urls.checkLogin)
+    const data = res.data as LoginResponseType
+    return data
+  },
+
+  async setLock(password: string) {
+    const res = await axiosClient.post(urls.setLock, { password })
+    return res.data
+  },
+
+  async unlock(password: string) {
+    const res = await axiosClient.post(urls.unlock, { password })
+    return res.data
+  },
+
+  async removeLock() {
+    const res = await axiosClient.post(urls.removeLock)
+    return res.data
+  },
 }

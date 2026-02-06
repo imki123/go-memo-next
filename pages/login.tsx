@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 
+import { authService } from '@/domains/auth/di'
 import { useLoginStore } from '@/zustand/useLoginStore'
 
 import Header from '../src/components/Header'
-import { renderGoogleButton } from '../src/utils/googleLogin'
 
 export default function LoginPage() {
   useEffect(() => {
-    renderGoogleButton('googleLoginDiv')
+    authService.renderLoginUi('googleLoginDiv')
   }, [])
 
   const { isLoggingIn, secondsToLogin } = useLoginStore()

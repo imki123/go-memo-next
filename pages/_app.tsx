@@ -6,13 +6,13 @@ import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
-import { BE_URL, userApi } from '@/apis/userApi'
+import { BE_URL, LoginResponseType } from '@/apis/userApi'
 import { PasswordScreen } from '@/components/PasswordScreen'
+import { authService } from '@/domains/auth/di'
 import { SplashScreen } from '@/feature/home/SplashScreen'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
-import { initGoogle } from '@/utils/googleLogin'
 import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 import { useSplashStore } from '@/zustand/useSplashStore'
 
@@ -61,25 +61,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [])
 
-  function afterLogin() {
-    userApi
-      .checkLogin()
-      .then((loginData) => {
-        if (loginData) {
-          toast.success('로그인 성공 😄')
+  function afterLogin(loginData: LoginResponseType) {
+    if (loginData) {
+      toast.success('로그인 성공 😄')
 
-          if (loginData.locked && (isLocked || isLocked === undefined)) {
-            setIsLocked(true)
-          }
+      if (loginData.locked && (isLocked || isLocked === undefined)) {
+        setIsLocked(true)
+      }
 
-          router.replace(routes.root)
-        } else {
-          toast.error('로그인 실패 😥')
-        }
-      })
-      .catch((err) => {
-        toast.error('로그인 실패 😥<br/>' + JSON.stringify(err))
-      })
+      router.replace(routes.root)
+    } else {
+      toast.error('로그인 실패 😥')
+    }
   }
 
   return (
@@ -88,7 +81,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <Script
         src='https://accounts.google.com/gsi/client'
-        onLoad={() => initGoogle(userApi.login, afterLogin)}
+        onLoad={() => authService.autoLogin(afterLogin)}
       ></Script>
 
       <Head>

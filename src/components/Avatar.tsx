@@ -3,8 +3,9 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { authService } from '@/domains/auth/di'
 import { routes } from '../../pages'
-import { LoginResponseType, userApi } from '../apis/userApi'
+import { LoginResponseType } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
 
 const Avatar = ({
@@ -66,7 +67,7 @@ const Avatar = ({
             onClick: () => {
               closeModal()
 
-              userApi
+              authService
                 .logout()
                 .then(() => {
                   toast.success('로그아웃 성공')

@@ -1,6 +1,6 @@
 import { MemoType } from '../components/Memo'
 
-import { axiosWithCredentials } from './axios'
+import { axiosClient } from './axios'
 const baseUrl = '/memo/memos'
 
 const urls = {
@@ -10,14 +10,12 @@ const urls = {
 
 export const memoApi = {
   async getAllIds() {
-    const res = await axiosWithCredentials.get<{ memoId: number }[]>(
-      `${urls.allIds}`
-    )
+    const res = await axiosClient.get<{ memoId: number }[]>(`${urls.allIds}`)
     return res.data
   },
 
   async getAllMemo() {
-    const res = await axiosWithCredentials.get<MemoType[]>(`${urls.root}`)
+    const res = await axiosClient.get<MemoType[]>(`${urls.root}`)
     return res.data
   },
 
@@ -26,28 +24,24 @@ export const memoApi = {
       return undefined
     }
 
-    const res = await axiosWithCredentials.get<MemoType>(
-      `${urls.root}${memoId}`
-    )
+    const res = await axiosClient.get<MemoType>(`${urls.root}${memoId}`)
     return res.data
   },
 
   async postMemo() {
-    const res = await axiosWithCredentials.post<MemoType>(urls.root)
+    const res = await axiosClient.post<MemoType>(urls.root)
     return res.data
   },
 
   async patchMemo(memo: MemoType) {
-    const res = await axiosWithCredentials.patch<MemoType>(urls.root, {
+    const res = await axiosClient.patch<MemoType>(urls.root, {
       memo,
     })
     return res.data
   },
 
   async deleteMemo(memoId: number) {
-    const res = await axiosWithCredentials.delete<MemoType>(
-      `${urls.root}${memoId}`
-    )
+    const res = await axiosClient.delete<MemoType>(`${urls.root}${memoId}`)
     return res.data
   },
 }
