@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { Loader2, X } from 'lucide-react'
-import { useEffect, useReducer, useState } from 'react'
+import { useCallback, useEffect, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
 import { userApi } from '@/apis/userApi'
@@ -10,7 +10,7 @@ import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
 const MIN_PASSWORD_LENGTH = 4
-const MAX_PASSWORD_LENGTH = 6
+const MAX_PASSWORD_LENGTH = 4
 
 export function PasswordScreen() {
   useEffect(() => {
@@ -38,6 +38,95 @@ export function PasswordScreen() {
   const { refetch: refetchLogin } = useApiQuery({
     queryFn: userApi.checkLogin,
   })
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const sendPassword = useCallback(
+    async (currentPassword: string) => {
+      if (currentPassword.length < MIN_PASSWORD_LENGTH) {
+        return
+      }
+
+      if (passwordScreenType === 'setup') {
+        if (window.confirm('비밀번호를 설정하시겠습니까?')) {
+          try {
+            setIsLoading(true)
+            await userApi.setLock(currentPassword)
+            setIsLocked(false)
+            refetchLogin()
+            dispatchPassword('CLEAR')
+            closePasswordScreen()
+          } catch (err) {
+            const error = err as AxiosError<{ error: string }>
+            console.error(err)
+            toast.error(
+              <>
+                비밀번호 설정에 실패했습니다.
+                <br />
+                {error.response?.data?.error || error.message}
+              </>
+            )
+          } finally {
+            setIsLoading(false)
+          }
+        }
+        return
+      }
+
+      if (passwordScreenType === 'remove') {
+        if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
+          try {
+            setIsLoading(true)
+            await userApi.unlock(currentPassword)
+            await userApi.removeLock()
+          } catch (err) {
+            const error = err as AxiosError<{ error: string }>
+            console.error(err)
+            toast.error(
+              <>
+                비밀번호 삭제에 실패했습니다.
+                <br />
+                {error.response?.data?.error || error.message}
+              </>
+            )
+          } finally {
+            await refetchLogin()
+            setIsLocked(undefined)
+            dispatchPassword('CLEAR')
+            closePasswordScreen()
+            toast.success('비밀번호 삭제 성공')
+            setIsLoading(false)
+          }
+        }
+        return
+      }
+
+      try {
+        setIsLoading(true)
+        // NOTE: 잠금 해제
+        await userApi.unlock(currentPassword)
+        setIsLocked(false) // 잠금 해제 상태로 설정
+        dispatchPassword('CLEAR')
+        closePasswordScreen()
+        return
+      } catch (err) {
+        const error = err as AxiosError<{ error: string }>
+        console.error(err)
+        toast.error(
+          <>
+            잠금 해제에 실패했습니다.
+            <br />
+            {error.response?.data?.error || error.message}
+          </>
+        )
+        return
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [closePasswordScreen, passwordScreenType, refetchLogin, setIsLocked]
+  )
+
   const [password, dispatchPassword] = useReducer(
     (state: string, payload: string) => {
       const validValues = [
@@ -81,10 +170,13 @@ export function PasswordScreen() {
     ''
   )
 
-  const [isLoading, setIsLoading] = useState(false)
-
   const asteriskPassword =
     password.length > 0 ? '*'.repeat(password.length) : ''
+
+  const passwordLengthText =
+    MAX_PASSWORD_LENGTH === MIN_PASSWORD_LENGTH
+      ? `${MIN_PASSWORD_LENGTH}자리`
+      : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
 
   return (
     <div
@@ -103,14 +195,14 @@ export function PasswordScreen() {
 
       <div className='text-2xl font-bold'>
         {passwordScreenType === 'setup'
-          ? '비밀번호 설정 (4~6자리)'
+          ? `비밀번호 설정 (${passwordLengthText})`
           : passwordScreenType === 'remove'
-          ? '비밀번호 삭제 확인 (4~6자리)'
-          : '메모 잠금 해제 (4~6자리)'}
+          ? `비밀번호 삭제 확인 (${passwordLengthText})`
+          : `메모 잠금 해제 (${passwordLengthText})`}
       </div>
 
       <div className='text-3xl font-bold py-2 px-4 h-[60px]'>
-        {asteriskPassword}
+        {isLoading ? <Loader2 className='animate-spin' /> : asteriskPassword}
       </div>
 
       <div
@@ -135,81 +227,10 @@ export function PasswordScreen() {
           const clickedElement = e.target as HTMLSpanElement
           const value = clickedElement?.innerText
 
-          if (value === 'SEND') {
-            if (password.length < MIN_PASSWORD_LENGTH) {
-              return
-            }
+          const newPassword = password + value
 
-            if (passwordScreenType === 'setup') {
-              if (window.confirm('비밀번호를 설정하시겠습니까?')) {
-                try {
-                  setIsLoading(true)
-                  await userApi.setLock(password)
-                  setIsLocked(false)
-                  refetchLogin()
-                  dispatchPassword('CLEAR')
-                  closePasswordScreen()
-                } catch (err) {
-                  const error = err as AxiosError<{ error: string }>
-                  console.error(err)
-                  toast.error(
-                    `비밀번호 설정에 실패했습니다.\n${
-                      error.response?.data?.error || error.message
-                    }`
-                  )
-                } finally {
-                  setIsLoading(false)
-                }
-              }
-              return
-            }
-
-            if (passwordScreenType === 'remove') {
-              if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
-                try {
-                  setIsLoading(true)
-                  await userApi.unlock(password)
-                  await userApi.removeLock()
-                } catch (err) {
-                  const error = err as AxiosError<{ error: string }>
-                  console.error(err)
-                  toast.error(
-                    `비밀번호 삭제에 실패했습니다.\n${
-                      error.response?.data?.error || error.message
-                    }`
-                  )
-                } finally {
-                  await refetchLogin()
-                  setIsLocked(undefined)
-                  dispatchPassword('CLEAR')
-                  closePasswordScreen()
-                  toast.success('비밀번호 삭제 성공')
-                  setIsLoading(false)
-                }
-              }
-              return
-            }
-
-            try {
-              setIsLoading(true)
-              // NOTE: 잠금 해제
-              await userApi.unlock(password)
-              setIsLocked(false) // 잠금 해제 상태로 설정
-              dispatchPassword('CLEAR')
-              closePasswordScreen()
-              return
-            } catch (err) {
-              const error = err as AxiosError<{ error: string }>
-              console.error(err)
-              toast.error(
-                `잠금 해제에 실패했습니다.\n${
-                  error.response?.data?.error || error.message
-                }`
-              )
-              return
-            } finally {
-              setIsLoading(false)
-            }
+          if (value === 'SEND' || newPassword.length === MAX_PASSWORD_LENGTH) {
+            sendPassword(newPassword)
           }
 
           dispatchPassword(value)

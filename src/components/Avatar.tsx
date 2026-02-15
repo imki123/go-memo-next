@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { authService } from '@/domains/auth/di'
+
 import { routes } from '../../pages'
 import { LoginResponseType } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
@@ -55,36 +56,37 @@ const Avatar = ({
       <Modal
         visible={visible}
         title='로그아웃 하시겠습니까?'
+        onClose={closeModal}
         buttons={[
           {
             children: '취소',
-            onClick: () => {
-              closeModal()
-            },
+            onClick: closeModal,
           },
           {
             children: '확인',
-            onClick: () => {
+            onClick: async () => {
               closeModal()
 
-              authService
-                .logout()
-                .then(() => {
-                  toast.success('로그아웃 성공')
-                })
-                .catch((err) => {
-                  toast.error(`로그아웃 실패😥<br/>${JSON.stringify(err)}`)
-                })
-                .finally(() => {
-                  router.push(routes.root)
-                  setTimeout(() => {
-                    window.location.reload()
-                  }, 100)
-                })
+              try {
+                await authService.logout()
+                toast.success('로그아웃 성공')
+              } catch (err) {
+                toast.error(
+                  <>
+                    로그아웃 실패😥
+                    <br />
+                    {JSON.stringify(err)}
+                  </>
+                )
+              } finally {
+                router.push(routes.root)
+                setTimeout(() => {
+                  window.location.reload()
+                }, 1000)
+              }
             },
           },
         ]}
-        onClose={closeModal}
       />
     </>
   )

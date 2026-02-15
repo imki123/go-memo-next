@@ -157,7 +157,13 @@ function _Memo(
                   invalidateQuery({ queryFn: memoApi.getAllMemo })
                   if (!readOnly) router.replace(routes.root)
                 } catch (err) {
-                  toast.error(`메모 삭제 실패: <br/>${JSON.stringify(err)}`)
+                  toast.error(
+                    <>
+                      메모 삭제 실패:
+                      <br />
+                      {JSON.stringify(err)}
+                    </>
+                  )
                 }
               } else {
                 deleteMemo(memoId)
