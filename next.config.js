@@ -11,6 +11,9 @@ try {
   console.error('Git commit hash를 가져올 수 없습니다.', error)
 }
 
+const buildTime =
+  new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) + ' (KST)'
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -23,6 +26,7 @@ const nextConfig = {
   },
   env: {
     NEXT_PUBLIC_GIT_COMMIT_HASH: gitCommitHash,
+    NEXT_PUBLIC_BUILD_TIME: buildTime,
   },
 }
 

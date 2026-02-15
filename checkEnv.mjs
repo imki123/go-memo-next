@@ -1,12 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 
-import dotenv from 'dotenv'
+import { parse } from 'dotenv'
 
 const envFilePath = path.resolve(process.cwd(), '.env.production.local')
 
 if (fs.existsSync(envFilePath)) {
-  const envConfig = dotenv.parse(fs.readFileSync(envFilePath))
+  const envConfig = parse(fs.readFileSync(envFilePath))
 
   const requiredEnvVars = ['NEXT_PUBLIC_BE_URL', 'NEXT_PUBLIC_GOOGLE_CLIENT_ID']
   const missingEnvVars = requiredEnvVars.filter((envVar) => !envConfig[envVar])

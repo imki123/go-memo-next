@@ -21,15 +21,21 @@ import { routes } from '.'
 import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // 테마 지정
   const router = useRouter()
 
   useEffect(() => {
-    console.info('[ENV]', process.env.NODE_ENV, BE_URL)
-    console.info('[hash]', process.env.NEXT_PUBLIC_GIT_COMMIT_HASH)
+    // NOTE: 앱 시작시 설정 정보 표시
+    console.info(
+      '[buildTime, commitHash, env]',
+      process.env.NEXT_PUBLIC_BUILD_TIME,
+      process.env.NEXT_PUBLIC_GIT_COMMIT_HASH,
+      process.env.NODE_ENV,
+      BE_URL
+    )
   }, [])
 
   useEffect(() => {
+    // NOTE: 라우트 변경시 표시
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
