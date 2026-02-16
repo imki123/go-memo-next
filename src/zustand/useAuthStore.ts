@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { persistStoreKeys } from '@/infra/persistStoreKeys'
+import { persistStoreKeys } from '@/zustand/persistStoreKeys'
 
 type AuthStateType = {
   accessToken: string
@@ -28,13 +28,3 @@ export const useAuthStore = create<AuthStateType & AuthActionType>()(
     }
   )
 )
-
-export const authStore = {
-  getAccessToken: () => useAuthStore.getState().accessToken,
-  setAccessToken: (accessToken: string) => {
-    useAuthStore.setState({ accessToken })
-  },
-  deleteAccessToken: () => {
-    useAuthStore.setState({ accessToken: '' })
-  },
-}
