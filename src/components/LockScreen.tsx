@@ -4,15 +4,16 @@ import { useCallback, useEffect, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
 import { userApi } from '@/apis/userApi'
+import { lockService } from '@/domains/lock/di'
+import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
 import { useApiQuery } from '@/lib/queryUtils'
 import { zIndex } from '@/utils/util'
-import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
 const MIN_PASSWORD_LENGTH = 4
 const MAX_PASSWORD_LENGTH = 4
 
-export function PasswordScreen() {
+export function LockScreen() {
   useEffect(() => {
     // NOTE: 패스워드 입력 시 스크롤 방지
     const intervalId = setInterval(() => {
@@ -32,8 +33,7 @@ export function PasswordScreen() {
     }
   }, [])
 
-  const { closePasswordScreen, passwordScreenType, setIsLocked } =
-    usePasswordScreenStore()
+  const currentLockScreenType = useLockServiceStore((s) => s.lockScreenType)
   const { theme } = useThemeStore()
   const { refetch: refetchLogin } = useApiQuery({
     queryFn: userApi.checkLogin,
@@ -47,15 +47,15 @@ export function PasswordScreen() {
         return
       }
 
-      if (passwordScreenType === 'setup') {
+      if (currentLockScreenType === 'enable') {
         if (window.confirm('비밀번호를 설정하시겠습니까?')) {
           try {
             setIsSending(true)
             await userApi.setLock(currentPassword)
-            setIsLocked(false)
+            lockService.setIsLockedLocal(false)
             refetchLogin()
             dispatchPassword('CLEAR')
-            closePasswordScreen()
+            lockService.hideLockScreen()
           } catch (err) {
             const error = err as AxiosError<{ error: string }>
             console.error(err)
@@ -73,7 +73,7 @@ export function PasswordScreen() {
         return
       }
 
-      if (passwordScreenType === 'remove') {
+      if (currentLockScreenType === 'disable') {
         if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
           try {
             setIsSending(true)
@@ -91,9 +91,9 @@ export function PasswordScreen() {
             )
           } finally {
             await refetchLogin()
-            setIsLocked(undefined)
+            lockService.setIsLockedLocal(false)
             dispatchPassword('CLEAR')
-            closePasswordScreen()
+            lockService.hideLockScreen()
             toast.success('비밀번호 삭제 성공')
             setIsSending(false)
           }
@@ -103,11 +103,10 @@ export function PasswordScreen() {
 
       try {
         setIsSending(true)
-        // NOTE: 잠금 해제
         await userApi.unlock(currentPassword)
-        setIsLocked(false) // 잠금 해제 상태로 설정
+        lockService.setIsLockedLocal(false)
         dispatchPassword('CLEAR')
-        closePasswordScreen()
+        lockService.hideLockScreen()
         return
       } catch (err) {
         const error = err as AxiosError<{ error: string }>
@@ -124,7 +123,7 @@ export function PasswordScreen() {
         setIsSending(false)
       }
     },
-    [closePasswordScreen, passwordScreenType, refetchLogin, setIsLocked]
+    [currentLockScreenType, refetchLogin]
   )
 
   const [password, dispatchPassword] = useReducer(
@@ -181,22 +180,23 @@ export function PasswordScreen() {
   return (
     <div
       className={`fixed top-[60px] bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] ${
-        zIndex.passwordScreen
+        zIndex.lockScreen
       } p-4 flex flex-col justify-center items-center gap-6 select-none overflow-auto
         ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}
         `}
     >
-      {(passwordScreenType === 'setup' || passwordScreenType === 'remove') && (
+      {(currentLockScreenType === 'enable' ||
+        currentLockScreenType === 'disable') && (
         <X
           className='absolute top-4 right-4 cursor-pointer'
-          onClick={closePasswordScreen}
+          onClick={() => lockService.hideLockScreen()}
         />
       )}
 
       <div className='text-2xl font-bold'>
-        {passwordScreenType === 'setup'
+        {currentLockScreenType === 'enable'
           ? `비밀번호 설정 (${passwordLengthText})`
-          : passwordScreenType === 'remove'
+          : currentLockScreenType === 'disable'
           ? `비밀번호 삭제 확인 (${passwordLengthText})`
           : `메모 잠금 해제 (${passwordLengthText})`}
       </div>

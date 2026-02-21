@@ -7,12 +7,13 @@ import { useEffect } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
-import { PasswordScreen } from '@/components/PasswordScreen'
+import { LockScreen } from '@/components/LockScreen'
 import { authService } from '@/domains/auth/di'
+import { lockService } from '@/domains/lock/di'
+import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
-import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 
 import { routes } from '.'
 
@@ -37,15 +38,14 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const { passwordScreenOpened, isLocked, setIsLocked } =
-    usePasswordScreenStore()
+  const isLockScreenOpened = useLockServiceStore((s) => s.lockScreenOpened)
 
   function afterLogin(loginData: LoginResponseType) {
     if (loginData) {
       toast.success('로그인 성공 😄')
 
-      if (loginData.locked && (isLocked || isLocked === undefined)) {
-        setIsLocked(true)
+      if (loginData.locked) {
+        lockService.setIsLockedLocal(true)
       }
 
       router.replace(routes.root)
@@ -75,7 +75,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
 
-      {passwordScreenOpened && <PasswordScreen />}
+      {isLockScreenOpened && <LockScreen />}
 
       <Component {...pageProps} />
 

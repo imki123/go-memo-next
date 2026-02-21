@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
+import { lockService } from '@/domains/lock/di'
 import { localStorageKeys } from '@/utils/localStorageKeys'
-import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
 
 import { userApi } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
@@ -35,7 +35,6 @@ export default function Header({
 
   const router = useRouter()
 
-  const { openPasswordScreen } = usePasswordScreenStore()
   const { data: loginData } = useApiQuery({
     queryFn: userApi.checkLogin,
   })
@@ -102,7 +101,7 @@ export default function Header({
       variant: 'destructive',
       onClick: () => {
         closeModal()
-        openPasswordScreen('remove')
+        lockService.showLockScreen('disable')
       },
     })
   } else {
@@ -110,7 +109,7 @@ export default function Header({
       children: '비밀번호 설정',
       onClick: () => {
         closeModal()
-        openPasswordScreen('setup')
+        lockService.showLockScreen('enable')
       },
     })
   }

@@ -28,6 +28,9 @@ export function createAuthService({
   accessTokenRepository: AccessTokenRepository
 }): AuthService {
   return {
+    isAuthenticated: () =>
+      authEntity.isAuthenticated(accessTokenRepository.getAccessToken()),
+
     renderLoginUi: oAuthClient.renderLoginUi,
 
     autoLogin: async (loginCallback: LoginCallback) => {
@@ -76,9 +79,6 @@ export function createAuthService({
     deleteAccessToken: () => {
       accessTokenRepository.deleteAccessToken()
     },
-
-    isAuthenticated: () =>
-      authEntity.isAuthenticated(accessTokenRepository.getAccessToken()),
   }
 }
 
