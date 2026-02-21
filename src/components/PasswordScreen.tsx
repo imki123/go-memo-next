@@ -39,7 +39,7 @@ export function PasswordScreen() {
     queryFn: userApi.checkLogin,
   })
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   const sendPassword = useCallback(
     async (currentPassword: string) => {
@@ -50,7 +50,7 @@ export function PasswordScreen() {
       if (passwordScreenType === 'setup') {
         if (window.confirm('비밀번호를 설정하시겠습니까?')) {
           try {
-            setIsLoading(true)
+            setIsSending(true)
             await userApi.setLock(currentPassword)
             setIsLocked(false)
             refetchLogin()
@@ -67,7 +67,7 @@ export function PasswordScreen() {
               </>
             )
           } finally {
-            setIsLoading(false)
+            setIsSending(false)
           }
         }
         return
@@ -76,7 +76,7 @@ export function PasswordScreen() {
       if (passwordScreenType === 'remove') {
         if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
           try {
-            setIsLoading(true)
+            setIsSending(true)
             await userApi.unlock(currentPassword)
             await userApi.removeLock()
           } catch (err) {
@@ -95,14 +95,14 @@ export function PasswordScreen() {
             dispatchPassword('CLEAR')
             closePasswordScreen()
             toast.success('비밀번호 삭제 성공')
-            setIsLoading(false)
+            setIsSending(false)
           }
         }
         return
       }
 
       try {
-        setIsLoading(true)
+        setIsSending(true)
         // NOTE: 잠금 해제
         await userApi.unlock(currentPassword)
         setIsLocked(false) // 잠금 해제 상태로 설정
@@ -121,7 +121,7 @@ export function PasswordScreen() {
         )
         return
       } finally {
-        setIsLoading(false)
+        setIsSending(false)
       }
     },
     [closePasswordScreen, passwordScreenType, refetchLogin, setIsLocked]
@@ -141,8 +141,8 @@ export function PasswordScreen() {
         '9',
         '0',
         'DEL',
-        'SEND',
         'CLEAR',
+        'SEND', // NOTE: 4자리 입력시 자동 전송되기에 SEND 사용하지 않음
       ]
 
       if (!validValues.includes(payload)) {
@@ -202,7 +202,7 @@ export function PasswordScreen() {
       </div>
 
       <div className='text-3xl font-bold py-2 px-4 h-[60px]'>
-        {isLoading ? <Loader2 className='animate-spin' /> : asteriskPassword}
+        {isSending ? <Loader2 className='animate-spin' /> : asteriskPassword}
       </div>
 
       <div
@@ -224,16 +224,20 @@ export function PasswordScreen() {
         onClick={async (e) => {
           e.stopPropagation()
 
+          if (isSending) {
+            return
+          }
+
           const clickedElement = e.target as HTMLSpanElement
-          const value = clickedElement?.innerText
+          const numberInput = clickedElement?.innerText
 
-          const newPassword = password + value
+          const newPassword = password + numberInput
 
-          if (value === 'SEND' || newPassword.length === MAX_PASSWORD_LENGTH) {
+          if (newPassword.length === MAX_PASSWORD_LENGTH) {
             sendPassword(newPassword)
           }
 
-          dispatchPassword(value)
+          dispatchPassword(numberInput)
         }}
       >
         <div>
@@ -258,17 +262,19 @@ export function PasswordScreen() {
           <span
             className={`!text-lg !bg-red-100 hover:!bg-red-200 ${
               theme === 'dark' ? '!bg-red-900 hover:!bg-red-950' : ''
-            }`}
+            } ${isSending ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             DEL
           </span>
+
           <span>0</span>
+
           <span
-            className={`!text-lg !bg-blue-100 hover:!bg-blue-200 ${
-              theme === 'dark' ? '!bg-blue-900 hover:!bg-blue-950' : ''
-            }`}
+            className={`!text-lg !bg-red-100 hover:!bg-red-200 ${
+              theme === 'dark' ? '!bg-red-900 hover:!bg-red-950' : ''
+            } ${isSending ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isLoading ? <Loader2 className='animate-spin' /> : 'SEND'}
+            CLEAR
           </span>
         </div>
       </div>
