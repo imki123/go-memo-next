@@ -3,18 +3,16 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
 import { PasswordScreen } from '@/components/PasswordScreen'
 import { authService } from '@/domains/auth/di'
-import { SplashScreen } from '@/feature/home/SplashScreen'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
 import { usePasswordScreenStore } from '@/zustand/usePasswordScreenStore'
-import { useSplashStore } from '@/zustand/useSplashStore'
 
 import { routes } from '.'
 
@@ -39,33 +37,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const { splashVisible, setSplashVisible } = useSplashStore()
   const { passwordScreenOpened, isLocked, setIsLocked } =
     usePasswordScreenStore()
-
-  const [splashOpened, setSplashOpened] = useState(true)
-  const initialTimeoutId = useRef<NodeJS.Timeout>()
-
-  useEffect(() => {
-    // NOTE: 스플래시 노출
-    if (splashVisible === undefined) {
-      setSplashVisible(true)
-      initialTimeoutId.current = setTimeout(
-        () => setSplashVisible(false),
-        1 * 1000
-      )
-    }
-    if (splashVisible === false) {
-      setTimeout(() => setSplashOpened(false), 300)
-    }
-  }, [splashVisible, setSplashVisible])
-
-  useEffect(() => {
-    // NOTE: 언마운트시 타임아웃 제거
-    return () => {
-      clearTimeout(initialTimeoutId.current)
-    }
-  }, [])
 
   function afterLogin(loginData: LoginResponseType) {
     if (loginData) {
@@ -101,8 +74,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
-
-      {splashOpened && <SplashScreen visible={splashVisible} />}
 
       {passwordScreenOpened && <PasswordScreen />}
 
