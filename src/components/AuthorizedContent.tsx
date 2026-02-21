@@ -6,17 +6,20 @@ import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
 import { useApiQuery } from '@/lib/queryUtils'
 
 /**
- * 앱이 잠겨있는 상태라면 화면을 가리고 데이터를 요청하지 않도록 막아주는 컴포넌트
- * 캐시만으로는 판단하지 않고, 마운트 후 checkLogin refetch가 끝난 뒤에만 children 허용
+ * 인증되어있지 않다면 화면을 가리고 데이터를 요청하지 않도록 막아주는 컴포넌트
  */
-export function ProtectedContent({
+export function AuthorizedContent({
   children,
 }: {
   children: ReactNode
 }): JSX.Element {
   const isLockedLocal = useLockServiceStore((s) => s.isLockedLocal)
 
-  const { data: loginData, isFetching } = useApiQuery({
+  const {
+    data: loginData,
+    isFetching,
+    isError,
+  } = useApiQuery({
     queryFn: userApi.checkLogin,
   })
 
@@ -31,7 +34,7 @@ export function ProtectedContent({
     }
   }, [loginData?.locked])
 
-  if (!loginData || isFetching) {
+  if (isFetching) {
     return (
       <div className='flex flex-col items-center justify-center h-[200px] text-lg'>
         <div>로딩 중...</div>
@@ -40,9 +43,13 @@ export function ProtectedContent({
     )
   }
 
-  if (isLockedLocal !== false) {
-    return <>{children}</>
+  if (isError || !loginData) {
+    return <></>
   }
 
-  return <></>
+  if (isLockedLocal) {
+    return <></>
+  }
+
+  return <>{children}</>
 }

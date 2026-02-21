@@ -1,6 +1,9 @@
+import { userApi } from '@/apis/userApi'
+import { MockMemoList } from '@/components/home/MockMemoList'
+import { useApiQuery } from '@/lib/queryUtils'
+
 import Header from '../src/components/Header'
 import { MemoList } from '../src/components/home/MemoList'
-import { ProtectedContent } from '../src/components/ProtectedContent'
 
 export const routes = {
   root: '/',
@@ -9,13 +12,15 @@ export const routes = {
 }
 
 export default function IndexPage() {
+  const { data: loginData, isFetching } = useApiQuery({
+    queryFn: userApi.checkLogin,
+  })
+
   return (
     <>
       <Header title='고영이 메모장🐈' backButton={false} />
 
-      <ProtectedContent>
-        <MemoList />
-      </ProtectedContent>
+      {loginData && !isFetching ? <MemoList /> : <MockMemoList />}
     </>
   )
 }
