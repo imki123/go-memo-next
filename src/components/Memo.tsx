@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 
 import { routes } from '../../pages'
 import { memoApi } from '../apis/memoApi'
-import { lockFacade } from '../domains/lock/di'
+import { lockFacade } from '../domain/lock/di'
 import useCommonModal from '../hooks/useCommonModal'
 import { queryKeys } from '../lib/queryKeys'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'

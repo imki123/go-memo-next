@@ -3,7 +3,7 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
-import { lockFacade } from '@/domains/lock/di'
+import { lockFacade } from '@/domain/lock/di'
 import { zIndex } from '@/utils/util'
 import { useThemeStore } from '@/zustand/useThemeStore'
 

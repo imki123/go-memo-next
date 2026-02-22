@@ -1,4 +1,4 @@
-import { AccessTokenRepository } from '@/domains/auth/service'
+import { AccessTokenRepository } from '@/domain/auth/service'
 import { useAuthStore } from '@/zustand/useAuthStore'
 
 export const authStore: AccessTokenRepository = {

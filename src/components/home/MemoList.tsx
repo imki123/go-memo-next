@@ -9,7 +9,7 @@ import { memoApi } from '@/apis/memoApi'
 import { Memo } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { lockFacade } from '@/domains/lock/di'
+import { lockFacade } from '@/domain/lock/di'
 import { queryKeys } from '@/lib/queryKeys'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 

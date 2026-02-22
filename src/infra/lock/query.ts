@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { LockQuery } from '@/domains/lock/facade'
-import type { LockService } from '@/domains/lock/service'
+import { LockQuery } from '@/domain/lock/facade'
+import type { LockService } from '@/domain/lock/service'
 
 export const lockKeys = {
   all: ['lock'] as const,

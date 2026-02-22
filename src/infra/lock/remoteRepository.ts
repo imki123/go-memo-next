@@ -1,5 +1,5 @@
 import { userApi } from '@/apis/userApi'
-import type { LockRemoteRepository } from '@/domains/lock/service'
+import type { LockRemoteRepository } from '@/domain/lock/service'
 import { queryClient } from '@/lib/queryClient'
 
 import { lockKeys } from './query'

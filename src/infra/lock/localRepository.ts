@@ -1,4 +1,4 @@
-import type { LockLocalRepository } from '@/domains/lock/service'
+import type { LockLocalRepository } from '@/domain/lock/service'
 
 import { useLockStore } from './store'
 

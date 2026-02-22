@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
-import { lockFacade } from '@/domains/lock/di'
+import { lockFacade } from '@/domain/lock/di'
 import { queryKeys } from '@/lib/queryKeys'
 import { localStorageKeys } from '@/utils/localStorageKeys'
 

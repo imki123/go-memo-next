@@ -1,6 +1,6 @@
 import { JSX, ReactNode, useEffect } from 'react'
 
-import { lockFacade } from '@/domains/lock/di'
+import { lockFacade } from '@/domain/lock/di'
 
 /**
  * 인증되어있지 않다면 화면을 가리고 데이터를 요청하지 않도록 막아주는 컴포넌트

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { authService } from '@/domains/auth/di'
+import { authService } from '@/domain/auth/di'
 import { useLoginStore } from '@/zustand/useLoginStore'
 
 import Header from '../src/components/Header'

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
-import { LockStore } from '@/domains/lock/facade'
-import type { LockScreenType } from '@/domains/lock/service'
+import { LockStore } from '@/domain/lock/facade'
+import type { LockScreenType } from '@/domain/lock/service'
 
 type LockScreenStateType = {
   isLockedLocal: boolean | undefined

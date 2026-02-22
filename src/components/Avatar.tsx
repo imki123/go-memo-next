@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { authService } from '@/domains/auth/di'
+import { authService } from '@/domain/auth/di'
 
 import { routes } from '../../pages'
 import { LoginResponseType } from '../apis/userApi'
