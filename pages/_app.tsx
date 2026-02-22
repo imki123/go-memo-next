@@ -41,11 +41,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
-
   const isLockedLocal = lockFacade.store.useIsLockedLocal()
 
   useEffect(() => {
+    // NOTE: 잠금 화면 표시 여부 결정
     lockFacade.service
       .shouldShowLockScreen()
       .then((shouldShowLockScreen) => {
@@ -59,7 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         console.error(error)
         lockFacade.store.hideLockScreen()
       })
-  }, [isLockScreenOpened, isLockedLocal])
+  }, [isLockedLocal])
 
   function afterLogin(loginData: LoginResponseType) {
     if (loginData.token) {

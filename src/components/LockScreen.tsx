@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { Loader2, X } from 'lucide-react'
-import { useCallback, useEffect, useReducer, useState } from 'react'
+import { useCallback, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
 import { lockFacade } from '@/domain/lock/facade'
@@ -11,24 +11,7 @@ const MIN_PASSWORD_LENGTH = 4
 const MAX_PASSWORD_LENGTH = 4
 
 export function LockScreen() {
-  useEffect(() => {
-    // NOTE: 패스워드 입력 시 스크롤 방지
-    const intervalId = setInterval(() => {
-      if (
-        document.body.style.overflow === 'hidden' &&
-        document.documentElement.style.overflow === 'hidden'
-      ) {
-        return
-      }
-      document.body.style.overflow = 'hidden'
-      document.documentElement.style.overflow = 'hidden'
-    }, 100)
-    return () => {
-      document.body.style.overflow = ''
-      document.documentElement.style.overflow = ''
-      clearInterval(intervalId)
-    }
-  }, [])
+  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
 
   const currentLockScreenType = lockFacade.store.useLockScreenType()
   const { theme } = useThemeStore()
@@ -179,7 +162,6 @@ export function LockScreen() {
       : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
 
   const isLockedLocal = lockFacade.store.useIsLockedLocal()
-  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
 
   if (!isLockedLocal && !isLockScreenOpened) {
     return null
