@@ -1,5 +1,5 @@
-import { createLockQuery } from '@/infra/lock/query'
-import { lockStore } from '@/infra/lock/store'
+import { createLockQuery } from '@/domain/lock/infra/query'
+import { lockStore } from '@/domain/lock/infra/store'
 
 import { lockService } from './di'
 import { IsLockedLocalStatus } from './entity'

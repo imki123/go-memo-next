@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { accessTokenRepository } from '@/infra/auth/accessTokenRepository'
+import { accessTokenRepository } from '@/domain/auth/infra/accessTokenRepository'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
 

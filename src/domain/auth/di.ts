@@ -1,6 +1,6 @@
 import { userApi } from '@/apis/userApi'
-import { accessTokenRepository } from '@/infra/auth/accessTokenRepository'
-import { googleAccountClient } from '@/infra/auth/googleAccountClient'
+import { accessTokenRepository } from '@/domain/auth/infra/accessTokenRepository'
+import { googleAccountClient } from '@/domain/auth/infra/googleAccountClient'
 import { queryClient } from '@/lib/queryClient'
 
 import { createAuthService } from './service'

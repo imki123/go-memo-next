@@ -1,5 +1,5 @@
-import { localLockRepository } from '@/infra/lock/localRepository'
-import { remoteLockRepository } from '@/infra/lock/remoteRepository'
+import { localLockRepository } from '@/domain/lock/infra/localRepository'
+import { remoteLockRepository } from '@/domain/lock/infra/remoteRepository'
 
 import { createLockService } from './service'
 
