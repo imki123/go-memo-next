@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { userApi } from '@/apis/userApi'
 import { MockMemoList } from '@/components/home/MockMemoList'
+import { authService } from '@/domain/auth/di'
+import { lockFacade } from '@/domain/lock/facade'
 import { queryKeys } from '@/lib/queryKeys'
 import { texts } from '@/texts'
 
@@ -19,6 +21,9 @@ export default function HomePage() {
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: userApi.checkLogin,
   })
+
+  const isAuthenticated = authService.isAuthenticated()
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
 
   return (
     <>

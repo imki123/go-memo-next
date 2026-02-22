@@ -51,6 +51,10 @@ export function MockMemoEditor({
   } = useMemoHistoryStore()
 
   const debounceTimeoutId = useRef<NodeJS.Timeout>()
+  const memoCreatedAtRef = useRef<string | undefined>()
+  useEffect(() => {
+    memoCreatedAtRef.current = memo?.createdAt
+  }, [memo?.createdAt])
 
   useEffect(() => {
     if (memo?.text !== undefined && !syncFromStore.current) {
@@ -61,16 +65,15 @@ export function MockMemoEditor({
   }, [memo?.text, memo?.memoId, pushHistory])
 
   useEffect(() => {
-    if (memoHistories[currentIndex] !== undefined) {
-      setText(memoHistories[currentIndex])
-      setMemo({
-        memoId,
-        text: memoHistories[currentIndex],
-        editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
-        createdAt: memo?.createdAt,
-      })
-    }
-  }, [currentIndex, memoHistories, memoId, setMemo, memo?.createdAt])
+    if (memo == null || memoHistories[currentIndex] === undefined) return
+    setText(memoHistories[currentIndex])
+    setMemo({
+      memoId,
+      text: memoHistories[currentIndex],
+      editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      createdAt: memo.createdAt,
+    })
+  }, [currentIndex, memoHistories, memoId, setMemo, memo])
 
   useEffect(() => {
     return () => {
@@ -94,15 +97,17 @@ export function MockMemoEditor({
   function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
     const newText = e.target.value
     setText(newText)
-    const now = dayjs().format('YYYY-MM-DD HH:mm')
-    setMemo({
-      memoId,
-      text: newText,
-      editedAt: now,
-      createdAt: memo?.createdAt || now,
-    })
     clearTimeout(debounceTimeoutId.current)
-    debounceTimeoutId.current = setTimeout(() => pushHistory(newText), 500)
+    debounceTimeoutId.current = setTimeout(() => {
+      const now = dayjs().format('YYYY-MM-DD HH:mm')
+      pushHistory(newText)
+      setMemo({
+        memoId,
+        text: newText,
+        editedAt: now,
+        createdAt: memoCreatedAtRef.current ?? now,
+      })
+    }, 500)
   }
 
   function handleDeleteMemo(e: MouseEvent<SVGSVGElement>) {
@@ -162,8 +167,8 @@ export function MockMemoEditor({
           {
             children: '삭제',
             onClick: () => {
-              closeModal()
               deleteMemo(memoId)
+              closeModal()
               router.replace(routes.root)
             },
           },

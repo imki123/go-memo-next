@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -9,11 +10,12 @@ import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 import { Memo } from './Memo'
 
 export function MockMemoList() {
-  const { allMemos } = useAllMemosStore()
+  const router = useRouter()
+  const { allMemos, setAllMemos } = useAllMemosStore()
 
   const sortedMemos = useMemo(
     () =>
-      [...(allMemos || [])].sort((a, b) => {
+      [...allMemos].sort((a, b) => {
         const timeA = dayjs(a.editedAt).valueOf()
         const timeB = dayjs(b.editedAt).valueOf()
         return timeB - timeA
@@ -27,7 +29,19 @@ export function MockMemoList() {
   )
 
   async function addMemo() {
-    toast.error('로그인이 필요합니다. 😥')
+    const newId =
+      allMemos.reduce((max, memo) => Math.max(max, memo.memoId), 0) + 1 || 1
+    setAllMemos([
+      ...allMemos,
+      {
+        memoId: newId,
+        text: `메모${newId}`,
+        createdAt: dayjs().format('YYYY-MM-DD HH:mm'),
+        editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      },
+    ])
+    router.push(`/memo?memoId=${newId}`)
+    toast.success('메모 추가 성공')
   }
 
   return (
