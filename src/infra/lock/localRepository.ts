@@ -1,24 +1,14 @@
-import { useLockStore } from './store'
-
 import type { LockLocalRepository } from '@/domains/lock/service'
 
+import { useLockStore } from './store'
 
-type LockStore = ReturnType<typeof useLockStore.getState>
-
-export function createZustandLockLocalRepository(
-  getStore: () => LockStore
-): LockLocalRepository {
-  return {
-    getIsLockedLocal: () => getStore().isLockedLocal ?? false,
-    setIsLockedLocal: (isLockedLocal) =>
-      getStore().setIsLockedLocal(isLockedLocal),
-    getCurrentLockScreenType: () => getStore().lockScreenType,
-    getIsLockScreenOpened: () => getStore().lockScreenOpened,
-    showLockScreen: (screenType) => getStore().openLockScreen(screenType),
-    hideLockScreen: () => getStore().closeLockScreen(),
-  }
-}
-
-export function getLocalLockRepository(): LockLocalRepository {
-  return createZustandLockLocalRepository(useLockStore.getState)
+export const localLockRepository: LockLocalRepository = {
+  getIsLockedLocal: () => useLockStore.getState().isLockedLocal ?? false,
+  setIsLockedLocal: (isLockedLocal) =>
+    useLockStore.getState().setIsLockedLocal(isLockedLocal),
+  getCurrentLockScreenType: () => useLockStore.getState().lockScreenType,
+  getIsLockScreenOpened: () => useLockStore.getState().lockScreenOpened,
+  showLockScreen: (screenType) =>
+    useLockStore.getState().openLockScreen(screenType),
+  hideLockScreen: () => useLockStore.getState().closeLockScreen(),
 }

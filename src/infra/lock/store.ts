@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 
+import { LockStore } from '@/domains/lock/facade'
 import type { LockScreenType } from '@/domains/lock/service'
 
 type LockScreenStateType = {
@@ -34,7 +35,7 @@ export const useLockStore = create<LockScreenStoreType>()((set) => ({
   setIsLockedLocal: (isLockedLocal) => set({ isLockedLocal }),
 }))
 
-export const lockStore = {
+export const lockStore: LockStore = {
   useIsLockedLocal: (): boolean | undefined =>
     useLockStore((s) => s.isLockedLocal) as boolean | undefined,
   useLockScreenOpened: (): boolean =>

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
@@ -8,7 +9,7 @@ import { routes } from '../../pages'
 import { memoApi } from '../apis/memoApi'
 import { lockFacade } from '../domains/lock/di'
 import useCommonModal from '../hooks/useCommonModal'
-import { useInvalidation } from '../lib/queryUtils'
+import { queryKeys } from '../lib/queryKeys'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 import { useFontSizeStore } from '../zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
@@ -45,7 +46,7 @@ function _Memo(
   const memoText = currentMemo?.text || ''
 
   const { pushHistory } = useMemoHistoryStore()
-  const { invalidateQuery } = useInvalidation()
+  const queryClient = useQueryClient()
 
   const debounceTimeoutId = useRef<NodeJS.Timeout>()
   const fetchTimeoutId = useRef<NodeJS.Timeout>()
@@ -80,7 +81,7 @@ function _Memo(
       ) {
         try {
           await memoApi.patchMemo(newMemo)
-          invalidateQuery({ queryFn: memoApi.getAllMemo })
+          queryClient.invalidateQueries({ queryKey: queryKeys.memoKeys.list() })
 
           toast.success('수정완료')
         } catch (error) {
@@ -162,7 +163,9 @@ function _Memo(
                 try {
                   await memoApi.deleteMemo(memoId)
                   toast.success('메모 삭제 성공')
-                  invalidateQuery({ queryFn: memoApi.getAllMemo })
+                  queryClient.invalidateQueries({
+                    queryKey: queryKeys.memoKeys.list(),
+                  })
                   if (!readOnly) router.replace(routes.root)
                 } catch (err) {
                   toast.error(

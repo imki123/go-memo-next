@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import { LockQuery } from '@/domains/lock/facade'
 import type { LockService } from '@/domains/lock/service'
 
 export const lockKeys = {
@@ -7,7 +8,7 @@ export const lockKeys = {
   loginStatus: () => [...lockKeys.all, 'loginStatus'] as const,
 }
 
-export function createLockQuery(lockService: LockService) {
+export function createLockQuery(lockService: LockService): LockQuery {
   return {
     useLockedStatus() {
       return useQuery({
@@ -18,15 +19,13 @@ export function createLockQuery(lockService: LockService) {
     useLockMutations() {
       return {
         enableRemote: useMutation({
-          mutationFn: (password: string) =>
-            lockService.enableRemote(password),
+          mutationFn: (password: string) => lockService.enableRemote(password),
         }),
         disableRemote: useMutation({
           mutationFn: () => lockService.disableRemote(),
         }),
         unlockRemote: useMutation({
-          mutationFn: (password: string) =>
-            lockService.unlockRemote(password),
+          mutationFn: (password: string) => lockService.unlockRemote(password),
         }),
       }
     },

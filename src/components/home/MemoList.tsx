@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
@@ -9,7 +10,7 @@ import { Memo } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { lockFacade } from '@/domains/lock/di'
-import { useApiQuery } from '@/lib/queryUtils'
+import { queryKeys } from '@/lib/queryKeys'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 
 import FloatingButtonsLayout from './FloatingButtonsLayout'
@@ -27,14 +28,13 @@ export function MemoList() {
     isLoading,
     isFetching,
     isFetched,
-  } = useApiQuery({
+  } = useQuery({
+    queryKey: queryKeys.memoKeys.list(),
     queryFn: memoApi.getAllMemo,
-    options: {
-      enabled: lockFacade.lockService.isApiCallAllowed({
-        isLockedRemote,
-        isLockedLocal,
-      }),
-    },
+    enabled: lockFacade.lockService.isApiCallAllowed({
+      isLockedRemote,
+      isLockedLocal,
+    }),
   })
 
   useEffect(() => {

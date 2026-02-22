@@ -7,7 +7,7 @@ export type LockedStatusResult = {
   refetch: () => void
 }
 
-export type LockQueryApi = {
+export type LockQuery = {
   useLockedStatus: () => LockedStatusResult
   useLockMutations: () => {
     enableRemote: { mutateAsync: (password: string) => Promise<unknown> }
@@ -16,7 +16,7 @@ export type LockQueryApi = {
   }
 }
 
-export type LockStoreApi = {
+export type LockStore = {
   useIsLockedLocal: () => boolean | undefined
   useLockScreenOpened: () => boolean
   useLockScreenType: () => LockScreenType
@@ -31,8 +31,8 @@ export function createLockFacade({
   store,
 }: {
   lockService: LockService
-  query: LockQueryApi
-  store: LockStoreApi
+  query: LockQuery
+  store: LockStore
 }) {
   return {
     lockService,

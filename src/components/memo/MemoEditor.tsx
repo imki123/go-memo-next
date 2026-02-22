@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useEffect, useRef, useState } from 'react'
 
@@ -6,7 +7,7 @@ import Header from '@/components/Header'
 import { Memo, MemoType } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
 import { lockFacade } from '@/domains/lock/di'
-import { useApiQuery } from '@/lib/queryUtils'
+import { queryKeys } from '@/lib/queryKeys'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 import { useFontSizeStore } from '@/zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '@/zustand/useMemoHistoryStore'
@@ -41,10 +42,10 @@ export function MemoEditor({ memoId }: MemoEditorProps) {
     data: memoData,
     isError,
     isFetching,
-  } = useApiQuery({
-    queryFn: memoApi.getMemo,
-    payload: memoId,
-    options: { enabled: memoId > 0 },
+  } = useQuery({
+    queryKey: queryKeys.memoKeys.detail(memoId),
+    queryFn: () => memoApi.getMemo(memoId),
+    enabled: memoId > 0,
   })
 
   useEffect(() => {

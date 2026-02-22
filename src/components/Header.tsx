@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, Lock, Moon, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -5,7 +6,7 @@ import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
 import { lockFacade } from '@/domains/lock/di'
-import { useApiQuery } from '@/lib/queryUtils'
+import { queryKeys } from '@/lib/queryKeys'
 import { localStorageKeys } from '@/utils/localStorageKeys'
 
 import useCommonModal from '../hooks/useCommonModal'
@@ -36,7 +37,10 @@ export default function Header({
   const router = useRouter()
 
   const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
-  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { data: loginData } = useQuery({
+    queryKey: queryKeys.userKeys.checkLogin(),
+    queryFn: userApi.checkLogin,
+  })
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 

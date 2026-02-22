@@ -12,12 +12,3 @@ export const queryClient = new QueryClient({
     },
   },
 })
-
-export const queryKeys = {
-  checkLogin: ['checkLogin'],
-  getAllMemo: ['getAllMemo'],
-  getMemo: ['getMemo'],
-  postMemo: ['postMemo'],
-  patchMemo: ['patchMemo'],
-  deleteMemo: ['deleteMemo'],
-}
