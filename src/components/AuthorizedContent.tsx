@@ -1,43 +1,25 @@
-import { JSX, ReactNode, useEffect } from 'react'
+import { JSX, ReactNode } from 'react'
 
-import { lockFacade } from '@/domain/lock/di'
+import { authService } from '@/domain/auth/di'
+import { lockFacade } from '@/domain/lock/facade'
 
 /**
  * 인증되어있지 않다면 화면을 가리고 데이터를 요청하지 않도록 막아주는 컴포넌트
+ * 1. 인증되어있지 않을 시 unauthorizedComponent 가 있다면 표시, 없다면 빈 화면
+ * 2. 인증되어있고 잠금 상태가 아닐 시 children 표시
  */
 export function AuthorizedContent({
   children,
+  unauthorizedComponent,
 }: {
   children: ReactNode
+  unauthorizedComponent?: ReactNode
 }): JSX.Element {
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
-  const {
-    data: isLockedRemote,
-    isFetching,
-    isError,
-  } = lockFacade.query.useLockedStatus()
+  const isAuthenticated = authService.isAuthenticated()
+  const isLockedLocal = lockFacade.store.watchIsLockedLocal()
 
-  useEffect(() => {
-    if (isLockedRemote) {
-      lockFacade.store.setIsLockedLocal(true)
-      lockFacade.store.showLockScreen('unlock')
-    } else {
-      lockFacade.store.setIsLockedLocal(false)
-      lockFacade.store.hideLockScreen()
-    }
-  }, [isLockedRemote])
-
-  if (isFetching) {
-    return (
-      <div className='flex flex-col items-center justify-center h-[200px] text-lg'>
-        <div>로딩 중...</div>
-        <div>서버 재시작 중에는 1분 정도 소요될 수 있습니다.</div>
-      </div>
-    )
-  }
-
-  if (isError || isLockedRemote === undefined) {
-    return <></>
+  if (!isAuthenticated) {
+    return <>{unauthorizedComponent ?? null}</>
   }
 
   if (isLockedLocal) {

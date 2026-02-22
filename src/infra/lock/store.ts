@@ -4,7 +4,7 @@ import { LockStore } from '@/domain/lock/facade'
 import type { LockScreenType } from '@/domain/lock/service'
 
 type LockScreenStateType = {
-  isLockedLocal: boolean | undefined
+  isLockedLocal: boolean
   lockScreenOpened: boolean
   lockScreenType: LockScreenType
 }
@@ -22,7 +22,7 @@ type LockScreenActionType = {
 type LockScreenStoreType = LockScreenStateType & LockScreenActionType
 
 export const useLockStore = create<LockScreenStoreType>()((set) => ({
-  isLockedLocal: undefined,
+  isLockedLocal: true,
   lockScreenOpened: false,
   lockScreenType: 'unlock',
 
@@ -36,11 +36,11 @@ export const useLockStore = create<LockScreenStoreType>()((set) => ({
 }))
 
 export const lockStore: LockStore = {
-  useIsLockedLocal: (): boolean | undefined =>
-    useLockStore((s) => s.isLockedLocal) as boolean | undefined,
-  useLockScreenOpened: (): boolean =>
+  watchIsLockedLocal: (): boolean =>
+    useLockStore((s) => s.isLockedLocal) as boolean,
+  watchLockScreenOpened: (): boolean =>
     useLockStore((s) => s.lockScreenOpened) as boolean,
-  useLockScreenType: (): LockScreenType =>
+  watchLockScreenType: (): LockScreenType =>
     useLockStore((s) => s.lockScreenType) as LockScreenType,
   setIsLockedLocal: (v: boolean) => useLockStore.getState().setIsLockedLocal(v),
   showLockScreen: (screenType: LockScreenType) =>

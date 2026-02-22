@@ -2,24 +2,23 @@ import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { memoApi } from '@/apis/memoApi'
-import { Memo } from '@/components/Memo'
+import { Memo } from '@/components/home/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { lockFacade } from '@/domain/lock/di'
+import { lockFacade } from '@/domain/lock/facade'
 import { queryKeys } from '@/lib/queryKeys'
-import { useAllMemosStore } from '@/zustand/useAllMemosStore'
+import { texts } from '@/texts'
 
 import FloatingButtonsLayout from './FloatingButtonsLayout'
 import ReloadButton from './ReloadButton'
 
 export function MemoList() {
   const router = useRouter()
-  const { allMemos, setAllMemos } = useAllMemosStore()
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
+  const isLockedLocal = lockFacade.store.watchIsLockedLocal()
   const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
 
   const {
@@ -27,30 +26,23 @@ export function MemoList() {
     refetch,
     isLoading,
     isFetching,
-    isFetched,
   } = useQuery({
     queryKey: queryKeys.memoKeys.list(),
     queryFn: memoApi.getAllMemo,
-    enabled: lockFacade.lockService.isApiCallAllowed({
-      isLockedRemote,
-      isLockedLocal,
-    }),
+    // enabled: lockFacade.lockService.isApiCallAllowed({
+    //   isLockedRemote,
+    //   isLockedLocal,
+    // }),
   })
-
-  useEffect(() => {
-    if (isLockedRemote !== undefined && allMemosData && isFetched) {
-      setAllMemos(allMemosData || [])
-    }
-  }, [isLockedRemote, allMemosData, setAllMemos, isFetched])
 
   const sortedMemos = useMemo(
     () =>
-      [...(allMemos || [])].sort((a, b) => {
+      [...(allMemosData ?? [])].sort((a, b) => {
         const timeA = dayjs(a.editedAt).valueOf()
         const timeB = dayjs(b.editedAt).valueOf()
         return timeB - timeA
       }),
-    [allMemos]
+    [allMemosData]
   )
 
   const [searchValue, setSearchValue] = useState('')
@@ -60,7 +52,7 @@ export function MemoList() {
 
   async function addMemo() {
     if (
-      !lockFacade.lockService.isApiCallAllowed({
+      !lockFacade.service.isApiCallAllowed({
         isLockedRemote,
         isLockedLocal,
       })
@@ -102,13 +94,13 @@ export function MemoList() {
 
       {isLoading ? (
         <div className='flex flex-col items-center justify-center h-[200px]'>
-          <div>로딩 중...</div>
-          <div>서버 재시작 중에는 1분 정도 소요될 수 있습니다.</div>
+          <div>{texts.loading}</div>
+          <div>{texts.serverRestarting}</div>
         </div>
       ) : (
         <div className='flex flex-wrap gap-5 px-5 pb-5'>
-          {filteredMemos.map(({ memoId }) => (
-            <Memo key={memoId} memoId={memoId} readOnly={true} />
+          {filteredMemos.map((memo) => (
+            <Memo key={memo.memoId} memo={memo} />
           ))}
         </div>
       )}

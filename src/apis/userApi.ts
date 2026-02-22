@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios'
+
 import { axiosClient } from './axios'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
@@ -34,10 +36,18 @@ export const userApi = {
     return res.data
   },
 
-  async checkLogin() {
-    const res = await axiosClient.post(urls.checkLogin)
-    const data = res.data as LoginResponseType
-    return data
+  async checkLogin(): Promise<LoginResponseType> {
+    try {
+      const res = await axiosClient.post(urls.checkLogin)
+      const data = res.data as LoginResponseType
+      return data
+    } catch (error) {
+      const axiosError = error as AxiosError<LoginResponseType>
+      if (axiosError.response?.status === 401) {
+        return { email: '', sub: '', token: '' }
+      }
+      throw error
+    }
   },
 
   async setLock(password: string) {

@@ -1,20 +1,23 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import { userApi } from '@/apis/userApi'
 import { LockQuery } from '@/domain/lock/facade'
 import type { LockService } from '@/domain/lock/service'
-
-export const lockKeys = {
-  all: ['lock'] as const,
-  loginStatus: () => [...lockKeys.all, 'loginStatus'] as const,
-}
+import { queryKeys } from '@/lib/queryKeys'
 
 export function createLockQuery(lockService: LockService): LockQuery {
   return {
     useLockedStatus() {
-      return useQuery({
-        queryKey: lockKeys.loginStatus(),
-        queryFn: () => lockService.getLockedStatus(),
+      const { data, isFetching, isError, refetch } = useQuery({
+        queryKey: queryKeys.userKeys.checkLogin(),
+        queryFn: async () => await userApi.checkLogin(),
       })
+      return {
+        data: data?.locked ?? false,
+        isFetching,
+        isError,
+        refetch,
+      }
     },
     useLockMutations() {
       return {

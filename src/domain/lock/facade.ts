@@ -1,4 +1,8 @@
-import type { LockScreenType, LockService } from './service'
+import { createLockQuery } from '@/infra/lock/query'
+import { lockStore } from '@/infra/lock/store'
+
+import { lockService } from './di'
+import type { LockScreenType } from './service'
 
 export type LockedStatusResult = {
   data: boolean | undefined
@@ -8,7 +12,7 @@ export type LockedStatusResult = {
 }
 
 export type LockQuery = {
-  useLockedStatus: () => LockedStatusResult
+  useLockedStatus: (options?: { enabled: boolean }) => LockedStatusResult
   useLockMutations: () => {
     enableRemote: { mutateAsync: (password: string) => Promise<unknown> }
     disableRemote: { mutateAsync: () => Promise<unknown> }
@@ -17,26 +21,18 @@ export type LockQuery = {
 }
 
 export type LockStore = {
-  useIsLockedLocal: () => boolean | undefined
-  useLockScreenOpened: () => boolean
-  useLockScreenType: () => LockScreenType
+  watchIsLockedLocal: () => boolean | undefined
+  watchLockScreenOpened: () => boolean
+  watchLockScreenType: () => LockScreenType
   setIsLockedLocal: (v: boolean) => void
   showLockScreen: (screenType: LockScreenType) => void
   hideLockScreen: () => void
 }
 
-export function createLockFacade({
-  lockService,
-  query,
-  store,
-}: {
-  lockService: LockService
-  query: LockQuery
-  store: LockStore
-}) {
-  return {
-    lockService,
-    query,
-    store,
-  }
+const lockQuery = createLockQuery(lockService)
+
+export const lockFacade = {
+  service: lockService,
+  query: lockQuery,
+  store: lockStore,
 }

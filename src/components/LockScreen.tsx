@@ -3,7 +3,7 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
-import { lockFacade } from '@/domain/lock/di'
+import { lockFacade } from '@/domain/lock/facade'
 import { zIndex } from '@/utils/util'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
@@ -30,7 +30,7 @@ export function LockScreen() {
     }
   }, [])
 
-  const currentLockScreenType = lockFacade.store.useLockScreenType()
+  const currentLockScreenType = lockFacade.store.watchLockScreenType()
   const { theme } = useThemeStore()
   const { refetch: refetchLogin } = lockFacade.query.useLockedStatus()
 
@@ -180,6 +180,12 @@ export function LockScreen() {
       ? `${MIN_PASSWORD_LENGTH}자리`
       : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
 
+  const isLockScreenOpened = lockFacade.store.watchLockScreenOpened()
+
+  if (!isLockScreenOpened) {
+    return null
+  }
+
   return (
     <div
       className={`fixed top-[60px] bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] ${
@@ -232,15 +238,17 @@ export function LockScreen() {
           }
 
           const clickedElement = e.target as HTMLSpanElement
-          const numberInput = clickedElement?.innerText
+          const inputValue = clickedElement?.innerText
+          const inputNumberText = isNaN(Number(inputValue)) ? '' : inputValue
 
-          const newPassword = password + numberInput
+          const newPassword = password + inputNumberText
 
           if (newPassword.length === MAX_PASSWORD_LENGTH) {
+            console
             sendPassword(newPassword)
           }
 
-          dispatchPassword(numberInput)
+          dispatchPassword(inputValue)
         }}
       >
         <div>

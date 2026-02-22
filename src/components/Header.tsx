@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
-import { lockFacade } from '@/domain/lock/di'
+import { lockFacade } from '@/domain/lock/facade'
 import { queryKeys } from '@/lib/queryKeys'
 import { localStorageKeys } from '@/utils/localStorageKeys'
 
@@ -73,7 +73,7 @@ export default function Header({
       }}
       className='cursor-pointer'
     />,
-    loginData ? (
+    loginData?.token ? (
       <Avatar avatar={loginData} />
     ) : (
       <span>

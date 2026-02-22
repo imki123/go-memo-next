@@ -21,11 +21,11 @@ export type AuthService = {
 
 export function createAuthService({
   oAuthClient,
-  authApi,
+  remoteRepository,
   accessTokenRepository,
 }: {
   oAuthClient: OAuthClient
-  authApi: AuthApi
+  remoteRepository: RemoteRepository
   accessTokenRepository: AccessTokenRepository
 }): AuthService {
   return {
@@ -42,7 +42,7 @@ export function createAuthService({
       })
       try {
         const accessToken = await Promise.resolve(
-          authApi.issueToken(oAuthCredential)
+          remoteRepository.issueToken(oAuthCredential)
         )
         accessTokenRepository.setAccessToken(accessToken)
 
@@ -55,9 +55,9 @@ export function createAuthService({
         throw new Error('토큰 발급 실패')
       }
 
-      const loginData = await authApi.checkLogin()
+      const loginData = await remoteRepository.checkLogin()
 
-      if (!loginData) {
+      if (!loginData?.token) {
         throw new Error('로그인 실패')
       }
 
@@ -70,7 +70,7 @@ export function createAuthService({
 
     logout: async () => {
       accessTokenRepository.deleteAccessToken()
-      await authApi.logout()
+      await remoteRepository.logout()
     },
 
     getAccessToken: () => accessTokenRepository.getAccessToken(),
@@ -92,7 +92,7 @@ export type OAuthClient = {
   renderLoginUi(divId: string): void
 }
 
-export type AuthApi = {
+export type RemoteRepository = {
   issueToken(oAuthCredential: OAuthCredential): Promise<string>
   checkLogin(): Promise<LoginResponseType>
   logout(): Promise<unknown>

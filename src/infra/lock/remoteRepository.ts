@@ -1,18 +1,25 @@
 import { userApi } from '@/apis/userApi'
 import type { LockRemoteRepository } from '@/domain/lock/service'
 import { queryClient } from '@/lib/queryClient'
-
-import { lockKeys } from './query'
+import { queryKeys } from '@/lib/queryKeys'
+import { queryWhenStaleOrMissing } from '@/lib/queryUtils'
 
 export const remoteLockRepository: LockRemoteRepository = {
-  getLockedStatus: async () => (await userApi.checkLogin())?.locked ?? false,
+  getLockedStatus: async () => {
+    const data = await queryWhenStaleOrMissing(
+      queryKeys.userKeys.checkLogin(),
+      async () => await userApi.checkLogin()
+    )
+    return data?.locked ?? false
+  },
+
   enableRemote: async (password) => {
     await userApi.setLock(password)
-    queryClient.setQueryData(lockKeys.loginStatus(), true)
+    queryClient.invalidateQueries({ queryKey: queryKeys.userKeys.checkLogin() })
   },
   disableRemote: async () => {
     await userApi.removeLock()
-    queryClient.setQueryData(lockKeys.loginStatus(), false)
+    queryClient.invalidateQueries({ queryKey: queryKeys.userKeys.checkLogin() })
   },
   unlockRemote: async (password) => {
     await userApi.unlock(password)

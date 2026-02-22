@@ -1,6 +1,7 @@
 import { userApi } from '@/apis/userApi'
 import { accessTokenRepository } from '@/infra/auth/accessTokenRepository'
 import { googleAccountClient } from '@/infra/auth/googleAccountClient'
+import { queryClient } from '@/lib/queryClient'
 
 import { createAuthService } from './service'
 
@@ -12,13 +13,16 @@ import { createAuthService } from './service'
  */
 export const authService = createAuthService({
   oAuthClient: googleAccountClient,
-  authApi: {
+  remoteRepository: {
     issueToken: async (oAuthCredential) => {
       const data = await userApi.login(oAuthCredential?.credential ?? '')
       return data?.token ?? ''
     },
     checkLogin: userApi.checkLogin,
-    logout: userApi.logout,
+    logout: async () => {
+      await userApi.logout()
+      queryClient.invalidateQueries()
+    },
   },
   accessTokenRepository,
 })

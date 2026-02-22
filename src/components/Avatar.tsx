@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { authService } from '@/domain/auth/di'
+import { lockFacade } from '@/domain/lock/facade'
 
 import { routes } from '../../pages'
 import { LoginResponseType } from '../apis/userApi'
@@ -39,7 +40,7 @@ const Avatar = ({
         ) : (
           <Image
             unoptimized={true} // 외부 url
-            src={avatar.picture || ''}
+            src={avatar.picture || 'unknown'}
             width='30'
             height='30'
             alt='avatar'
@@ -69,6 +70,7 @@ const Avatar = ({
 
               try {
                 await authService.logout()
+                lockFacade.service.setIsLockedLocal(true)
                 toast.success('로그아웃 성공')
               } catch (err) {
                 toast.error(

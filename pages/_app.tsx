@@ -1,25 +1,29 @@
 import { QueryClientProvider } from '@tanstack/react-query'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
 import { LockScreen } from '@/components/LockScreen'
 import { authService } from '@/domain/auth/di'
-import { lockFacade } from '@/domain/lock/di'
+import { lockFacade } from '@/domain/lock/facade'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
 
 import { routes } from '.'
 
-import type { AppProps } from 'next/app'
-
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     // NOTE: 앱 시작시 설정 정보 표시
@@ -37,15 +41,29 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const isLockScreenOpened = lockFacade.store.useLockScreenOpened()
+  const isLockScreenOpened = lockFacade.store.watchLockScreenOpened()
+
+  useEffect(() => {
+    lockFacade.service
+      .shouldShowLockScreen()
+      .then((shouldShowLockScreen) => {
+        if (shouldShowLockScreen) {
+          lockFacade.store.showLockScreen('unlock')
+        } else {
+          lockFacade.store.hideLockScreen()
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        lockFacade.store.hideLockScreen()
+      })
+  }, [isLockScreenOpened])
 
   function afterLogin(loginData: LoginResponseType) {
-    if (loginData) {
+    if (loginData.token) {
       toast.success('로그인 성공 😄')
 
-      if (loginData.locked) {
-        lockFacade.store.setIsLockedLocal(true)
-      }
+      lockFacade.store.setIsLockedLocal(true)
 
       router.replace(routes.root)
     } else {
@@ -74,33 +92,38 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
 
-      {isLockScreenOpened && <LockScreen />}
+      <LockScreen />
 
       <Component {...pageProps} />
 
-      <Toaster
-        position='bottom-center'
-        richColors
-        style={{
-          maxWidth: '70vw',
-        }}
-      />
+      {mounted && (
+        <>
+          <Toaster
+            position='bottom-center'
+            richColors
+            style={{
+              maxWidth: '70vw',
+            }}
+          />
 
-      <a
-        href='https://github.com/imki123'
-        target='_blank'
-        className='fixed bottom-1 right-1 text-xs font-bold no-underline text-black cursor-pointer flex items-end'
-      >
-        <Image
-          unoptimized={true} // 외부 url
-          alt='github'
-          src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
-          width={16}
-          height={16}
-          style={{ borderRadius: '50%' }}
-        />
-        imki123
-      </a>
+          <a
+            href='https://github.com/imki123'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='fixed bottom-1 right-1 text-xs font-bold no-underline text-black cursor-pointer flex items-end'
+          >
+            <Image
+              unoptimized={true}
+              alt='github'
+              src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+              width={16}
+              height={16}
+              style={{ borderRadius: '50%' }}
+            />
+            imki123
+          </a>
+        </>
+      )}
     </QueryClientProvider>
   )
 }

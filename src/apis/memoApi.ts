@@ -1,4 +1,4 @@
-import { MemoType } from '../components/Memo'
+import { MemoType } from '@/components/home/Memo'
 
 import { axiosClient } from './axios'
 const baseUrl = '/memo/memos'
@@ -15,7 +15,7 @@ export const memoApi = {
   },
 
   async getAllMemo() {
-    const res = await axiosClient.get<MemoType[]>(`${urls.root}`)
+    const res = await axiosClient.get<MemoResponse[]>(`${urls.root}`)
     return res.data
   },
 
@@ -24,24 +24,34 @@ export const memoApi = {
       return undefined
     }
 
-    const res = await axiosClient.get<MemoType>(`${urls.root}${memoId}`)
+    const res = await axiosClient.get<MemoResponse>(`${urls.root}${memoId}`)
     return res.data
   },
 
   async postMemo() {
-    const res = await axiosClient.post<MemoType>(urls.root)
+    const res = await axiosClient.post<MemoResponse>(urls.root)
     return res.data
   },
 
   async patchMemo(memo: MemoType) {
-    const res = await axiosClient.patch<MemoType>(urls.root, {
+    const res = await axiosClient.patch<MemoResponse>(urls.root, {
       memo,
     })
     return res.data
   },
 
   async deleteMemo(memoId: number) {
-    const res = await axiosClient.delete<MemoType>(`${urls.root}${memoId}`)
+    const res = await axiosClient.delete<MemoResponse>(`${urls.root}${memoId}`)
     return res.data
   },
+}
+
+export type MemoResponse = {
+  _id: string
+  memoId: number
+  email: string
+  sub: string
+  text?: string
+  createdAt?: string
+  editedAt?: string
 }

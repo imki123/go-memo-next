@@ -2,10 +2,11 @@ import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { Memo } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
+
+import { Memo } from './Memo'
 
 export function MockMemoList() {
   const { allMemos } = useAllMemosStore()
@@ -45,8 +46,8 @@ export function MockMemoList() {
       </div>
 
       <div className='flex flex-wrap gap-5 px-5 pb-5'>
-        {filteredMemos.map(({ memoId }) => (
-          <Memo key={memoId} memoId={memoId} readOnly={true} />
+        {filteredMemos.map((memo) => (
+          <Memo key={memo.memoId} memo={memo} />
         ))}
       </div>
     </>

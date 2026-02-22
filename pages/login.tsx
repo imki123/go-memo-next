@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { authService } from '@/domain/auth/di'
+import { texts } from '@/texts'
 import { useLoginStore } from '@/zustand/useLoginStore'
 
 import Header from '../src/components/Header'
@@ -20,7 +21,7 @@ export default function LoginPage() {
         <div id='googleLoginDiv'></div>
 
         <div className='flex flex-col text-sm gap-4'>
-          <div>서버가 재시작될 경우 1분 정도 소요될 수 있습니다.</div>
+          <div>{texts.serverRestarting}</div>
 
           {isLoggingIn && <div>로그인 중... {secondsToLogin}초</div>}
         </div>
