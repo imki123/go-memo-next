@@ -5,12 +5,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { memoApi } from '@/apis/memoApi'
-import { userApi } from '@/apis/userApi'
 import { Memo } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { lockService } from '@/domains/lock/di'
-import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
+import { lockFacade } from '@/domains/lock/di'
 import { useApiQuery } from '@/lib/queryUtils'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 
@@ -20,8 +18,8 @@ import ReloadButton from './ReloadButton'
 export function MemoList() {
   const router = useRouter()
   const { allMemos, setAllMemos } = useAllMemosStore()
-  const isLockedLocal = useLockServiceStore((s) => s.isLockedLocal)
-  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
+  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
 
   const {
     data: allMemosData,
@@ -32,15 +30,18 @@ export function MemoList() {
   } = useApiQuery({
     queryFn: memoApi.getAllMemo,
     options: {
-      enabled: lockService.isApiCallAllowed({ loginData, isLockedLocal }),
+      enabled: lockFacade.lockService.isApiCallAllowed({
+        isLockedRemote,
+        isLockedLocal,
+      }),
     },
   })
 
   useEffect(() => {
-    if (loginData && allMemosData && isFetched) {
+    if (isLockedRemote !== undefined && allMemosData && isFetched) {
       setAllMemos(allMemosData || [])
     }
-  }, [loginData, allMemosData, setAllMemos, isFetched])
+  }, [isLockedRemote, allMemosData, setAllMemos, isFetched])
 
   const sortedMemos = useMemo(
     () =>
@@ -58,7 +59,12 @@ export function MemoList() {
   )
 
   async function addMemo() {
-    if (!lockService.isApiCallAllowed({ loginData, isLockedLocal })) {
+    if (
+      !lockFacade.lockService.isApiCallAllowed({
+        isLockedRemote,
+        isLockedLocal,
+      })
+    ) {
       toast.error('계정이 잠겨있습니다. 잠금을 해제해주세요.')
       return
     }

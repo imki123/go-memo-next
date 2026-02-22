@@ -3,12 +3,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
-import { lockService } from '@/domains/lock/di'
+import { userApi } from '@/apis/userApi'
+import { lockFacade } from '@/domains/lock/di'
+import { useApiQuery } from '@/lib/queryUtils'
 import { localStorageKeys } from '@/utils/localStorageKeys'
 
-import { userApi } from '../apis/userApi'
 import useCommonModal from '../hooks/useCommonModal'
-import { useApiQuery } from '../lib/queryUtils'
 import { useThemeStore } from '../zustand/useThemeStore'
 
 import Avatar from './Avatar'
@@ -35,9 +35,8 @@ export default function Header({
 
   const router = useRouter()
 
-  const { data: loginData } = useApiQuery({
-    queryFn: userApi.checkLogin,
-  })
+  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
+  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -95,13 +94,13 @@ export default function Header({
     },
   ]
 
-  if (loginData?.locked) {
+  if (isLockedRemote) {
     modalButtons.push({
       children: '비밀번호 삭제',
       variant: 'destructive',
       onClick: () => {
         closeModal()
-        lockService.showLockScreen('disable')
+        lockFacade.store.showLockScreen('disable')
       },
     })
   } else {
@@ -109,7 +108,7 @@ export default function Header({
       children: '비밀번호 설정',
       onClick: () => {
         closeModal()
-        lockService.showLockScreen('enable')
+        lockFacade.store.showLockScreen('enable')
       },
     })
   }
@@ -153,7 +152,7 @@ export default function Header({
         visible={visible}
         onClose={closeModal}
         title={
-          loginData?.locked
+          isLockedRemote
             ? '잠금 비밀번호를 삭제하시겠어요?'
             : '잠금 비밀번호를 설정하시겠어요?'
         }

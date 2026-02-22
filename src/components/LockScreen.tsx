@@ -3,10 +3,7 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
-import { userApi } from '@/apis/userApi'
-import { lockService } from '@/domains/lock/di'
-import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
-import { useApiQuery } from '@/lib/queryUtils'
+import { lockFacade } from '@/domains/lock/di'
 import { zIndex } from '@/utils/util'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
@@ -33,13 +30,13 @@ export function LockScreen() {
     }
   }, [])
 
-  const currentLockScreenType = useLockServiceStore((s) => s.lockScreenType)
+  const currentLockScreenType = lockFacade.store.useLockScreenType()
   const { theme } = useThemeStore()
-  const { refetch: refetchLogin } = useApiQuery({
-    queryFn: userApi.checkLogin,
-  })
+  const { refetch: refetchLogin } = lockFacade.query.useLockedStatus()
 
   const [isSending, setIsSending] = useState(false)
+  const { enableRemote, disableRemote, unlockRemote } =
+    lockFacade.query.useLockMutations()
 
   const sendPassword = useCallback(
     async (currentPassword: string) => {
@@ -51,11 +48,11 @@ export function LockScreen() {
         if (window.confirm('비밀번호를 설정하시겠습니까?')) {
           try {
             setIsSending(true)
-            await userApi.setLock(currentPassword)
-            lockService.setIsLockedLocal(false)
+            await enableRemote.mutateAsync(currentPassword)
+            lockFacade.store.setIsLockedLocal(false)
             refetchLogin()
             dispatchPassword('CLEAR')
-            lockService.hideLockScreen()
+            lockFacade.store.hideLockScreen()
           } catch (err) {
             const error = err as AxiosError<{ error: string }>
             console.error(err)
@@ -77,8 +74,8 @@ export function LockScreen() {
         if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
           try {
             setIsSending(true)
-            await userApi.unlock(currentPassword)
-            await userApi.removeLock()
+            await unlockRemote.mutateAsync(currentPassword)
+            await disableRemote.mutateAsync()
           } catch (err) {
             const error = err as AxiosError<{ error: string }>
             console.error(err)
@@ -91,9 +88,9 @@ export function LockScreen() {
             )
           } finally {
             await refetchLogin()
-            lockService.setIsLockedLocal(false)
+            lockFacade.store.setIsLockedLocal(false)
             dispatchPassword('CLEAR')
-            lockService.hideLockScreen()
+            lockFacade.store.hideLockScreen()
             toast.success('비밀번호 삭제 성공')
             setIsSending(false)
           }
@@ -103,10 +100,10 @@ export function LockScreen() {
 
       try {
         setIsSending(true)
-        await userApi.unlock(currentPassword)
-        lockService.setIsLockedLocal(false)
+        await unlockRemote.mutateAsync(currentPassword)
+        lockFacade.store.setIsLockedLocal(false)
         dispatchPassword('CLEAR')
-        lockService.hideLockScreen()
+        lockFacade.store.hideLockScreen()
         return
       } catch (err) {
         const error = err as AxiosError<{ error: string }>
@@ -123,7 +120,13 @@ export function LockScreen() {
         setIsSending(false)
       }
     },
-    [currentLockScreenType, refetchLogin]
+    [
+      currentLockScreenType,
+      refetchLogin,
+      enableRemote,
+      disableRemote,
+      unlockRemote,
+    ]
   )
 
   const [password, dispatchPassword] = useReducer(
@@ -189,7 +192,7 @@ export function LockScreen() {
         currentLockScreenType === 'disable') && (
         <X
           className='absolute top-4 right-4 cursor-pointer'
-          onClick={() => lockService.hideLockScreen()}
+          onClick={() => lockFacade.store.hideLockScreen()}
         />
       )}
 

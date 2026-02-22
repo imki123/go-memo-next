@@ -1,6 +1,6 @@
 import { LoginResponseType } from '@/apis/userApi'
 
-import { AuthEntity, authEntity } from './entity'
+import { authEntity } from './entity'
 
 /**
  * 인증 서비스: 유저의 동작 흐름을 정의한다. 서비스 인스턴스 생성시 외부 의존성을 주입한다.
@@ -10,13 +10,14 @@ import { AuthEntity, authEntity } from './entity'
  */
 
 export type AuthService = {
+  isAuthenticated: () => boolean
   renderLoginUi: OAuthClient['renderLoginUi']
   autoLogin: (loginCallback: LoginCallback) => Promise<void>
   logout: () => Promise<void>
   getAccessToken: () => string
   setAccessToken: (accessToken: string) => void
   deleteAccessToken: () => void
-} & AuthEntity
+}
 
 export function createAuthService({
   oAuthClient,

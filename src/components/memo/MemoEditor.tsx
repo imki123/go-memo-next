@@ -2,10 +2,10 @@ import dayjs from 'dayjs'
 import { useEffect, useRef, useState } from 'react'
 
 import { memoApi } from '@/apis/memoApi'
-import { userApi } from '@/apis/userApi'
 import Header from '@/components/Header'
 import { Memo, MemoType } from '@/components/Memo'
 import { Button } from '@/components/ui/button'
+import { lockFacade } from '@/domains/lock/di'
 import { useApiQuery } from '@/lib/queryUtils'
 import { useAllMemosStore } from '@/zustand/useAllMemosStore'
 import { useFontSizeStore } from '@/zustand/useFontSizeStore'
@@ -17,7 +17,7 @@ type MemoEditorProps = {
 
 export function MemoEditor({ memoId }: MemoEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
+  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
 
   const { increaseFontSize, decreaseFontSize, loadFontSizeFromStorage } =
     useFontSizeStore()
@@ -85,7 +85,7 @@ export function MemoEditor({ memoId }: MemoEditorProps) {
       />
 
       <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
-        {isError || (loginData && notFound) ? (
+        {isError || (isLockedRemote !== undefined && notFound) ? (
           <div className='text-center'>메모 불러오기 실패 😥</div>
         ) : (
           <>
@@ -109,7 +109,7 @@ export function MemoEditor({ memoId }: MemoEditorProps) {
 
             <Memo
               memoId={memoId || 0}
-              fetching={!!loginData && isFetching}
+              fetching={isLockedRemote !== undefined && isFetching}
               ref={textareaRef}
             />
           </>

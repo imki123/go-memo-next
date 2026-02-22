@@ -6,11 +6,9 @@ import { toast } from 'sonner'
 
 import { routes } from '../../pages'
 import { memoApi } from '../apis/memoApi'
-import { userApi } from '../apis/userApi'
-import { lockService } from '../domains/lock/di'
+import { lockFacade } from '../domains/lock/di'
 import useCommonModal from '../hooks/useCommonModal'
-import { useLockServiceStore } from '../infra/lock/useLockServiceStore'
-import { useApiQuery, useInvalidation } from '../lib/queryUtils'
+import { useInvalidation } from '../lib/queryUtils'
 import { useAllMemosStore } from '../zustand/useAllMemosStore'
 import { useFontSizeStore } from '../zustand/useFontSizeStore'
 import { useMemoHistoryStore } from '../zustand/useMemoHistoryStore'
@@ -37,8 +35,8 @@ function _Memo(
 ) {
   const router = useRouter()
 
-  const { data: loginData } = useApiQuery({ queryFn: userApi.checkLogin })
-  const isLockedLocal = useLockServiceStore((s) => s.isLockedLocal)
+  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const { fontSize } = useFontSizeStore()
@@ -75,8 +73,8 @@ function _Memo(
     clearTimeout(fetchTimeoutId.current)
     fetchTimeoutId.current = setTimeout(async () => {
       if (
-        lockService.isApiCallAllowed({
-          loginData,
+        lockFacade.lockService.isApiCallAllowed({
+          isLockedRemote,
           isLockedLocal,
         })
       ) {
@@ -155,7 +153,12 @@ function _Memo(
             children: '삭제',
             onClick: async () => {
               closeModal()
-              if (loginData) {
+              if (
+                lockFacade.lockService.isApiCallAllowed({
+                  isLockedRemote,
+                  isLockedLocal,
+                })
+              ) {
                 try {
                   await memoApi.deleteMemo(memoId)
                   toast.success('메모 삭제 성공')

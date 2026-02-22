@@ -9,8 +9,7 @@ import { Toaster, toast } from 'sonner'
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
 import { LockScreen } from '@/components/LockScreen'
 import { authService } from '@/domains/auth/di'
-import { lockService } from '@/domains/lock/di'
-import { useLockServiceStore } from '@/infra/lock/useLockServiceStore'
+import { lockFacade } from '@/domains/lock/di'
 import { queryClient } from '@/lib/queryClient'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
@@ -38,14 +37,14 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const isLockScreenOpened = useLockServiceStore((s) => s.lockScreenOpened)
+  const isLockScreenOpened = lockFacade.store.useLockScreenOpened()
 
   function afterLogin(loginData: LoginResponseType) {
     if (loginData) {
       toast.success('로그인 성공 😄')
 
       if (loginData.locked) {
-        lockService.setIsLockedLocal(true)
+        lockFacade.store.setIsLockedLocal(true)
       }
 
       router.replace(routes.root)
