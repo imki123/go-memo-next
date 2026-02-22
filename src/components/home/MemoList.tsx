@@ -18,7 +18,7 @@ import ReloadButton from './ReloadButton'
 
 export function MemoList() {
   const router = useRouter()
-  const isLockedLocal = lockFacade.store.watchIsLockedLocal()
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
   const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
 
   const {

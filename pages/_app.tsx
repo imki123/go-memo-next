@@ -41,7 +41,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const isLockScreenOpened = lockFacade.store.watchLockScreenOpened()
+  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
+
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
 
   useEffect(() => {
     lockFacade.service
@@ -57,14 +59,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         console.error(error)
         lockFacade.store.hideLockScreen()
       })
-  }, [isLockScreenOpened])
+  }, [isLockScreenOpened, isLockedLocal])
 
   function afterLogin(loginData: LoginResponseType) {
     if (loginData.token) {
       toast.success('로그인 성공 😄')
-
-      lockFacade.store.setIsLockedLocal(true)
-
+      lockFacade.store.setIsLockedLocal(false)
       router.replace(routes.root)
     } else {
       toast.error('로그인 실패 😥')

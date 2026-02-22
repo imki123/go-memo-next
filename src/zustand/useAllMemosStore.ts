@@ -6,7 +6,7 @@ import { MemoType } from '../components/home/Memo'
 
 // 메모스토어
 export type AllMemoStateType = {
-  allMemos?: MemoType[]
+  allMemos: MemoType[]
 }
 
 export type AllMemoActionType = {
@@ -42,7 +42,7 @@ export const useAllMemosStore = create<AllMemoStateType & AllMemoActionType>()(
     deleteMemo: (memoId: number) =>
       set({
         allMemos: produce(get().allMemos, (draft) =>
-          draft?.filter((memo) => memo.memoId !== memoId)
+          draft?.filter((memo) => memo.memoId !== Number(memoId))
         ),
       }),
   })

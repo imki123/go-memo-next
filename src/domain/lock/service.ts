@@ -1,4 +1,4 @@
-import { lockEntity } from './entity'
+import { IsLockedLocalStatus, lockEntity } from './entity'
 
 export type LockService = {
   shouldShowLockScreen: () => Promise<boolean>
@@ -6,19 +6,16 @@ export type LockService = {
   enableRemote: (password: string) => Promise<void>
   disableRemote: () => Promise<void>
   unlockRemote: (password: string) => Promise<void>
-  getIsLockedLocal: () => boolean
-  setIsLockedLocal: (isLockedLocal: boolean) => void
+  getIsLockedLocal: () => IsLockedLocalStatus
+  setIsLockedLocal: (isLockedLocal: IsLockedLocalStatus) => void
   getCurrentLockScreenType: () => LockScreenType
   getIsLockScreenOpened: () => boolean
   showLockScreen: (screenType: LockScreenType) => void
   hideLockScreen: () => void
   isApiCallAllowed: (options: {
     isLockedRemote?: boolean
-    isLockedLocal?: boolean
+    isLockedLocal?: IsLockedLocalStatus
   }) => boolean
-  useCases: {
-    checkLockStatusAndShowUnlockScreen: () => Promise<void>
-  }
 }
 
 export function createLockService({
@@ -41,30 +38,22 @@ export function createLockService({
     unlockRemote: remoteLockRepository.unlockRemote,
 
     getIsLockedLocal: () => localLockRepository.getIsLockedLocal(),
-    setIsLockedLocal: (v) => localLockRepository.setIsLockedLocal(v),
+    setIsLockedLocal: (isLockedLocal) =>
+      localLockRepository.setIsLockedLocal(isLockedLocal),
     getCurrentLockScreenType: () =>
       localLockRepository.getCurrentLockScreenType(),
     getIsLockScreenOpened: () => localLockRepository.getIsLockScreenOpened(),
-    showLockScreen: (t) => localLockRepository.showLockScreen(t),
+    showLockScreen: (screenType) =>
+      localLockRepository.showLockScreen(screenType),
     hideLockScreen: () => localLockRepository.hideLockScreen(),
 
     isApiCallAllowed: (options) => isApiCallAllowed(options),
-
-    useCases: {
-      checkLockStatusAndShowUnlockScreen: async () => {
-        const should = await lockEntity.shouldShowLockScreen({
-          isLockedRemote: await remoteLockRepository.getLockedStatus(),
-          isLockedLocal: localLockRepository.getIsLockedLocal(),
-        })
-        if (should) localLockRepository.showLockScreen('unlock')
-      },
-    },
   }
 }
 
 export function isApiCallAllowed(options: {
   isLockedRemote?: boolean
-  isLockedLocal?: boolean
+  isLockedLocal?: IsLockedLocalStatus
 }): boolean {
   const { isLockedRemote, isLockedLocal } = options
   if (isLockedRemote === undefined) return false
@@ -83,8 +72,8 @@ export type LockRemoteRepository = {
 }
 
 export type LockLocalRepository = {
-  getIsLockedLocal(): boolean
-  setIsLockedLocal(isLockedLocal: boolean): void
+  getIsLockedLocal(): IsLockedLocalStatus
+  setIsLockedLocal(isLockedLocal: IsLockedLocalStatus): void
   getCurrentLockScreenType(): LockScreenType
   getIsLockScreenOpened(): boolean
   showLockScreen(screenType: LockScreenType): void

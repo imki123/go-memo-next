@@ -2,6 +2,7 @@ import { createLockQuery } from '@/infra/lock/query'
 import { lockStore } from '@/infra/lock/store'
 
 import { lockService } from './di'
+import { IsLockedLocalStatus } from './entity'
 import type { LockScreenType } from './service'
 
 export type LockedStatusResult = {
@@ -21,10 +22,10 @@ export type LockQuery = {
 }
 
 export type LockStore = {
-  watchIsLockedLocal: () => boolean | undefined
-  watchLockScreenOpened: () => boolean
-  watchLockScreenType: () => LockScreenType
-  setIsLockedLocal: (v: boolean) => void
+  useIsLockedLocal: () => IsLockedLocalStatus
+  useIsLockScreenOpened: () => boolean
+  useLockScreenType: () => LockScreenType
+  setIsLockedLocal: (isLockedLocal: IsLockedLocalStatus) => void
   showLockScreen: (screenType: LockScreenType) => void
   hideLockScreen: () => void
 }

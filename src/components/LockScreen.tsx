@@ -30,7 +30,7 @@ export function LockScreen() {
     }
   }, [])
 
-  const currentLockScreenType = lockFacade.store.watchLockScreenType()
+  const currentLockScreenType = lockFacade.store.useLockScreenType()
   const { theme } = useThemeStore()
   const { refetch: refetchLogin } = lockFacade.query.useLockedStatus()
 
@@ -44,80 +44,78 @@ export function LockScreen() {
         return
       }
 
-      if (currentLockScreenType === 'enable') {
-        if (window.confirm('비밀번호를 설정하시겠습니까?')) {
-          try {
-            setIsSending(true)
-            await enableRemote.mutateAsync(currentPassword)
-            lockFacade.store.setIsLockedLocal(false)
-            refetchLogin()
-            dispatchPassword('CLEAR')
-            lockFacade.store.hideLockScreen()
-          } catch (err) {
-            const error = err as AxiosError<{ error: string }>
-            console.error(err)
-            toast.error(
-              <>
-                비밀번호 설정에 실패했습니다.
-                <br />
-                {error.response?.data?.error || error.message}
-              </>
-            )
-          } finally {
-            setIsSending(false)
+      switch (currentLockScreenType) {
+        case 'enable':
+          if (window.confirm('비밀번호를 설정하시겠습니까?')) {
+            try {
+              setIsSending(true)
+              await enableRemote.mutateAsync(currentPassword)
+              lockFacade.store.setIsLockedLocal(false)
+              refetchLogin()
+              dispatchPassword('CLEAR')
+              lockFacade.store.hideLockScreen()
+            } catch (err) {
+              const error = err as AxiosError<{ error: string }>
+              console.error(err)
+              toast.error(
+                <>
+                  비밀번호 설정에 실패했습니다.
+                  <br />
+                  {error.response?.data?.error || error.message}
+                </>
+              )
+            } finally {
+              setIsSending(false)
+            }
           }
-        }
-        return
-      }
-
-      if (currentLockScreenType === 'disable') {
-        if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
+          return
+        case 'disable':
+          if (window.confirm('비밀번호를 삭제하시겠습니까?')) {
+            try {
+              setIsSending(true)
+              await disableRemote.mutateAsync()
+              lockFacade.store.setIsLockedLocal(false)
+              refetchLogin()
+              dispatchPassword('CLEAR')
+              lockFacade.store.hideLockScreen()
+            } catch (err) {
+              const error = err as AxiosError<{ error: string }>
+              console.error(err)
+              toast.error(
+                <>
+                  비밀번호 삭제에 실패했습니다.
+                  <br />
+                  {error.response?.data?.error || error.message}
+                </>
+              )
+            } finally {
+              setIsSending(false)
+            }
+          }
+          return
+        case 'unlock':
           try {
             setIsSending(true)
             await unlockRemote.mutateAsync(currentPassword)
-            await disableRemote.mutateAsync()
+            lockFacade.store.setIsLockedLocal(false)
+            dispatchPassword('CLEAR')
+            lockFacade.store.hideLockScreen()
           } catch (err) {
             const error = err as AxiosError<{ error: string }>
             console.error(err)
             toast.error(
               <>
-                비밀번호 삭제에 실패했습니다.
+                잠금 해제에 실패했습니다.
                 <br />
                 {error.response?.data?.error || error.message}
               </>
             )
           } finally {
-            await refetchLogin()
-            lockFacade.store.setIsLockedLocal(false)
-            dispatchPassword('CLEAR')
-            lockFacade.store.hideLockScreen()
-            toast.success('비밀번호 삭제 성공')
             setIsSending(false)
           }
-        }
-        return
-      }
-
-      try {
-        setIsSending(true)
-        await unlockRemote.mutateAsync(currentPassword)
-        lockFacade.store.setIsLockedLocal(false)
-        dispatchPassword('CLEAR')
-        lockFacade.store.hideLockScreen()
-        return
-      } catch (err) {
-        const error = err as AxiosError<{ error: string }>
-        console.error(err)
-        toast.error(
-          <>
-            잠금 해제에 실패했습니다.
-            <br />
-            {error.response?.data?.error || error.message}
-          </>
-        )
-        return
-      } finally {
-        setIsSending(false)
+          return
+        default:
+          return
       }
     },
     [
@@ -180,9 +178,10 @@ export function LockScreen() {
       ? `${MIN_PASSWORD_LENGTH}자리`
       : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
 
-  const isLockScreenOpened = lockFacade.store.watchLockScreenOpened()
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
+  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
 
-  if (!isLockScreenOpened) {
+  if (!isLockedLocal && !isLockScreenOpened) {
     return null
   }
 
@@ -244,7 +243,6 @@ export function LockScreen() {
           const newPassword = password + inputNumberText
 
           if (newPassword.length === MAX_PASSWORD_LENGTH) {
-            console
             sendPassword(newPassword)
           }
 

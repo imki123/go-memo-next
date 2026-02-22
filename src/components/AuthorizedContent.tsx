@@ -16,13 +16,25 @@ export function AuthorizedContent({
   unauthorizedComponent?: ReactNode
 }): JSX.Element {
   const isAuthenticated = authService.isAuthenticated()
-  const isLockedLocal = lockFacade.store.watchIsLockedLocal()
+
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
+
+  const { data: isLockedRemote, isFetching } = lockFacade.query.useLockedStatus(
+    {
+      enabled: isAuthenticated,
+    }
+  )
+
+  const shouldShowLockScreen =
+    isLockedLocal === undefined
+      ? isLockedRemote ?? false
+      : isLockedLocal && (isLockedRemote ?? false)
 
   if (!isAuthenticated) {
     return <>{unauthorizedComponent ?? null}</>
   }
 
-  if (isLockedLocal) {
+  if (shouldShowLockScreen || isFetching) {
     return <></>
   }
 

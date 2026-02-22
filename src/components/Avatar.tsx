@@ -70,8 +70,9 @@ const Avatar = ({
 
               try {
                 await authService.logout()
-                lockFacade.service.setIsLockedLocal(true)
+                lockFacade.service.setIsLockedLocal(undefined)
                 toast.success('로그아웃 성공')
+                router.push(routes.root)
               } catch (err) {
                 toast.error(
                   <>
@@ -80,11 +81,6 @@ const Avatar = ({
                     {JSON.stringify(err)}
                   </>
                 )
-              } finally {
-                router.push(routes.root)
-                setTimeout(() => {
-                  window.location.reload()
-                }, 1000)
               }
             },
           },

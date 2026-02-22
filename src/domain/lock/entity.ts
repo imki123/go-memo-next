@@ -5,15 +5,25 @@ export type LockEntity = {
     isLockedLocal,
   }: {
     isLockedRemote: boolean
-    isLockedLocal: boolean
-  }) => Promise<boolean>
+    isLockedLocal: IsLockedLocalStatus
+  }) => boolean
 }
 
+export type IsLockedLocalStatus = undefined | boolean // undefined: 초기상태, true: 잠금, false: 잠금해제
+
 export const lockEntity: LockEntity = {
-  shouldShowLockScreen: async ({ isLockedRemote, isLockedLocal }) => {
-    if (isLockedRemote && isLockedLocal) {
-      return true
+  shouldShowLockScreen: ({ isLockedRemote, isLockedLocal }) => {
+    if (isLockedLocal === undefined) {
+      // 로컬 잠금이 초기상태인 경우, 리모트 잠금 상태에 따라 결정
+      if (isLockedRemote) {
+        return true
+      }
+      return false
+    } else {
+      if (isLockedRemote && isLockedLocal) {
+        return true
+      }
+      return false
     }
-    return false
   },
 }

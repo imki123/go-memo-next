@@ -32,7 +32,7 @@ export function MemoEditor({
   const router = useRouter()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
-  const isLockedLocal = lockFacade.store.watchIsLockedLocal()
+  const isLockedLocal = lockFacade.store.useIsLockedLocal()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
   const { increaseFontSize, decreaseFontSize, loadFontSizeFromStorage } =
