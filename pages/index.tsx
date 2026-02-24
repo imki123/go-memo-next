@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { userApi } from '@/apis/userApi'
+import { AuthorizedContent } from '@/components/AuthorizedContent'
 import { MockMemoList } from '@/components/home/MockMemoList'
 import { queryKeys } from '@/lib/queryKeys'
 import { texts } from '@/texts'
@@ -15,7 +16,7 @@ export const routes = {
 }
 
 export default function HomePage() {
-  const { data: loginData, isFetching } = useQuery({
+  const { isFetching } = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: userApi.checkLogin,
   })
@@ -30,7 +31,9 @@ export default function HomePage() {
           <div>{texts.serverRestarting}</div>
         </div>
       ) : (
-        <>{loginData?.token ? <MemoList /> : <MockMemoList />}</>
+        <AuthorizedContent unauthorizedComponent={<MockMemoList />}>
+          <MemoList />
+        </AuthorizedContent>
       )}
     </>
   )
