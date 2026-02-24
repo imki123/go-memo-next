@@ -7,7 +7,6 @@ import { Children, ComponentProps, ReactNode } from 'react'
 import { userApi } from '@/apis/userApi'
 import { lockFacade } from '@/domain/lock/facade'
 import { queryKeys } from '@/lib/queryKeys'
-import { localStorageKeys } from '@/utils/localStorageKeys'
 
 import useCommonModal from '../hooks/useCommonModal'
 import { useThemeStore } from '../zustand/useThemeStore'
@@ -51,7 +50,6 @@ export default function Header({
           size={20}
           onClick={() => {
             setTheme(undefined)
-            window.localStorage.removeItem(localStorageKeys.memoTheme)
           }}
           className='cursor-pointer'
         />
@@ -60,7 +58,6 @@ export default function Header({
           size={20}
           onClick={() => {
             setTheme('dark')
-            window.localStorage.setItem(localStorageKeys.memoTheme, 'dark')
           }}
           className='cursor-pointer'
         />
