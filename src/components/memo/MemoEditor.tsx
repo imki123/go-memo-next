@@ -2,13 +2,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { memoApi } from '@/apis/memoApi'
 import { MemoType } from '@/components/home/Memo'
 import { Button } from '@/components/ui/button'
-import { lockFacade } from '@/domain/lock/facade'
 import useCommonModal from '@/hooks/useCommonModal'
 import { queryKeys } from '@/lib/queryKeys'
 import { useFontSizeStore } from '@/zustand/useFontSizeStore'
@@ -16,38 +15,16 @@ import { useMemoHistoryStore } from '@/zustand/useMemoHistoryStore'
 
 import { routes } from '../../../pages'
 
-type ScrollToTopRef = React.MutableRefObject<(() => void) | null>
-
 type MemoEditorProps = {
   memoId: number
   setTitle?: (title: string) => void
-  scrollToTopRef?: ScrollToTopRef
+  textareaRef?: React.RefObject<HTMLTextAreaElement>
 }
 
-export function MemoEditor({
-  memoId,
-  setTitle: setTitleProp,
-  scrollToTopRef,
-}: MemoEditorProps) {
+export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
   const router = useRouter()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
-
-  const { increaseFontSize, decreaseFontSize, loadFontSizeFromStorage } =
-    useFontSizeStore()
-  const { fontSize } = useFontSizeStore()
-  useEffect(() => {
-    loadFontSizeFromStorage()
-  }, [loadFontSizeFromStorage])
-
-  const [text, setText] = useState('')
-  const [notFound, setNotFound] = useState(false)
-  const initialSyncDone = useRef(false)
-  const prevHistoryIndex = useRef<number | null>(null)
-  const historyNavigationTriggered = useRef(false)
-
+  const { increaseFontSize, decreaseFontSize, fontSize } = useFontSizeStore()
   const {
     memoHistories,
     currentIndex,
@@ -57,120 +34,53 @@ export function MemoEditor({
     pushHistory,
   } = useMemoHistoryStore()
 
-  const queryClient = useQueryClient()
-  const debounceTimeoutId = useRef<NodeJS.Timeout>()
-  const fetchTimeoutId = useRef<NodeJS.Timeout>()
+  useEffect(() => {
+    // NOTE: 메모 아이디가 변경되면 히스토리 초기화
+    if (memoId > 0) {
+      resetHistory()
+    }
+  }, [memoId, resetHistory])
 
   const {
     data: memoData,
     isError,
-    isFetching,
+    isLoading,
   } = useQuery({
     queryKey: queryKeys.memoKeys.detail(memoId),
     queryFn: () => memoApi.getMemo(memoId),
     enabled: memoId > 0,
   })
 
-  useEffect(() => {
-    if (memoId <= 0) return
-    if (!memoData) return
-    if (initialSyncDone.current) return
-    initialSyncDone.current = true
-    const initialText = memoData?.text ?? ''
-    setText(initialText)
-    pushHistory(initialText)
-  }, [memoId, memoData, pushHistory])
+  const [text, setText] = useState('')
+  const textValue = text || memoData?.text || ''
 
   useEffect(() => {
-    if (memoData && memoId === 0) {
-      setNotFound(true)
+    // NOTE: 타이틀 설정
+    if (textValue) {
+      setTitle?.(textValue.split('\n')[0].slice(0, 50))
     }
-  }, [memoData, memoId])
+  }, [textValue, setTitle])
 
-  useEffect(() => {
-    if (memoHistories[currentIndex] === undefined) return
-    const historyText = memoHistories[currentIndex]
-    setText(historyText)
-    const isHistoryNavigation =
-      initialSyncDone.current &&
-      prevHistoryIndex.current !== null &&
-      prevHistoryIndex.current !== currentIndex
-    prevHistoryIndex.current = currentIndex
-    const shouldPatchFromHistory =
-      isHistoryNavigation && historyNavigationTriggered.current
-    historyNavigationTriggered.current = false
-    if (
-      !shouldPatchFromHistory ||
-      !lockFacade.service.isApiCallAllowed({
-        isLockedRemote,
-        isLockedLocal,
-      })
-    )
-      return
-    const now = dayjs().format('YYYY-MM-DD HH:mm')
-    const newMemo: MemoType = {
-      memoId,
-      text: historyText,
-      editedAt: now,
-      createdAt: (memoData as MemoType)?.createdAt || now,
-    }
-    memoApi
-      .patchMemo(newMemo)
-      .then(() => {
-        queryClient.invalidateQueries({ queryKey: queryKeys.memoKeys.list() })
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.memoKeys.detail(memoId),
-        })
-        toast.success('수정완료')
-      })
-      .catch((error) => console.error('메모 수정 실패:', error))
-  }, [
-    currentIndex,
-    memoHistories,
-    memoId,
-    memoData,
-    isLockedRemote,
-    isLockedLocal,
-    queryClient,
-  ])
+  const queryClient = useQueryClient()
+  const debounceHistoryTimeoutRef = useRef<NodeJS.Timeout>()
+  const debouncePostTimeoutRef = useRef<NodeJS.Timeout>()
 
-  useEffect(() => {
-    return () => {
-      initialSyncDone.current = false
-      resetHistory()
-    }
-  }, [memoId, resetHistory])
-
-  useEffect(() => {
-    setTitleProp?.(text.split('\n')[0].slice(0, 50))
-  }, [text, setTitleProp])
-
-  useEffect(() => {
-    if (!scrollToTopRef) return
-    scrollToTopRef.current = () => textareaRef.current?.scrollTo(0, 0)
-    return () => {
-      scrollToTopRef.current = null
-    }
-  }, [scrollToTopRef])
-
-  function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+  function onChangeTextarea(e: ChangeEvent<HTMLTextAreaElement>) {
     const newText = e.target.value
-    setText(newText)
 
-    clearTimeout(debounceTimeoutId.current)
-    debounceTimeoutId.current = setTimeout(() => {
+    clearTimeout(debounceHistoryTimeoutRef.current)
+    debounceHistoryTimeoutRef.current = setTimeout(() => {
       pushHistory(newText)
     }, 1000 * 0.5)
 
-    clearTimeout(fetchTimeoutId.current)
-    fetchTimeoutId.current = setTimeout(async () => {
-      if (
-        !lockFacade.service.isApiCallAllowed({
-          isLockedRemote,
-          isLockedLocal,
-        })
-      )
-        return
+    setTextThenDebouncePostMemo(newText)
+  }
+
+  function setTextThenDebouncePostMemo(newText: string) {
+    setText(newText)
+
+    clearTimeout(debouncePostTimeoutRef.current)
+    debouncePostTimeoutRef.current = setTimeout(async () => {
       const now = dayjs().format('YYYY-MM-DD HH:mm')
       const newMemo: MemoType = {
         memoId,
@@ -178,22 +88,20 @@ export function MemoEditor({
         editedAt: now,
         createdAt: (memoData as MemoType)?.createdAt || now,
       }
+
       try {
         await memoApi.patchMemo(newMemo)
         queryClient.invalidateQueries({ queryKey: queryKeys.memoKeys.list() })
         queryClient.invalidateQueries({
           queryKey: queryKeys.memoKeys.detail(memoId),
         })
-        toast.success('수정완료')
+        toast.success('수정완료', {
+          duration: 1000 * 0.5,
+        })
       } catch (error) {
         console.error('메모 수정 실패:', error)
       }
     }, 1000 * 1.5)
-  }
-
-  function handleDeleteMemo(e: MouseEvent<SVGSVGElement>) {
-    e.stopPropagation()
-    openModal()
   }
 
   const memoTime =
@@ -205,7 +113,7 @@ export function MemoEditor({
   return (
     <>
       <div className='h-[calc(100dvh-60px-env(safe-area-inset-bottom))] px-[15px] pb-[15px] flex flex-col items-center gap-[10px]'>
-        {isError || (isLockedRemote !== undefined && notFound) ? (
+        {isError ? (
           <div className='text-center'>메모 불러오기 실패 😥</div>
         ) : (
           <>
@@ -220,8 +128,9 @@ export function MemoEditor({
 
               <Button
                 onClick={() => {
-                  historyNavigationTriggered.current = true
                   backHistory()
+                  setText(memoHistories[currentIndex - 1])
+                  setTextThenDebouncePostMemo(memoHistories[currentIndex - 1])
                 }}
                 size='sm'
                 variant='secondary'
@@ -231,8 +140,9 @@ export function MemoEditor({
 
               <Button
                 onClick={() => {
-                  historyNavigationTriggered.current = true
                   nextHistory()
+                  setText(memoHistories[currentIndex + 1])
+                  setTextThenDebouncePostMemo(memoHistories[currentIndex + 1])
                 }}
                 size='sm'
                 variant='secondary'
@@ -245,7 +155,9 @@ export function MemoEditor({
               <div className='absolute top-0 right-1 flex items-center text-xs text-gray-600 dark:text-gray-400'>
                 {memoTime}
                 <X
-                  onClick={handleDeleteMemo}
+                  onClick={() => {
+                    openModal()
+                  }}
                   className='ml-1 cursor-pointer text-red-600'
                   size={16}
                 />
@@ -253,13 +165,11 @@ export function MemoEditor({
 
               <textarea
                 ref={textareaRef}
-                value={text}
-                onChange={handleChange}
+                value={textValue}
+                onChange={onChangeTextarea}
                 style={{ fontSize }}
                 className={`w-full h-full min-h-[200px] p-2 pt-3 border-0 outline-0 resize-none bg-transparent ${
-                  isLockedRemote !== undefined && isFetching
-                    ? 'animate-pulse'
-                    : ''
+                  isLoading ? 'animate-pulse' : ''
                 }`}
               />
             </div>
@@ -279,22 +189,19 @@ export function MemoEditor({
             children: '삭제',
             onClick: async () => {
               closeModal()
-              if (
-                !lockFacade.service.isApiCallAllowed({
-                  isLockedRemote,
-                  isLockedLocal,
-                })
-              )
-                return
+
               try {
                 await memoApi.deleteMemo(memoId)
+
                 toast.success('메모 삭제 성공')
+
                 queryClient.invalidateQueries({
                   queryKey: queryKeys.memoKeys.list(),
                 })
                 queryClient.invalidateQueries({
                   queryKey: queryKeys.memoKeys.detail(memoId),
                 })
+
                 router.replace(routes.root)
               } catch (err) {
                 toast.error(

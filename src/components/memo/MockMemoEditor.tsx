@@ -1,7 +1,8 @@
 import dayjs from 'dayjs'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 import { MemoType } from '@/components/home/Memo'
 import { Button } from '@/components/ui/button'
@@ -12,34 +13,22 @@ import { useMemoHistoryStore } from '@/zustand/useMemoHistoryStore'
 
 import { routes } from '../../../pages'
 
-type ScrollToTopRef = React.MutableRefObject<(() => void) | null>
-
 type MockMemoEditorProps = {
   memoId: number
   setTitle?: (title: string) => void
-  scrollToTopRef?: ScrollToTopRef
+  textareaRef?: React.RefObject<HTMLTextAreaElement>
 }
 
 export function MockMemoEditor({
   memoId,
-  setTitle: setTitleProp,
-  scrollToTopRef,
+  setTitle,
+  textareaRef,
 }: MockMemoEditorProps) {
   const router = useRouter()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { openModal, closeModal, Modal, visible } = useCommonModal()
-
-  const { increaseFontSize, decreaseFontSize, loadFontSizeFromStorage } =
-    useFontSizeStore()
-  const { fontSize } = useFontSizeStore()
-  useEffect(() => {
-    loadFontSizeFromStorage()
-  }, [loadFontSizeFromStorage])
-
+  const { increaseFontSize, decreaseFontSize, fontSize } = useFontSizeStore()
   const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
   const memo = allMemos?.find((m: MemoType) => m.memoId === memoId)
-  const [text, setText] = useState(memo?.text ?? '')
-  const syncFromStore = useRef(false)
 
   const {
     memoHistories,
@@ -50,74 +39,61 @@ export function MockMemoEditor({
     pushHistory,
   } = useMemoHistoryStore()
 
-  const debounceTimeoutId = useRef<NodeJS.Timeout>()
-  const memoCreatedAtRef = useRef<string | undefined>()
   useEffect(() => {
-    memoCreatedAtRef.current = memo?.createdAt
-  }, [memo?.createdAt])
-
-  useEffect(() => {
-    if (memo?.text !== undefined && !syncFromStore.current) {
-      setText(memo.text)
-      syncFromStore.current = true
-      pushHistory(memo.text)
-    }
-  }, [memo?.text, memo?.memoId, pushHistory])
-
-  useEffect(() => {
-    if (memo == null || memoHistories[currentIndex] === undefined) return
-    setText(memoHistories[currentIndex])
-    setMemo({
-      memoId,
-      text: memoHistories[currentIndex],
-      editedAt: dayjs().format('YYYY-MM-DD HH:mm'),
-      createdAt: memo.createdAt,
-    })
-  }, [currentIndex, memoHistories, memoId, setMemo, memo])
-
-  useEffect(() => {
-    return () => {
-      syncFromStore.current = false
+    // NOTE: 메모 아이디가 변경되면 히스토리 초기화
+    if (memoId > 0) {
       resetHistory()
+      setText('')
     }
   }, [memoId, resetHistory])
 
-  useEffect(() => {
-    setTitleProp?.(text.split('\n')[0].slice(0, 50))
-  }, [text, setTitleProp])
+  const [text, setText] = useState('')
+  const textValue = text || memo?.text || ''
 
   useEffect(() => {
-    if (!scrollToTopRef) return
-    scrollToTopRef.current = () => textareaRef.current?.scrollTo(0, 0)
-    return () => {
-      scrollToTopRef.current = null
+    // NOTE: 타이틀 설정
+    if (textValue) {
+      setTitle?.(textValue.split('\n')[0].slice(0, 50))
     }
-  }, [scrollToTopRef])
+  }, [textValue, setTitle])
 
-  function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+  const debounceHistoryTimeoutRef = useRef<NodeJS.Timeout>()
+  const debouncePostTimeoutRef = useRef<NodeJS.Timeout>()
+
+  function onChangeTextarea(e: ChangeEvent<HTMLTextAreaElement>) {
     const newText = e.target.value
-    setText(newText)
-    clearTimeout(debounceTimeoutId.current)
-    debounceTimeoutId.current = setTimeout(() => {
-      const now = dayjs().format('YYYY-MM-DD HH:mm')
+
+    clearTimeout(debounceHistoryTimeoutRef.current)
+    debounceHistoryTimeoutRef.current = setTimeout(() => {
       pushHistory(newText)
+    }, 1000 * 0.5)
+
+    setTextThenDebouncePostMemo(newText)
+  }
+
+  function setTextThenDebouncePostMemo(newText: string) {
+    setText(newText)
+
+    clearTimeout(debouncePostTimeoutRef.current)
+    debouncePostTimeoutRef.current = setTimeout(() => {
+      const now = dayjs().format('YYYY-MM-DD HH:mm')
       setMemo({
         memoId,
         text: newText,
         editedAt: now,
-        createdAt: memoCreatedAtRef.current ?? now,
+        createdAt: (memo as MemoType)?.createdAt || now,
       })
-    }, 500)
+      toast.success('수정완료', {
+        duration: 1000 * 0.5,
+      })
+    }, 1000 * 1.5)
   }
 
-  function handleDeleteMemo(e: MouseEvent<SVGSVGElement>) {
-    e.stopPropagation()
-    openModal()
-  }
-
-  const memoTime = memo
-    ? dayjs(memo.editedAt || memo.createdAt).format('YYYY-MM-DD HH:mm')
-    : ''
+  const memoTime =
+    memo &&
+    dayjs((memo as MemoType).editedAt || (memo as MemoType).createdAt).format(
+      'YYYY-MM-DD HH:mm'
+    )
 
   return (
     <>
@@ -126,13 +102,32 @@ export function MockMemoEditor({
           <Button onClick={increaseFontSize} size='sm' variant='secondary'>
             글씨+
           </Button>
+
           <Button onClick={decreaseFontSize} size='sm' variant='secondary'>
             글씨-
           </Button>
-          <Button onClick={backHistory} size='sm' variant='secondary'>
+
+          <Button
+            onClick={() => {
+              backHistory()
+              setText(memoHistories[currentIndex - 1])
+              setTextThenDebouncePostMemo(memoHistories[currentIndex - 1])
+            }}
+            size='sm'
+            variant='secondary'
+          >
             뒤로
           </Button>
-          <Button onClick={nextHistory} size='sm' variant='secondary'>
+
+          <Button
+            onClick={() => {
+              nextHistory()
+              setText(memoHistories[currentIndex + 1])
+              setTextThenDebouncePostMemo(memoHistories[currentIndex + 1])
+            }}
+            size='sm'
+            variant='secondary'
+          >
             앞으로
           </Button>
         </div>
@@ -141,15 +136,18 @@ export function MockMemoEditor({
           <div className='absolute top-0 right-1 flex items-center text-xs text-gray-600 dark:text-gray-400'>
             {memoTime}
             <X
-              onClick={handleDeleteMemo}
+              onClick={() => {
+                openModal()
+              }}
               className='ml-1 cursor-pointer text-red-600'
               size={16}
             />
           </div>
+
           <textarea
             ref={textareaRef}
-            value={text}
-            onChange={handleChange}
+            value={textValue}
+            onChange={onChangeTextarea}
             style={{ fontSize }}
             className='w-full h-full min-h-[200px] p-2 pt-3 border-0 outline-0 resize-none bg-transparent'
           />
@@ -169,6 +167,7 @@ export function MockMemoEditor({
             onClick: () => {
               deleteMemo(memoId)
               closeModal()
+              toast.success('메모 삭제 성공')
               router.replace(routes.root)
             },
           },

@@ -10,7 +10,7 @@ export default function MemoPage() {
   const router = useRouter()
   const memoId = router.isReady ? Number(router.query.memoId) || 0 : 0
   const [title, setTitle] = useState('')
-  const scrollToTopRef = useRef<(() => void) | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   if (!router.isReady) {
     return null
@@ -21,14 +21,14 @@ export default function MemoPage() {
       <Header
         title={title}
         backButtonSize={24}
-        onTitleClick={() => scrollToTopRef.current?.()}
+        onTitleClick={() => textareaRef?.current?.scrollTo(0, 0)}
       />
       <AuthorizedContent
         unauthorizedComponent={
           <MockMemoEditor
             memoId={memoId}
             setTitle={setTitle}
-            scrollToTopRef={scrollToTopRef}
+            textareaRef={textareaRef}
           />
         }
       >
@@ -36,7 +36,7 @@ export default function MemoPage() {
           memoId={memoId}
           key={memoId}
           setTitle={setTitle}
-          scrollToTopRef={scrollToTopRef}
+          textareaRef={textareaRef}
         />
       </AuthorizedContent>
     </>
