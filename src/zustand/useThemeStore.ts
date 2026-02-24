@@ -11,6 +11,7 @@ export type ThemeStateType = {
 
 export type ThemeActionType = {
   setTheme: (theme: ThemeType) => void
+  setDocumentTheme: (theme: ThemeType) => void
 }
 
 export type ThemeStoreType = ThemeStateType & ThemeActionType
@@ -19,9 +20,11 @@ export const useThemeStore = create<ThemeStoreType>()(
   persist(
     (set) => ({
       theme: undefined,
+
       setTheme: (theme: ThemeType) => {
         set({ theme })
-
+      },
+      setDocumentTheme: (theme: ThemeType) => {
         if (theme === 'dark') {
           document.documentElement.classList.add('dark')
         } else {
