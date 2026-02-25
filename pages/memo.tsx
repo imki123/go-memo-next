@@ -23,6 +23,7 @@ export default function MemoPage() {
         backButtonSize={24}
         onTitleClick={() => textareaRef?.current?.scrollTo(0, 0)}
       />
+
       <AuthorizedContent
         unauthorizedComponent={
           <MockMemoEditor
