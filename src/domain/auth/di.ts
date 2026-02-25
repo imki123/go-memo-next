@@ -1,8 +1,7 @@
-import { userApi } from '@/apis/userApi'
-import { accessTokenRepository } from '@/domain/auth/infra/accessTokenRepository'
+import { authLocalRepository } from '@/domain/auth/infra/authLocalRepository'
 import { googleAccountClient } from '@/domain/auth/infra/googleAccountClient'
-import { queryClient } from '@/lib/queryClient'
 
+import { authRemoteRepository } from './infra/authRemoteRepository'
 import { createAuthService } from './service'
 
 /**
@@ -13,16 +12,6 @@ import { createAuthService } from './service'
  */
 export const authService = createAuthService({
   oAuthClient: googleAccountClient,
-  remoteRepository: {
-    issueToken: async (oAuthCredential) => {
-      const data = await userApi.login(oAuthCredential?.credential ?? '')
-      return data?.token ?? ''
-    },
-    checkLogin: userApi.checkLogin,
-    logout: async () => {
-      await userApi.logout()
-      queryClient.invalidateQueries()
-    },
-  },
-  accessTokenRepository,
+  authRemoteRepository: authRemoteRepository,
+  authLocalRepository: authLocalRepository,
 })

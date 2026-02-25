@@ -1,6 +1,6 @@
 import { JSX, ReactNode } from 'react'
 
-import { authService } from '@/domain/auth/di'
+import { useAuthService } from '@/domain/auth/useAuthService'
 import { lockFacade } from '@/domain/lock/facade'
 
 /**
@@ -15,7 +15,9 @@ export function AuthorizedContent({
   children: ReactNode
   unauthorizedComponent?: ReactNode
 }): JSX.Element {
-  const isAuthenticated = authService.isAuthenticated()
+  const {
+    state: { isAuthenticated },
+  } = useAuthService()
 
   const isLockedLocal = lockFacade.store.useIsLockedLocal()
 
@@ -25,16 +27,24 @@ export function AuthorizedContent({
     }
   )
 
-  const shouldShowLockScreen =
-    isLockedLocal === undefined
-      ? isLockedRemote ?? false
-      : isLockedLocal && (isLockedRemote ?? false)
+  const shouldHideContent = (() => {
+    if (isLockedLocal === undefined) {
+      if (isFetching) {
+        return true
+      }
+      return Boolean(isLockedRemote)
+    } else if (isLockedLocal === true) {
+      return true
+    } else {
+      return false
+    }
+  })()
 
   if (!isAuthenticated) {
     return <>{unauthorizedComponent ?? null}</>
   }
 
-  if (shouldShowLockScreen || isFetching) {
+  if (shouldHideContent) {
     return <></>
   }
 

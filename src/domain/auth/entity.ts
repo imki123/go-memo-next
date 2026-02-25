@@ -9,6 +9,6 @@ export type AuthEntity = {
 
 export const authEntity: AuthEntity = {
   isAuthenticated: (accessToken: string): boolean => {
-    return accessToken.length > 0
+    return Boolean(accessToken)
   },
 }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { accessTokenRepository } from '@/domain/auth/infra/accessTokenRepository'
+import { authLocalRepository } from '@/domain/auth/infra/authLocalRepository'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
 
@@ -12,7 +12,7 @@ export const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = accessTokenRepository.getAccessToken()
+      const token = authLocalRepository.getAccessToken()
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }

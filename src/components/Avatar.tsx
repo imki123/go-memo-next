@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { authService } from '@/domain/auth/di'
+import { useAuthService } from '@/domain/auth/useAuthService'
 import { lockFacade } from '@/domain/lock/facade'
 
 import { routes } from '../../pages'
@@ -18,6 +18,9 @@ const Avatar = ({
   onClick?: () => void
 }) => {
   const router = useRouter()
+  const {
+    action: { logout },
+  } = useAuthService()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -69,7 +72,7 @@ const Avatar = ({
               closeModal()
 
               try {
-                await authService.logout()
+                await logout()
                 lockFacade.service.setIsLockedLocal(undefined)
                 toast.success('로그아웃 성공')
                 router.push(routes.root)

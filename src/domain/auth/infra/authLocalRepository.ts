@@ -1,7 +1,7 @@
-import { AccessTokenRepository } from '@/domain/auth/service'
+import { AuthLocalRepository } from '@/domain/auth/service'
 import { useAuthStore } from '@/zustand/useAuthStore'
 
-export const authStore: AccessTokenRepository = {
+export const authStore: AuthLocalRepository = {
   getAccessToken: () => useAuthStore.getState().accessToken,
   setAccessToken: (accessToken: string) => {
     useAuthStore.setState({ accessToken })
@@ -11,4 +11,4 @@ export const authStore: AccessTokenRepository = {
   },
 }
 
-export const accessTokenRepository: AccessTokenRepository = authStore
+export const authLocalRepository: AuthLocalRepository = authStore
