@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useAuthService } from '@/domain/auth/useAuthService'
-import { lockFacade } from '@/domain/lock/facade'
+import { useLockActions } from '@/domain/lock/hook'
 
 import { routes } from '../../pages'
 import { LoginResponseType } from '../apis/userApi'
@@ -21,6 +21,7 @@ const Avatar = ({
   const {
     action: { logout },
   } = useAuthService()
+  const { setIsLockedLocal } = useLockActions()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -73,7 +74,7 @@ const Avatar = ({
 
               try {
                 await logout()
-                lockFacade.service.setIsLockedLocal(undefined)
+                setIsLockedLocal(undefined)
                 toast.success('로그아웃 성공')
                 router.push(routes.root)
               } catch (err) {

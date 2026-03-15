@@ -3,7 +3,7 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
-import { lockFacade } from '@/domain/lock/facade'
+import { useLockActions, useLockQueries, useLockScreenState } from '@/domain/lock/hook'
 import { zIndex } from '@/utils/util'
 import { useThemeStore } from '@/zustand/useThemeStore'
 
@@ -11,15 +11,20 @@ const MIN_PASSWORD_LENGTH = 4
 const MAX_PASSWORD_LENGTH = 4
 
 export function LockScreen() {
-  const isLockScreenOpened = lockFacade.store.useIsLockScreenOpened()
-
-  const currentLockScreenType = lockFacade.store.useLockScreenType()
+  const { isLockScreenOpened, lockScreenType: currentLockScreenType } =
+    useLockScreenState()
   const { theme } = useThemeStore()
-  const { refetch: refetchLogin } = lockFacade.query.useLockedStatus()
+  const { lockedStatus } = useLockQueries()
+  const { refetch: refetchLogin } = lockedStatus
 
   const [isSending, setIsSending] = useState(false)
-  const { enableRemote, disableRemote, unlockRemote } =
-    lockFacade.query.useLockMutations()
+  const {
+    enableRemote,
+    disableRemote,
+    unlockRemote,
+    setIsLockedLocal,
+    hideLockScreen,
+  } = useLockActions()
 
   const sendPassword = useCallback(
     async (currentPassword: string) => {
@@ -33,10 +38,10 @@ export function LockScreen() {
             try {
               setIsSending(true)
               await enableRemote.mutateAsync(currentPassword)
-              lockFacade.store.setIsLockedLocal(false)
+              setIsLockedLocal(false)
               refetchLogin()
               dispatchPassword('CLEAR')
-              lockFacade.store.hideLockScreen()
+              hideLockScreen()
             } catch (err) {
               const error = err as AxiosError<{ error: string }>
               console.error(err)
@@ -57,10 +62,10 @@ export function LockScreen() {
             try {
               setIsSending(true)
               await disableRemote.mutateAsync()
-              lockFacade.store.setIsLockedLocal(false)
+              setIsLockedLocal(false)
               refetchLogin()
               dispatchPassword('CLEAR')
-              lockFacade.store.hideLockScreen()
+              hideLockScreen()
             } catch (err) {
               const error = err as AxiosError<{ error: string }>
               console.error(err)
@@ -80,9 +85,9 @@ export function LockScreen() {
           try {
             setIsSending(true)
             await unlockRemote.mutateAsync(currentPassword)
-            lockFacade.store.setIsLockedLocal(false)
+            setIsLockedLocal(false)
             dispatchPassword('CLEAR')
-            lockFacade.store.hideLockScreen()
+            hideLockScreen()
           } catch (err) {
             const error = err as AxiosError<{ error: string }>
             console.error(err)
@@ -107,6 +112,8 @@ export function LockScreen() {
       enableRemote,
       disableRemote,
       unlockRemote,
+      hideLockScreen,
+      setIsLockedLocal,
     ]
   )
 
@@ -161,7 +168,7 @@ export function LockScreen() {
       ? `${MIN_PASSWORD_LENGTH}자리`
       : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
 
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
+  const { isLockedLocal } = useLockScreenState()
 
   if (!isLockedLocal && !isLockScreenOpened) {
     return null
@@ -179,7 +186,7 @@ export function LockScreen() {
         currentLockScreenType === 'disable') && (
         <X
           className='absolute top-4 right-4 cursor-pointer'
-          onClick={() => lockFacade.store.hideLockScreen()}
+          onClick={() => hideLockScreen()}
         />
       )}
 

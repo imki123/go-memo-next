@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
-import { lockFacade } from '@/domain/lock/facade'
+import { useLockActions, useLockQueries } from '@/domain/lock/hook'
 import { queryKeys } from '@/lib/queryKeys'
 
 import useCommonModal from '../hooks/useCommonModal'
@@ -35,13 +35,15 @@ export default function Header({
 
   const router = useRouter()
 
-  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
+  const { lockedStatus } = useLockQueries()
+  const { data: isLockedRemote } = lockedStatus
   const { data: loginData } = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: userApi.checkLogin,
   })
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
+  const { showLockScreen } = useLockActions()
 
   const defaultRightItems = [
     <>
@@ -101,7 +103,7 @@ export default function Header({
       variant: 'destructive',
       onClick: () => {
         closeModal()
-        lockFacade.store.showLockScreen('disable')
+        showLockScreen('disable')
       },
     })
   } else {
@@ -109,7 +111,7 @@ export default function Header({
       children: '비밀번호 설정',
       onClick: () => {
         closeModal()
-        lockFacade.store.showLockScreen('enable')
+        showLockScreen('enable')
       },
     })
   }

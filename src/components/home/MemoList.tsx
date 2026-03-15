@@ -9,7 +9,8 @@ import { memoApi } from '@/apis/memoApi'
 import { Memo } from '@/components/home/Memo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { lockFacade } from '@/domain/lock/facade'
+import { lockEntity } from '@/domain/lock/entity'
+import { useLockQueries, useLockScreenState } from '@/domain/lock/hook'
 import { queryKeys } from '@/lib/queryKeys'
 import { texts } from '@/texts'
 
@@ -18,8 +19,9 @@ import ReloadButton from './ReloadButton'
 
 export function MemoList() {
   const router = useRouter()
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
-  const { data: isLockedRemote } = lockFacade.query.useLockedStatus()
+  const { isLockedLocal } = useLockScreenState()
+  const { lockedStatus } = useLockQueries()
+  const { data: isLockedRemote } = lockedStatus
 
   const {
     data: allMemosData,
@@ -29,10 +31,10 @@ export function MemoList() {
   } = useQuery({
     queryKey: queryKeys.memoKeys.list(),
     queryFn: memoApi.getAllMemo,
-    // enabled: lockFacade.lockService.isApiCallAllowed({
-    //   isLockedRemote,
-    //   isLockedLocal,
-    // }),
+    enabled: lockEntity.isApiCallAllowed({
+      isLockedRemote,
+      isLockedLocal,
+    }),
   })
 
   const sortedMemos = useMemo(
@@ -52,7 +54,7 @@ export function MemoList() {
 
   async function addMemo() {
     if (
-      !lockFacade.service.isApiCallAllowed({
+      !lockEntity.isApiCallAllowed({
         isLockedRemote,
         isLockedLocal,
       })

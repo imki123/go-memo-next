@@ -1,7 +1,8 @@
 import { JSX, ReactNode } from 'react'
 
 import { useAuthService } from '@/domain/auth/useAuthService'
-import { lockFacade } from '@/domain/lock/facade'
+import { lockEntity } from '@/domain/lock/entity'
+import { useLockQueries, useLockScreenState } from '@/domain/lock/hook'
 
 /**
  * 인증되어있지 않다면 화면을 가리고 데이터를 요청하지 않도록 막아주는 컴포넌트
@@ -19,25 +20,18 @@ export function AuthorizedContent({
     state: { isAuthenticated },
   } = useAuthService()
 
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
-
-  const { data: isLockedRemote, isFetching } = lockFacade.query.useLockedStatus(
-    {
-      enabled: isAuthenticated,
-    }
-  )
+  const { isLockedLocal } = useLockScreenState()
+  const { lockedStatus } = useLockQueries({ enabled: isAuthenticated })
 
   const shouldHideContent = (() => {
-    if (isLockedLocal === undefined) {
-      if (isFetching) {
-        return true
-      }
-      return Boolean(isLockedRemote)
-    } else if (isLockedLocal === true) {
+    if (lockedStatus.isFetching) {
       return true
-    } else {
-      return false
     }
+
+    return lockEntity.shouldShowLockScreen({
+      isLockedRemote: lockedStatus.data,
+      isLockedLocal,
+    })
   })()
 
   if (!isAuthenticated) {

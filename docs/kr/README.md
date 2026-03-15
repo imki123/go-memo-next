@@ -78,8 +78,9 @@ pnpm gh-deploy
 
 - `app/`: Next.js 앱 엔트리, 전역 설정
 - `pages/`: 화면 라우트 엔트리
-- `domain/`: 도메인별 entity, service, repository, hook 등 비즈니스 로직
-- `infra/`: HTTP 클라이언트, 상태 저장소(zustand) 등 인프라 구현
+- `providers/`: Next.js 전용. 루트 Provider(예: QueryClientProvider) **내부**에서만 실행되는 초기화·래퍼 컴포넌트. 여기서 도메인 hook 사용; `_app` 루트에서 useQuery/useMutation을 직접 호출하지 않음
+- `domain/`: 도메인별 entity, service, ports, repository, hook 등 비즈니스 로직
+- `infra/`: 스토어(stores), HTTP 클라이언트 등 인프라 구현
 - `shared/`: 여러 도메인에서 공통으로 사용하는 유틸, UI 컴포넌트 등
 
 의존 방향은 아래와 같습니다.

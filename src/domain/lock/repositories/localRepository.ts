@@ -1,8 +1,7 @@
-import type { LockLocalRepository } from '@/domain/lock/service'
+import type { LockLocalRepositoryPort } from '@/domain/lock/ports'
+import { useLockStore } from '@/infra/store/lockStore'
 
-import { useLockStore } from './store'
-
-export const localLockRepository: LockLocalRepository = {
+export const localLockRepository: LockLocalRepositoryPort = {
   getIsLockedLocal: () => useLockStore.getState().isLockedLocal,
   setIsLockedLocal: (isLockedLocal) =>
     useLockStore.getState().setIsLockedLocal(isLockedLocal),

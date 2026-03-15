@@ -8,10 +8,10 @@ import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
-import { LockScreen } from '@/components/LockScreen'
 import { authService } from '@/domain/auth/di'
-import { lockFacade } from '@/domain/lock/facade'
+import { useLockStore } from '@/infra/store/lockStore'
 import { queryClient } from '@/lib/queryClient'
+import { LockInitializer } from '@/providers/LockInitializer'
 import GlobalStyle from '@/styles/GlobalStyle'
 import '@/styles/globals.css'
 
@@ -41,29 +41,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  const isLockedLocal = lockFacade.store.useIsLockedLocal()
-
-  useEffect(() => {
-    // NOTE: 잠금 화면 표시 여부 결정
-    lockFacade.service
-      .shouldShowLockScreen()
-      .then((shouldShowLockScreen) => {
-        if (shouldShowLockScreen) {
-          lockFacade.store.showLockScreen('unlock')
-        } else {
-          lockFacade.store.hideLockScreen()
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        lockFacade.store.hideLockScreen()
-      })
-  }, [isLockedLocal])
-
   function afterLogin(loginData: LoginResponseType) {
     if (loginData.token) {
       toast.success('로그인 성공 😄')
-      lockFacade.store.setIsLockedLocal(false)
+      useLockStore.getState().setIsLockedLocal(false)
       router.replace(routes.root)
     } else {
       toast.error('로그인 실패 😥')
@@ -91,7 +72,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
 
-      <LockScreen />
+      <LockInitializer />
 
       <Component {...pageProps} />
 

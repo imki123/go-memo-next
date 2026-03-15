@@ -84,8 +84,9 @@ This project follows a **domain-based FE architecture**, grouping business logic
 
 - `app/`: Next.js app entry and global setup
 - `pages/`: Route entry points
-- `domain/`: Business logic per domain (entity, service, repository, hook)
-- `infra/`: Infrastructure implementations (HTTP client, zustand store, etc.)
+- `providers/`: Next.js-only wrappers that run **inside** root providers (e.g. QueryClientProvider). Use domain hooks here for initialization; do not call useQuery/useMutation at `_app` root.
+- `domain/`: Business logic per domain (entity, service, ports, repository, hook)
+- `infra/`: Infrastructure implementations (stores, HTTP client, etc.)
 - `shared/`: Shared utilities, UI components, and common logic
 
 The dependency flow looks like this:

@@ -106,6 +106,7 @@ pages → hook → service → repository → infra/store (저장소 구현체: 
 
 - `src/pages/_app.tsx` → 이 문서의 `app` 레이어 역할(전역 Provider, 공통 레이아웃)
 - `src/pages/**/*.tsx` → 이 문서의 `pages` 레이어 역할(각 라우트 화면, 도메인 hook 사용)
+- `src/providers/*` → Next.js 전용 **providers** 레이어. `_app`에서 QueryClientProvider 등 Provider 하위에 렌더되는 컴포넌트만 두며, 여기서 도메인 hook(useQuery 등)을 사용해 초기화·래퍼 역할을 한다. `_app` 루트에서 직접 useQuery/useMutation을 호출하면 SSR 시 QueryClient가 없어 오류가 나므로, 해당 로직은 반드시 `src/providers/` 쪽 컴포넌트로 분리한다.
 - `src/domain/*` / `src/infra/*` / `src/shared/*` → 이 문서의 `domain` / `infra` / `shared` 레이어와 1:1 대응
 
 ### 데이터 패칭과 도메인 계층
