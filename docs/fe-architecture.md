@@ -20,7 +20,7 @@ src/
     routes.ts
   domain/
     user/
-      entity.ts (필요시)
+      entity.ts
       ports.ts
       repository.ts
       service.ts
@@ -58,12 +58,12 @@ src/
 
 ---
 
-## 도메인 내부 (entity → ports → service → repository → hook)
+## 도메인 내부 (entity → service → ports → repository → hook)
 
-- **Entity**: 순수 도메인 규칙 (타입, validation, 계산). Entity는 어디에도 의존하지 않음.
-- **Ports**: 도메인 모듈 간 통신 규칙. 모듈 간 계약(입출력 규칙)은 `interface`로, 단순 데이터 구조는 `type`으로 정의해 의존성을 느슨하게 유지한다.
-- **Service**: 도메인 API(Facade). repository 호출 + entity/ports 규칙 적용. class + singleton export로 테스트·실사용 분리.
-- **Repository**: 개념상 **저장소**. API 호출 후 결과를 저장소에 반영하고, 저장소 구현체(infra의 zustand 스토어 등)를 사용. 도메인은 저장소만 알며, store는 모름.
+- **Entity**: 순수 도메인 규칙 (타입, validation, 계산). Entity는 어디에도 의존하지 않음. 순수 타입·순수 함수로 구성되며 service에서 직접 사용해도 된다.
+- **Service**: 도메인 API(Facade). entity 규칙을 적용하고, 구체 구현 대신 ports에 정의된 계약을 통해 repository를 의존한다. class + singleton export로 테스트·실사용 분리.
+- **Ports**: service와 repository(및 다른 도메인 모듈) 사이의 중간 레이어. 모듈 간 계약(입출력 규칙)은 `interface`로, 단순 데이터 구조는 `type`으로 정의해 **의존성을 역전**시킨다.
+- **Repository**: 개념상 **저장소**. ports에서 정의한 계약을 구현하며, API 호출 후 결과를 저장소에 반영하고, 저장소 구현체(infra의 zustand 스토어 등)를 사용한다. 도메인은 저장소만 알며, store는 모름.
 - **Hook**: repository가 노출한 구독 훅 + service 호출. 상태는 repository를 통해 구독.
 
 **의존 방향**: `pages → hook → service → repository → infra/store`. 저장소 구현체는 `infra/store/`에 두고 repository가 사용하며, 도메인 간 계약은 `ports`(interface/type)로 정의한다.
