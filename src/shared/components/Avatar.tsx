@@ -3,12 +3,11 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { LoginResponseType } from '@/apis/userApi'
+import { routePaths } from '@/app/routePaths'
 import { useAuthService } from '@/domain/auth/useAuthService'
 import { useLockActions } from '@/domain/lock/hook'
-
-import { routes } from '../../pages'
-import { LoginResponseType } from '../apis/userApi'
-import useCommonModal from '../hooks/useCommonModal'
+import useCommonModal from '@/shared/hook/useCommonModal'
 
 const Avatar = ({
   avatar,
@@ -43,7 +42,7 @@ const Avatar = ({
           />
         ) : (
           <Image
-            unoptimized={true} // 외부 url
+            unoptimized={true}
             src={avatar.picture || 'unknown'}
             width='30'
             height='30'
@@ -76,7 +75,7 @@ const Avatar = ({
                 await logout()
                 setIsLockedLocal(undefined)
                 toast.success('로그아웃 성공')
-                router.push(routes.root)
+                router.push(routePaths.root)
               } catch (err) {
                 toast.error(
                   <>
@@ -95,3 +94,4 @@ const Avatar = ({
 }
 
 export default Avatar
+

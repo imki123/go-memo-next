@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
 import { authService } from '@/domain/auth/di'
-import { texts } from '@/texts'
-import { useLoginStore } from '@/zustand/useLoginStore'
+import { useLoginStore } from '@/infra/store/useLoginStore'
+import Header from '@/shared/components/Header'
+import { texts } from '@/shared/constants/texts'
 
-import Header from '../src/components/Header'
 
 export default function LoginPage() {
   useEffect(() => {

@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
+import { LockInitializer } from '@/app/providers/LockInitializer'
+import '@/app/styles/globals.css'
+import GlobalStyle from '@/app/styles/GlobalStyle'
 import { authService } from '@/domain/auth/di'
-import { useLockStore } from '@/infra/store/lockStore'
-import { queryClient } from '@/lib/queryClient'
-import { LockInitializer } from '@/providers/LockInitializer'
-import GlobalStyle from '@/styles/GlobalStyle'
-import '@/styles/globals.css'
+import { queryClient } from '@/infra/query/queryClient'
+import { useLockStore } from '@/infra/store/useLockStore'
 
-import { routes } from '.'
+import { routePaths } from '../src/app/routePaths'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (loginData.token) {
       toast.success('로그인 성공 😄')
       useLockStore.getState().setIsLockedLocal(false)
-      router.replace(routes.root)
+      router.replace(routePaths.root)
     } else {
       toast.error('로그인 실패 😥')
     }

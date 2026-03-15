@@ -6,13 +6,13 @@ import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
 import { useLockActions, useLockQueries } from '@/domain/lock/hook'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/infra/query/queryKeys'
+import { useThemeStore } from '@/infra/store/useThemeStore'
+import useCommonModal from '@/shared/hook/useCommonModal'
 
-import useCommonModal from '../hooks/useCommonModal'
-import { useThemeStore } from '../zustand/useThemeStore'
+import { Button } from '../ui/button'
 
 import Avatar from './Avatar'
-import { Button } from './ui/button'
 
 type HeaderType = {
   fixed?: boolean
@@ -30,7 +30,6 @@ export default function Header({
   rightItems = [],
   onTitleClick,
 }: HeaderType) {
-  // 테마 지정
   const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
@@ -164,3 +163,4 @@ export default function Header({
     </>
   )
 }
+

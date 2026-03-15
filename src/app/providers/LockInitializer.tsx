@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 
-import { LockScreen } from '@/components/LockScreen'
 import { lockEntity } from '@/domain/lock/entity'
 import {
   useLockActions,
   useLockQueries,
   useLockScreenState,
 } from '@/domain/lock/hook'
+import { LockScreen } from '@/shared/components/LockScreen'
 
 export function LockInitializer() {
   const { isLockedLocal } = useLockScreenState()

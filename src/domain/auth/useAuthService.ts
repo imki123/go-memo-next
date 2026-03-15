@@ -6,8 +6,8 @@ import {
 } from '@tanstack/react-query'
 
 import { LoginResponseType, userApi } from '@/apis/userApi'
-import { queryKeys } from '@/lib/queryKeys'
-import { useAuthStore } from '@/zustand/useAuthStore'
+import { queryKeys } from '@/infra/query/queryKeys'
+import { useAuthStore } from '@/infra/store/useAuthStore'
 
 type UseAuthService = {
   state: {

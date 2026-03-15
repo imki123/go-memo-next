@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
-import { AuthorizedContent } from '../src/components/AuthorizedContent'
-import Header from '../src/components/Header'
-import { MemoEditor } from '../src/components/memo/MemoEditor'
-import { MockMemoEditor } from '../src/components/memo/MockMemoEditor'
+import { AuthorizedContent } from '@/shared/components/AuthorizedContent'
+import Header from '@/shared/components/Header'
+import { MemoEditor } from '@/shared/components/memo/MemoEditor'
+import { MockMemoEditor } from '@/shared/components/memo/MockMemoEditor'
 
 export default function MemoPage() {
   const router = useRouter()

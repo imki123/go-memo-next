@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { persistStoreKeys } from '@/zustand/persistStoreKeys'
+import { persistStoreKeys } from '@/infra/store/persistStoreKeys'
 
 type AuthStateType = {
   accessToken: string

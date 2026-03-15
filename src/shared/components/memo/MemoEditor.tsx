@@ -6,14 +6,13 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { memoApi } from '@/apis/memoApi'
-import { MemoType } from '@/components/home/Memo'
-import { Button } from '@/components/ui/button'
-import useCommonModal from '@/hooks/useCommonModal'
-import { queryKeys } from '@/lib/queryKeys'
-import { useFontSizeStore } from '@/zustand/useFontSizeStore'
-import { useMemoHistoryStore } from '@/zustand/useMemoHistoryStore'
-
-import { routes } from '../../../pages'
+import { routePaths } from '@/app/routePaths'
+import { queryKeys } from '@/infra/query/queryKeys'
+import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
+import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
+import { MemoType } from '@/shared/components/home/Memo'
+import useCommonModal from '@/shared/hook/useCommonModal'
+import { Button } from '@/shared/ui/button'
 
 type MemoEditorProps = {
   memoId: number
@@ -202,7 +201,7 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
                   queryKey: queryKeys.memoKeys.detail(memoId),
                 })
 
-                router.replace(routes.root)
+                router.replace(routePaths.root)
               } catch (err) {
                 toast.error(
                   <>

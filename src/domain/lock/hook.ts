@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { userApi } from '@/apis/userApi'
-import { useLockStore } from '@/infra/store/lockStore'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/infra/query/queryKeys'
+import { useLockStore } from '@/infra/store/useLockStore'
 
 import { lockEntity } from './entity'
 import { localLockRepository } from './repositories/localRepository'

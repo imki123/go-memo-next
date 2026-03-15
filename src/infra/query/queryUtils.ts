@@ -1,6 +1,6 @@
 import type { QueryKey } from '@tanstack/react-query'
 
-import { queryClient } from '@/lib/queryClient'
+import { queryClient } from '@/infra/query/queryClient'
 
 export function queryWhenStaleOrMissing<T>(
   queryKey: QueryKey,

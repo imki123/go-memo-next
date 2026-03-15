@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useThemeStore } from '@/zustand/useThemeStore'
+import { useThemeStore } from '@/infra/store/useThemeStore'
 
 import 'pretendard/dist/web/variable/pretendardvariable.css'
 

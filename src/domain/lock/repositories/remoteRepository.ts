@@ -1,8 +1,8 @@
 import { userApi } from '@/apis/userApi'
 import type { LockRemoteRepositoryPort } from '@/domain/lock/ports'
-import { queryClient } from '@/lib/queryClient'
-import { queryKeys } from '@/lib/queryKeys'
-import { queryWhenStaleOrMissing } from '@/lib/queryUtils'
+import { queryClient } from '@/infra/query/queryClient'
+import { queryKeys } from '@/infra/query/queryKeys'
+import { queryWhenStaleOrMissing } from '@/infra/query/queryUtils'
 
 export const remoteLockRepository: LockRemoteRepositoryPort = {
   getLockedStatus: async () => {

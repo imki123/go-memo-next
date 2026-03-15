@@ -1,5 +1,5 @@
 import { userApi } from '@/apis/userApi'
-import { queryClient } from '@/lib/queryClient'
+import { queryClient } from '@/infra/query/queryClient'
 
 import { AuthRemoteRepository } from '../service'
 

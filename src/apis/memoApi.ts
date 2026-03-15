@@ -1,4 +1,4 @@
-import { MemoType } from '@/components/home/Memo'
+import { MemoType } from '@/shared/components/home/Memo'
 
 import { axiosClient } from './axios'
 const baseUrl = '/memo/memos'

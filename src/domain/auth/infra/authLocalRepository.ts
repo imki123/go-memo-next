@@ -1,5 +1,5 @@
 import { AuthLocalRepository } from '@/domain/auth/service'
-import { useAuthStore } from '@/zustand/useAuthStore'
+import { useAuthStore } from '@/infra/store/useAuthStore'
 
 export const authStore: AuthLocalRepository = {
   getAccessToken: () => useAuthStore.getState().accessToken,

@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useAllMemosStore } from '@/zustand/useAllMemosStore'
+import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
+import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
 
 import { Memo } from './Memo'
 

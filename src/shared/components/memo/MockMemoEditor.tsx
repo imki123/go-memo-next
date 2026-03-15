@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { MemoType } from '@/components/home/Memo'
-import { Button } from '@/components/ui/button'
-import useCommonModal from '@/hooks/useCommonModal'
-import { useAllMemosStore } from '@/zustand/useAllMemosStore'
-import { useFontSizeStore } from '@/zustand/useFontSizeStore'
-import { useMemoHistoryStore } from '@/zustand/useMemoHistoryStore'
+import { routePaths } from '@/app/routePaths'
+import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
+import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
+import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
+import { MemoType } from '@/shared/components/home/Memo'
+import useCommonModal from '@/shared/hook/useCommonModal'
+import { Button } from '@/shared/ui/button'
 
-import { routes } from '../../../pages'
 
 type MockMemoEditorProps = {
   memoId: number
@@ -168,7 +168,7 @@ export function MockMemoEditor({
               deleteMemo(memoId)
               closeModal()
               toast.success('메모 삭제 성공')
-              router.replace(routes.root)
+              router.replace(routePaths.root)
             },
           },
         ]}

@@ -1,4 +1,4 @@
-import { MemoType } from '../components/home/Memo'
+import { MemoType } from '@/shared/components/home/Memo'
 
 export const dummyMemos = [
   {

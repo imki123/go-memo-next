@@ -1,14 +1,7 @@
-import { AuthorizedContent } from '@/components/AuthorizedContent'
-import { MockMemoList } from '@/components/home/MockMemoList'
-
-import Header from '../src/components/Header'
-import { MemoList } from '../src/components/home/MemoList'
-
-export const routes = {
-  root: '/',
-  login: '/login',
-  memo: '/memo',
-}
+import { AuthorizedContent } from '@/shared/components/AuthorizedContent'
+import Header from '@/shared/components/Header'
+import { MemoList } from '@/shared/components/home/MemoList'
+import { MockMemoList } from '@/shared/components/home/MockMemoList'
 
 export default function HomePage() {
   return (

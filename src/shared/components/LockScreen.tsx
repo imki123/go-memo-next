@@ -4,8 +4,8 @@ import { useCallback, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useLockActions, useLockQueries, useLockScreenState } from '@/domain/lock/hook'
-import { zIndex } from '@/utils/util'
-import { useThemeStore } from '@/zustand/useThemeStore'
+import { useThemeStore } from '@/infra/store/useThemeStore'
+import { zIndex } from '@/shared/util/util'
 
 const MIN_PASSWORD_LENGTH = 4
 const MAX_PASSWORD_LENGTH = 4

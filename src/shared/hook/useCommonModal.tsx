@@ -1,9 +1,9 @@
 import { ComponentProps, ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import { Button } from '@/components/ui/button'
-import { zIndex } from '@/utils/util'
-import { useThemeStore } from '@/zustand/useThemeStore'
+import { useThemeStore } from '@/infra/store/useThemeStore'
+import { Button } from '@/shared/ui/button'
+import { zIndex } from '@/shared/util/util'
 
 export type CommonModalProps = {
   visible: boolean
