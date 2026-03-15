@@ -58,14 +58,15 @@ src/
 
 ---
 
-## 도메인 내부 (entity → service → repository → hook)
+## 도메인 내부 (entity → ports → service → repository → hook)
 
 - **Entity**: 순수 도메인 규칙 (타입, validation, 계산). Entity는 어디에도 의존하지 않음.
-- **Service**: 도메인 API(Facade). repository 호출 + entity 규칙 적용. class + singleton export로 테스트·실사용 분리.
+- **Ports**: 도메인 모듈 간 통신 규칙. 모듈 간 계약(입출력 규칙)은 `interface`로, 단순 데이터 구조는 `type`으로 정의해 의존성을 느슨하게 유지한다.
+- **Service**: 도메인 API(Facade). repository 호출 + entity/ports 규칙 적용. class + singleton export로 테스트·실사용 분리.
 - **Repository**: 개념상 **저장소**. API 호출 후 결과를 저장소에 반영하고, 저장소 구현체(infra의 zustand 스토어 등)를 사용. 도메인은 저장소만 알며, store는 모름.
 - **Hook**: repository가 노출한 구독 훅 + service 호출. 상태는 repository를 통해 구독.
 
-**의존 방향**: `pages → hook → service → repository → infra/store`. 저장소 구현체는 `infra/store/`에 두고 repository가 사용.
+**의존 방향**: `pages → hook → service → repository → infra/store`. 저장소 구현체는 `infra/store/`에 두고 repository가 사용하며, 도메인 간 계약은 `ports`(interface/type)로 정의한다.
 
 ---
 
