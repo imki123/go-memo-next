@@ -94,3 +94,23 @@ pages → hook → service → repository → infra/store (저장소 구현체: 
 - 단순한 레이어
 - 높은 응집도
 - 테스트 가능한 Service
+
+---
+
+## Next.js Pages Router에서의 적용
+
+이 섹션은 위에서 설명한 일반적인 도메인 기반 FE 아키텍처를 Next.js Pages Router에서 사용할 때의 최소한의 매핑만 정리합니다.
+
+### 디렉터리 매핑
+
+- `src/pages/_app.tsx` → 이 문서의 `app` 레이어 역할(전역 Provider, 공통 레이아웃)
+- `src/pages/**/*.tsx` → 이 문서의 `pages` 레이어 역할(각 라우트 화면, 도메인 hook 사용)
+- `src/domain/*` / `src/infra/*` / `src/shared/*` → 이 문서의 `domain` / `infra` / `shared` 레이어와 1:1 대응
+
+### 데이터 패칭과 도메인 계층
+
+Next.js Pages Router에서는 다음 정도만 기억하면 충분합니다.
+
+- 서버 사이드 데이터(`getServerSideProps`, `getStaticProps`)는 가능한 한 도메인에서 기대하는 형태로 가공해서 페이지 props로 넘깁니다.
+- 클라이언트 사이드 조회/변경은 페이지에서 직접 API를 호출하지 않고, 도메인 hook을 통해 `service → repository → infra` 순으로 의존합니다.
+- 도메인 레이어는 Next.js의 라우팅/라이프사이클을 모르고, 페이지는 도메인 규칙 세부를 모른 채 hook/service만 사용합니다.
