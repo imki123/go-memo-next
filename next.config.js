@@ -24,6 +24,16 @@ const nextConfig = {
     loader: 'akamai',
     path: '.',
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/go-memo-next',
+        permanent: false,
+        basePath: false,
+      },
+    ]
+  },
   env: {
     NEXT_PUBLIC_GIT_COMMIT_HASH: gitCommitHash,
     NEXT_PUBLIC_BUILD_TIME: buildTime,
