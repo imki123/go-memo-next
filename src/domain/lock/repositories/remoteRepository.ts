@@ -4,7 +4,7 @@ import { queryClient } from '@/infra/query/queryClient'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { queryWhenStaleOrMissing } from '@/infra/query/queryUtils'
 
-export const remoteLockRepository: LockRemoteRepositoryPort = {
+export const lockRemoteRepository: LockRemoteRepositoryPort = {
   getLockedStatus: async () => {
     const data = await queryWhenStaleOrMissing(
       queryKeys.userKeys.checkLogin(),

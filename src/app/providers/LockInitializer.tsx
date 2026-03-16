@@ -1,17 +1,12 @@
 import { useEffect } from 'react'
 
 import { lockEntity } from '@/domain/lock/entity'
-import {
-  useLockActions,
-  useLockQueries,
-  useLockScreenState,
-} from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 import { LockScreen } from '@/shared/components/LockScreen'
 
 export function LockInitializer() {
-  const { isLockedLocal } = useLockScreenState()
-  const { lockedStatus } = useLockQueries()
-  const { showLockScreen, hideLockScreen } = useLockActions()
+  const { isLockedLocal, lockedStatus, showLockScreen, hideLockScreen } =
+    useLockService()
 
   useEffect(() => {
     if (lockedStatus.isFetching) {

@@ -1,8 +1,7 @@
 import { IsLockedLocalStatus, lockEntity } from './entity'
-import {
-  LockLocalRepositoryPort,
-  LockRemoteRepositoryPort,
-} from './ports'
+import { LockLocalRepositoryPort, LockRemoteRepositoryPort } from './ports'
+import { lockLocalRepository } from './repositories/localRepository'
+import { lockRemoteRepository } from './repositories/remoteRepository'
 
 export type LockScreenType = 'enable' | 'disable' | 'unlock'
 
@@ -66,3 +65,8 @@ export class LockService {
     return lockEntity.isApiCallAllowed(options)
   }
 }
+
+export const lockService = new LockService(
+  lockRemoteRepository,
+  lockLocalRepository
+)

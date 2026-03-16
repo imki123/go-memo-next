@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 
 import { memoApi } from '@/apis/memoApi'
 import { lockEntity } from '@/domain/lock/entity'
-import { useLockQueries, useLockScreenState } from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { Memo } from '@/shared/components/home/Memo'
 import { texts } from '@/shared/constants/texts'
@@ -19,8 +19,7 @@ import ReloadButton from './ReloadButton'
 
 export function MemoList() {
   const router = useRouter()
-  const { isLockedLocal } = useLockScreenState()
-  const { lockedStatus } = useLockQueries()
+  const { isLockedLocal, lockedStatus } = useLockService()
   const { data: isLockedRemote } = lockedStatus
 
   const {

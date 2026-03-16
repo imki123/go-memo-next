@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { LoginResponseType } from '@/apis/userApi'
 import { routePaths } from '@/app/routePaths'
 import { useAuthService } from '@/domain/auth/useAuthService'
-import { useLockActions } from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 import useCommonModal from '@/shared/hook/useCommonModal'
 
 const Avatar = ({
@@ -20,7 +20,7 @@ const Avatar = ({
   const {
     action: { logout },
   } = useAuthService()
-  const { setIsLockedLocal } = useLockActions()
+  const { setIsLockedLocal } = useLockService()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 

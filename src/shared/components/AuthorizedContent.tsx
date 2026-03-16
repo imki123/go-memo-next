@@ -2,7 +2,7 @@ import { JSX, ReactNode } from 'react'
 
 import { useAuthService } from '@/domain/auth/useAuthService'
 import { lockEntity } from '@/domain/lock/entity'
-import { useLockQueries, useLockScreenState } from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 
 export function AuthorizedContent({
   children,
@@ -15,8 +15,9 @@ export function AuthorizedContent({
     state: { isAuthenticated },
   } = useAuthService()
 
-  const { isLockedLocal } = useLockScreenState()
-  const { lockedStatus } = useLockQueries({ enabled: isAuthenticated })
+  const { isLockedLocal, lockedStatus } = useLockService({
+    enabled: isAuthenticated,
+  })
 
   const shouldHideContent = (() => {
     if (lockedStatus.isFetching) {

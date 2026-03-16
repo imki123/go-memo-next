@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
-import { useLockActions, useLockQueries } from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useThemeStore } from '@/infra/store/useThemeStore'
 import useCommonModal from '@/shared/hook/useCommonModal'
@@ -33,8 +33,7 @@ export default function Header({
   const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
-
-  const { lockedStatus } = useLockQueries()
+  const { lockedStatus, showLockScreen } = useLockService()
   const { data: isLockedRemote } = lockedStatus
   const { data: loginData } = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
@@ -42,7 +41,6 @@ export default function Header({
   })
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
-  const { showLockScreen } = useLockActions()
 
   const defaultRightItems = [
     <>

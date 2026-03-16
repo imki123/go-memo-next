@@ -3,7 +3,7 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useLockActions, useLockQueries, useLockScreenState } from '@/domain/lock/hook'
+import { useLockService } from '@/domain/lock/hook'
 import { useThemeStore } from '@/infra/store/useThemeStore'
 import { zIndex } from '@/shared/util/util'
 
@@ -11,20 +11,20 @@ const MIN_PASSWORD_LENGTH = 4
 const MAX_PASSWORD_LENGTH = 4
 
 export function LockScreen() {
-  const { isLockScreenOpened, lockScreenType: currentLockScreenType } =
-    useLockScreenState()
-  const { theme } = useThemeStore()
-  const { lockedStatus } = useLockQueries()
-  const { refetch: refetchLogin } = lockedStatus
-
-  const [isSending, setIsSending] = useState(false)
   const {
+    isLockedLocal,
+    isLockScreenOpened,
+    lockScreenType: currentLockScreenType,
+    lockedStatus,
     enableRemote,
     disableRemote,
     unlockRemote,
     setIsLockedLocal,
     hideLockScreen,
-  } = useLockActions()
+  } = useLockService()
+  const { theme } = useThemeStore()
+  const { refetch: refetchLogin } = lockedStatus
+  const [isSending, setIsSending] = useState(false)
 
   const sendPassword = useCallback(
     async (currentPassword: string) => {
@@ -167,8 +167,6 @@ export function LockScreen() {
     MAX_PASSWORD_LENGTH === MIN_PASSWORD_LENGTH
       ? `${MIN_PASSWORD_LENGTH}자리`
       : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
-
-  const { isLockedLocal } = useLockScreenState()
 
   if (!isLockedLocal && !isLockScreenOpened) {
     return null
