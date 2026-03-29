@@ -5,7 +5,7 @@ import { useLockService } from '@/domain/lock/hook'
 import { LockScreen } from '@/shared/components/LockScreen'
 
 export function LockInitializer() {
-  const { isLockedLocal, lockedStatus, showLockScreen, hideLockScreen } =
+  const { isLockedLocal, lockedStatus, lockScreenType, showLockScreen, hideLockScreen } =
     useLockService()
 
   useEffect(() => {
@@ -20,13 +20,15 @@ export function LockInitializer() {
 
     if (shouldShowLockScreen) {
       showLockScreen('unlock')
-    } else {
+    } else if (lockScreenType === 'unlock') {
+      // enable/disable는 사용자가 직접 열고 닫으므로 unlock 모드일 때만 자동으로 닫음
       hideLockScreen()
     }
   }, [
     isLockedLocal,
     lockedStatus.data,
     lockedStatus.isFetching,
+    lockScreenType,
     showLockScreen,
     hideLockScreen,
   ])

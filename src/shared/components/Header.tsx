@@ -34,8 +34,9 @@ export default function Header({
   const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
-  const { lockedStatus, showLockScreen } = useLockService()
+  const { lockedStatus, showLockScreen, isLockedLocal } = useLockService()
   const { data: isLockedRemote } = lockedStatus
+  const isOnLockScreen = lockEntity.shouldShowLockScreen({ isLockedRemote, isLockedLocal })
   const { data: loginData } = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: userApi.checkLogin,
@@ -87,15 +88,11 @@ export default function Header({
 
   const allRightItems = rightItems.concat(defaultRightItems)
 
-  const modalButtons: ComponentProps<typeof Button>[] = [
-    {
-      children: '취소',
-      variant: 'secondary',
-      onClick: closeModal,
-    },
-  ]
+  const modalButtons: ComponentProps<typeof Button>[] = isOnLockScreen
+    ? [{ children: '확인', onClick: closeModal }]
+    : [{ children: '취소', variant: 'secondary', onClick: closeModal }]
 
-  if (lockEntity.canDisableLock(isLockedRemote)) {
+  if (!isOnLockScreen && lockEntity.canDisableLock(isLockedRemote)) {
     modalButtons.push({
       children: '비밀번호 삭제',
       variant: 'destructive',
@@ -106,7 +103,7 @@ export default function Header({
     })
   }
 
-  if (lockEntity.canEnableLock(isLockedRemote)) {
+  if (!isOnLockScreen && lockEntity.canEnableLock(isLockedRemote)) {
     modalButtons.push({
       children: '비밀번호 설정',
       onClick: () => {
@@ -155,9 +152,16 @@ export default function Header({
         visible={visible}
         onClose={closeModal}
         title={
-          isLockedRemote
+          isOnLockScreen
+            ? '잠금 해제를 먼저 진행해주세요.'
+            : isLockedRemote
             ? '잠금 비밀번호를 삭제하시겠어요?'
             : '잠금 비밀번호를 설정하시겠어요?'
+        }
+        description={
+          isOnLockScreen
+            ? 'popping2606@gmail.com 으로 문의해주세요.'
+            : undefined
         }
         buttons={modalButtons}
       />

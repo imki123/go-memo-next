@@ -1,5 +1,4 @@
-import type { IsLockedLocalStatus } from './entity'
-import type { LockScreenType } from './entity'
+import type { IsLockedLocalStatus, LockScreenType } from './entity'
 
 export interface LockRemoteRepositoryPort {
   getLockedStatus(): Promise<boolean>
@@ -16,4 +15,3 @@ export interface LockLocalRepositoryPort {
   showLockScreen(screenType: LockScreenType): void
   hideLockScreen(): void
 }
-
