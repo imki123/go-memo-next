@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 
 import { BE_URL, LoginResponseType } from '@/apis/userApi'
-import { LockInitializer } from '@/app/providers/LockInitializer'
+import { LockScreenController } from '@/app/providers/LockScreenController'
 import '@/app/styles/globals.css'
 import GlobalStyle from '@/app/styles/GlobalStyle'
 import { authService } from '@/domain/auth/di'
@@ -72,7 +72,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
 
-      <LockInitializer />
+      <LockScreenController />
 
       <Component {...pageProps} />
 

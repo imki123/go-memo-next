@@ -4,7 +4,7 @@ import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
 import { LockScreen } from '@/shared/components/LockScreen'
 
-export function LockInitializer() {
+export function LockScreenController() {
   const {
     isLockedLocal,
     checkLoginQueryResult,
