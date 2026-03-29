@@ -190,7 +190,7 @@ export function LockScreen() {
 
           dispatchPassword(inputValue)
 
-          if (lockEntity.isPasswordReady(newPassword)) {
+          if (inputNumberText && lockEntity.isPasswordReady(newPassword)) {
             // dispatchPassword 배치 렌더링 완료 후 confirm이 뜨도록 다음 태스크로 지연
             setTimeout(() => sendPassword(newPassword), 0)
           }
