@@ -69,6 +69,7 @@ pnpm gh-deploy
 ```
 
 The `gh-deploy` script will:
+
 - validate environment variables via `checkEnv.mjs`
 - build the Next.js app to `out/`
 - split `out/` as a subtree

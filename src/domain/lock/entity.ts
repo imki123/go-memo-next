@@ -22,7 +22,19 @@ export const lockEntity = {
   PASSWORD_LENGTH: 4 as const,
 
   VALID_PASSWORD_INPUTS: [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DEL', 'CLEAR', 'SEND',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '0',
+    'DEL',
+    'CLEAR',
+    'SEND',
   ] as readonly PasswordInput[],
 
   // 로컬 잠금 상태(undefined | true | false) 판별
@@ -57,9 +69,15 @@ export const lockEntity = {
     isLockedLocal?: IsLockedLocalStatus
   }): boolean => {
     const { isLockedRemote, isLockedLocal } = options
-    if (isLockedRemote === undefined) return false
-    if (isLockedLocal) return false
-    if (isLockedRemote && isLockedLocal !== false) return false
+    if (isLockedRemote === undefined) {
+      return false
+    }
+    if (isLockedLocal) {
+      return false
+    }
+    if (isLockedRemote && isLockedLocal !== false) {
+      return false
+    }
     return true
   },
 
@@ -79,10 +97,18 @@ export const lockEntity = {
 
   // 키패드 입력 하나를 적용해 새 비밀번호 문자열 반환
   applyPasswordInput: (current: string, input: PasswordInput): string => {
-    if (input === 'DEL') return current.slice(0, -1)
-    if (input === 'CLEAR') return ''
-    if (input === 'SEND') return current
-    if (current.length >= lockEntity.PASSWORD_LENGTH) return current
+    if (input === 'DEL') {
+      return current.slice(0, -1)
+    }
+    if (input === 'CLEAR') {
+      return ''
+    }
+    if (input === 'SEND') {
+      return current
+    }
+    if (current.length >= lockEntity.PASSWORD_LENGTH) {
+      return current
+    }
     return current + input
   },
 }

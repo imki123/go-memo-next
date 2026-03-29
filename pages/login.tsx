@@ -5,7 +5,6 @@ import { useLoginStore } from '@/infra/store/useLoginStore'
 import Header from '@/shared/components/Header'
 import { texts } from '@/shared/constants/texts'
 
-
 export default function LoginPage() {
   useEffect(() => {
     authService.renderLoginUi('googleLoginDiv')

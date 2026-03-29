@@ -9,8 +9,9 @@ export default function NotFound404() {
   // asPath가 루트이면 basePath로 이동(/go-memo-next)
 
   useEffect(() => {
-    if (router.asPath === '/') router.push(routePaths.root)
-    else {
+    if (router.asPath === '/') {
+      router.push(routePaths.root)
+    } else {
       console.info('404')
       router.replace(routePaths.root)
     }

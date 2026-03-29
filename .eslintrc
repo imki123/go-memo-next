@@ -15,6 +15,7 @@
   "root": true,
   "rules": {
     "no-console": ["warn", { "allow": ["info", "error"] }],
+    "curly": ["error", "all"],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

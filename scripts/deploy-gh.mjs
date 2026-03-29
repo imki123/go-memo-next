@@ -1,7 +1,11 @@
 import { execSync } from 'child_process'
 
 const run = (cmd) => execSync(cmd, { stdio: 'inherit' })
-const tryRun = (cmd) => { try { run(cmd) } catch {} }
+const tryRun = (cmd) => {
+  try {
+    run(cmd)
+  } catch {}
+}
 
 try {
   // 사전 검사
@@ -22,7 +26,6 @@ try {
   run('git commit -m "Deploy Next.js to gh-pages"')
   run('git subtree split --prefix out -b gh-pages')
   run('git push -f origin gh-pages:gh-pages')
-
 } finally {
   // 성공/실패 무관하게 항상 클린업
   tryRun('git branch -D gh-pages')

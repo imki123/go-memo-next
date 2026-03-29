@@ -111,8 +111,9 @@ export function MemoList() {
         <ReloadButton
           isReloading={isFetching}
           onClick={() => {
-            if (!isFetching)
+            if (!isFetching) {
               refetch().then(() => toast.success('새로고침 성공'))
+            }
           }}
         />
       </FloatingButtonsLayout>

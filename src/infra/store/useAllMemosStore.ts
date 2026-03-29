@@ -4,7 +4,6 @@ import { create } from 'zustand/react'
 import { dummyMemos } from '@/apis/dummyMemos'
 import { MemoType } from '@/shared/components/home/Memo'
 
-
 // 메모스토어
 export type AllMemoStateType = {
   allMemos: MemoType[]

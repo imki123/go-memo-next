@@ -117,7 +117,9 @@ export function LockScreen() {
 
   const [password, dispatchPassword] = useReducer(
     (state: string, payload: string) => {
-      if (!lockEntity.isValidPasswordInput(payload)) return state
+      if (!lockEntity.isValidPasswordInput(payload)) {
+        return state
+      }
       return lockEntity.applyPasswordInput(state, payload)
     },
     ''

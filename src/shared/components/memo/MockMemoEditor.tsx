@@ -12,7 +12,6 @@ import { MemoType } from '@/shared/components/home/Memo'
 import useCommonModal from '@/shared/hook/useCommonModal'
 import { Button } from '@/shared/ui/button'
 
-
 type MockMemoEditorProps = {
   memoId: number
   setTitle?: (title: string) => void

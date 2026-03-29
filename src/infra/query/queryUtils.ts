@@ -15,6 +15,8 @@ export function queryWhenStaleOrMissing<T>(
     cachedData !== undefined &&
     state?.dataUpdatedAt != null &&
     Date.now() - state.dataUpdatedAt < staleTime
-  if (isFresh) return Promise.resolve(cachedData)
+  if (isFresh) {
+    return Promise.resolve(cachedData)
+  }
   return queryClient.fetchQuery({ queryKey, queryFn })
 }

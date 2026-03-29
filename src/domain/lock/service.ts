@@ -3,7 +3,6 @@ import { LockLocalRepositoryPort, LockRemoteRepositoryPort } from './port'
 import { lockLocalRepository } from './repositories/localRepository'
 import { lockRemoteRepository } from './repositories/remoteRepository'
 
-
 export class LockService {
   constructor(
     private readonly remoteLockRepository: LockRemoteRepositoryPort,
