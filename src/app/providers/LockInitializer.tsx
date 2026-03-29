@@ -18,6 +18,16 @@ export function LockInitializer() {
       return
     }
 
+    const isLoggedIn = Boolean(checkLoginQueryResult.data?.token)
+
+    // NOTE: 로그인 상태가 아닌 경우 잠금 화면을 표시하지 않음
+    if (!isLoggedIn) {
+      if (lockScreenType === 'unlock') {
+        hideLockScreen()
+      }
+      return
+    }
+
     const shouldShowLockScreen = lockEntity.shouldShowLockScreen({
       isLockedRemote: checkLoginQueryResult.data?.locked ?? false,
       isLockedLocal,

@@ -18,9 +18,9 @@ const Avatar = ({
 }) => {
   const router = useRouter()
   const {
-    action: { logout },
+    action: { logout, deleteAccessToken },
   } = useAuthService()
-  const { setIsLockedLocal } = useLockService()
+  const { setIsLockedLocal, hideLockScreen } = useLockService()
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -73,7 +73,9 @@ const Avatar = ({
 
               try {
                 await logout()
+                deleteAccessToken()
                 setIsLockedLocal(undefined)
+                hideLockScreen()
                 toast.success('로그아웃 성공')
                 router.push(routePaths.root)
               } catch (err) {
@@ -94,4 +96,3 @@ const Avatar = ({
 }
 
 export default Avatar
-
