@@ -1,5 +1,7 @@
 export type IsLockedLocalStatus = undefined | boolean // undefined: 초기상태, true: 잠금, false: 잠금해제
 
+export type LockScreenType = 'enable' | 'disable' | 'unlock'
+
 export type PasswordInput =
   | '0'
   | '1'

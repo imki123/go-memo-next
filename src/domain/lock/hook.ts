@@ -4,7 +4,8 @@ import { userApi } from '@/apis/userApi'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useLockStore } from '@/infra/store/useLockStore'
 
-import { LockScreenType, lockService } from './service'
+import { LockScreenType } from './entity'
+import { lockService } from './service'
 
 export function useLockService(options?: { enabled?: boolean }) {
   const isLockedLocal = useLockStore((s) => s.isLockedLocal)

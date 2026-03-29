@@ -1,9 +1,8 @@
-import { IsLockedLocalStatus, lockEntity } from './entity'
+import { IsLockedLocalStatus, LockScreenType, lockEntity } from './entity'
 import { LockLocalRepositoryPort, LockRemoteRepositoryPort } from './port'
 import { lockLocalRepository } from './repositories/localRepository'
 import { lockRemoteRepository } from './repositories/remoteRepository'
 
-export type LockScreenType = 'enable' | 'disable' | 'unlock'
 
 export class LockService {
   constructor(

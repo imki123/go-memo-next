@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 import { IsLockedLocalStatus } from '@/domain/lock/entity'
-import type { LockScreenType } from '@/domain/lock/service'
+import type { LockScreenType } from '@/domain/lock/entity'
 
 export interface ILockStore {
   isLockedLocal: IsLockedLocalStatus

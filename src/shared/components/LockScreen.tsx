@@ -12,7 +12,7 @@ export function LockScreen() {
   const {
     isLockedLocal,
     isLockScreenOpened,
-    lockScreenType: currentLockScreenType,
+    lockScreenType,
     lockedStatus,
     enableRemote,
     disableRemote,
@@ -30,7 +30,7 @@ export function LockScreen() {
         return
       }
 
-      switch (currentLockScreenType) {
+      switch (lockScreenType) {
         case 'enable':
           if (window.confirm('비밀번호를 설정하시겠습니까?')) {
             try {
@@ -105,7 +105,7 @@ export function LockScreen() {
       }
     },
     [
-      currentLockScreenType,
+      lockScreenType,
       refetchLogin,
       enableRemote,
       disableRemote,
@@ -140,8 +140,7 @@ export function LockScreen() {
         ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}
         `}
     >
-      {(currentLockScreenType === 'enable' ||
-        currentLockScreenType === 'disable') && (
+      {(lockScreenType === 'enable' || lockScreenType === 'disable') && (
         <X
           className='absolute top-4 right-4 cursor-pointer'
           onClick={() => hideLockScreen()}
@@ -149,11 +148,11 @@ export function LockScreen() {
       )}
 
       <div className='text-2xl font-bold'>
-        {currentLockScreenType === 'enable'
+        {lockScreenType === 'enable'
           ? `비밀번호 설정 (${passwordLengthText})`
-          : currentLockScreenType === 'disable'
-          ? `비밀번호 삭제 확인 (${passwordLengthText})`
-          : `메모 잠금 해제 (${passwordLengthText})`}
+          : lockScreenType === 'disable'
+            ? `비밀번호 삭제 확인 (${passwordLengthText})`
+            : `메모 잠금 해제 (${passwordLengthText})`}
       </div>
 
       <div className='text-3xl font-bold py-2 px-4 h-[60px]'>
