@@ -23,7 +23,7 @@ export function useLockService(options?: { enabled?: boolean }) {
   })
 
   const disableRemote = useMutation({
-    mutationFn: () => lockService.disableRemote(),
+    mutationFn: (password: string) => lockService.disableRemote(password),
   })
 
   const unlockRemote = useMutation({

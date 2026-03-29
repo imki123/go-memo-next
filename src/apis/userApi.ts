@@ -60,8 +60,8 @@ export const userApi = {
     return res.data
   },
 
-  async removeLock() {
-    const res = await axiosClient.post(urls.removeLock)
+  async removeLock(password: string) {
+    const res = await axiosClient.post(urls.removeLock, { password })
     return res.data
   },
 }

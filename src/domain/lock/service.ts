@@ -25,8 +25,8 @@ export class LockService {
     await this.remoteLockRepository.enableRemote(password)
   }
 
-  async disableRemote(): Promise<void> {
-    await this.remoteLockRepository.disableRemote()
+  async disableRemote(password: string): Promise<void> {
+    await this.remoteLockRepository.disableRemote(password)
   }
 
   async unlockRemote(password: string): Promise<void> {

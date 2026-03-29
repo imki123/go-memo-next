@@ -17,8 +17,8 @@ export const lockRemoteRepository: LockRemoteRepositoryPort = {
     await userApi.setLock(password)
     queryClient.invalidateQueries({ queryKey: queryKeys.userKeys.checkLogin() })
   },
-  disableRemote: async () => {
-    await userApi.removeLock()
+  disableRemote: async (password: string) => {
+    await userApi.removeLock(password)
     queryClient.invalidateQueries({ queryKey: queryKeys.userKeys.checkLogin() })
   },
   unlockRemote: async (password) => {

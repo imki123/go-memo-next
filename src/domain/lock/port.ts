@@ -3,7 +3,7 @@ import type { IsLockedLocalStatus, LockScreenType } from './entity'
 export interface LockRemoteRepositoryPort {
   getLockedStatus(): Promise<boolean>
   enableRemote(password: string): Promise<void>
-  disableRemote(): Promise<void>
+  disableRemote(password: string): Promise<void>
   unlockRemote(password: string): Promise<void>
 }
 
