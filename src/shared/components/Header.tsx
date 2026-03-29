@@ -36,7 +36,10 @@ export default function Header({
   const router = useRouter()
   const { lockedStatus, showLockScreen, isLockedLocal } = useLockService()
   const { data: isLockedRemote } = lockedStatus
-  const isOnLockScreen = lockEntity.shouldShowLockScreen({ isLockedRemote, isLockedLocal })
+  const isOnLockScreen = lockEntity.shouldShowLockScreen({
+    isLockedRemote,
+    isLockedLocal,
+  })
   const { data: loginData } = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: userApi.checkLogin,
@@ -155,12 +158,12 @@ export default function Header({
           isOnLockScreen
             ? '잠금 해제를 먼저 진행해주세요.'
             : isLockedRemote
-            ? '잠금 비밀번호를 삭제하시겠어요?'
-            : '잠금 비밀번호를 설정하시겠어요?'
+              ? '잠금 비밀번호를 삭제하시겠어요?'
+              : '잠금 비밀번호를 설정하시겠어요?'
         }
         description={
           isOnLockScreen
-            ? 'popping2606@gmail.com 으로 문의해주세요.'
+            ? '문제 발생시 popping2606@gmail.com 으로 문의해주세요.'
             : undefined
         }
         buttons={modalButtons}
@@ -168,4 +171,3 @@ export default function Header({
     </>
   )
 }
-
