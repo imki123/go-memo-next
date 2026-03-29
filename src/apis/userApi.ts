@@ -38,7 +38,10 @@ export const userApi = {
 
   async checkLogin(): Promise<LoginResponseType> {
     try {
-      const res = await axiosClient.post(urls.checkLogin)
+      // NOTE: 서버 sleep 상태에서 무한 대기 방지 (10초 내 응답 없으면 실패 처리)
+      const res = await axiosClient.post(urls.checkLogin, undefined, {
+        timeout: 10_000,
+      })
       const data = res.data as LoginResponseType
       return data
     } catch (error) {

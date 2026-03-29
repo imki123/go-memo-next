@@ -5,16 +5,21 @@ import { useLockService } from '@/domain/lock/hook'
 import { LockScreen } from '@/shared/components/LockScreen'
 
 export function LockInitializer() {
-  const { isLockedLocal, lockedStatus, lockScreenType, showLockScreen, hideLockScreen } =
-    useLockService()
+  const {
+    isLockedLocal,
+    checkLoginQueryResult,
+    lockScreenType,
+    showLockScreen,
+    hideLockScreen,
+  } = useLockService()
 
   useEffect(() => {
-    if (lockedStatus.isFetching) {
+    if (checkLoginQueryResult.isFetching) {
       return
     }
 
     const shouldShowLockScreen = lockEntity.shouldShowLockScreen({
-      isLockedRemote: lockedStatus.data,
+      isLockedRemote: checkLoginQueryResult.data?.locked ?? false,
       isLockedLocal,
     })
 
@@ -26,8 +31,8 @@ export function LockInitializer() {
     }
   }, [
     isLockedLocal,
-    lockedStatus.data,
-    lockedStatus.isFetching,
+    checkLoginQueryResult.data,
+    checkLoginQueryResult.isFetching,
     lockScreenType,
     showLockScreen,
     hideLockScreen,

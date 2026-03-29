@@ -19,8 +19,9 @@ import ReloadButton from './ReloadButton'
 
 export function MemoList() {
   const router = useRouter()
-  const { isLockedLocal, lockedStatus } = useLockService()
-  const { data: isLockedRemote } = lockedStatus
+  const { isLockedLocal, checkLoginQueryResult } = useLockService()
+  const { data: checkLoginData } = checkLoginQueryResult
+  const isLockedRemote = checkLoginData?.locked ?? false
 
   const {
     data: allMemosData,

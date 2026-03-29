@@ -8,7 +8,14 @@ export default function HomePage() {
     <>
       <Header title='고영이 메모장🐈' backButton={false} />
 
-      <AuthorizedContent unauthorizedComponent={<MockMemoList />}>
+      <AuthorizedContent
+        unauthorizedComponent={<MockMemoList />}
+        loadingComponent={
+          <p className='text-center text-sm text-gray-400 mt-10'>
+            로그인 정보 확인중...
+          </p>
+        }
+      >
         <MemoList />
       </AuthorizedContent>
     </>

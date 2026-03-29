@@ -34,8 +34,9 @@ export default function Header({
   const { theme, setTheme } = useThemeStore()
 
   const router = useRouter()
-  const { lockedStatus, showLockScreen, isLockedLocal } = useLockService()
-  const { data: isLockedRemote } = lockedStatus
+  const { checkLoginQueryResult, showLockScreen, isLockedLocal } =
+    useLockService()
+  const isLockedRemote = checkLoginQueryResult.data?.locked ?? false
   const isOnLockScreen = lockEntity.shouldShowLockScreen({
     isLockedRemote,
     isLockedLocal,

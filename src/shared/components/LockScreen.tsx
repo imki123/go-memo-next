@@ -13,7 +13,7 @@ export function LockScreen() {
     isLockedLocal,
     isLockScreenOpened,
     lockScreenType,
-    lockedStatus,
+    checkLoginQueryResult: lockedStatus,
     enableRemote,
     disableRemote,
     unlockRemote,

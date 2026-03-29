@@ -12,7 +12,7 @@ export function useLockService(options?: { enabled?: boolean }) {
   const isLockScreenOpened = useLockStore((s) => s.isLockScreenOpened)
   const lockScreenType = useLockStore((s) => s.lockScreenType)
 
-  const { data, isFetching, isError, refetch } = useQuery({
+  const checkLoginQueryResult = useQuery({
     queryKey: queryKeys.userKeys.checkLogin(),
     queryFn: async () => await userApi.checkLogin(),
     enabled: options?.enabled,
@@ -48,12 +48,7 @@ export function useLockService(options?: { enabled?: boolean }) {
     isLockScreenOpened,
     lockScreenType,
     // query
-    lockedStatus: {
-      data: data?.locked ?? false,
-      isFetching,
-      isError,
-      refetch,
-    },
+    checkLoginQueryResult,
     // service actions
     enableRemote,
     disableRemote,
