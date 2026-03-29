@@ -175,22 +175,26 @@ export function LockScreen() {
           width: 'min(90vw, 50vh)',
           maxWidth: '300px',
         }}
-        onClick={async (e) => {
+        onClick={(e) => {
           e.stopPropagation()
 
           if (isSending) {
             return
           }
 
-          const clickedElement = e.target as HTMLSpanElement
-          const inputValue = clickedElement?.innerText
-          const inputNumberText = isNaN(Number(inputValue)) ? '' : inputValue
+          const inputValue = (e.target as HTMLSpanElement)?.innerText
+          if (!lockEntity.isValidPasswordInput(inputValue)) {
+            return
+          }
 
-          const newPassword = password + inputNumberText
+          const newPassword = lockEntity.applyPasswordInput(
+            password,
+            inputValue
+          )
 
           dispatchPassword(inputValue)
 
-          if (inputNumberText && lockEntity.isPasswordReady(newPassword)) {
+          if (lockEntity.isPasswordReady(newPassword)) {
             // dispatchPassword 배치 렌더링 완료 후 confirm이 뜨도록 다음 태스크로 지연
             setTimeout(() => sendPassword(newPassword), 0)
           }
