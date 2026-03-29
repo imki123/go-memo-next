@@ -103,7 +103,6 @@ For more details and rules, see `docs/fe-architecture.md`.
 
 ## Documentation
 
-- **Korean README**: `docs/kr/README.md`
-- **FE architecture**: `docs/fe-architecture.md`
+For the full list of documents, see [`docs/index.md`](./docs/index.md).
 
 When adding new features or changing the structure, please update the relevant docs together so the documentation stays in sync with the codebase.

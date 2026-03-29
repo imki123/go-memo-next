@@ -1,5 +1,5 @@
 import { IsLockedLocalStatus, lockEntity } from './entity'
-import { LockLocalRepositoryPort, LockRemoteRepositoryPort } from './ports'
+import { LockLocalRepositoryPort, LockRemoteRepositoryPort } from './port'
 import { lockLocalRepository } from './repositories/localRepository'
 import { lockRemoteRepository } from './repositories/remoteRepository'
 

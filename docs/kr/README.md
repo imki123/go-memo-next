@@ -97,6 +97,5 @@ pages → hook → service → repository → infra/store
 
 ## 기타 문서
 
-- **영문 README**: 프로젝트 루트의 `README.md`
-- **프론트엔드 아키텍처**: `docs/fe-architecture.md`
+전체 문서 목록은 [`docs/index.md`](../index.md)를 참고해주세요.
 

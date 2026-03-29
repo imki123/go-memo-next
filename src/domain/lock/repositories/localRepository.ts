@@ -1,4 +1,4 @@
-import type { LockLocalRepositoryPort } from '@/domain/lock/ports'
+import type { LockLocalRepositoryPort } from '@/domain/lock/port'
 import { useLockStore } from '@/infra/store/useLockStore'
 
 export const lockLocalRepository: LockLocalRepositoryPort = {

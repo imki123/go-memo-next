@@ -1,5 +1,5 @@
 import { userApi } from '@/apis/userApi'
-import type { LockRemoteRepositoryPort } from '@/domain/lock/ports'
+import type { LockRemoteRepositoryPort } from '@/domain/lock/port'
 import { queryClient } from '@/infra/query/queryClient'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { queryWhenStaleOrMissing } from '@/infra/query/queryUtils'
