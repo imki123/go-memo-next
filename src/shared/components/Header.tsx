@@ -158,7 +158,7 @@ export default function Header({
           isOnLockScreen
             ? '잠금 해제를 먼저 진행해주세요.'
             : isLockedRemote
-              ? '잠금 비밀번호를 삭제하시겠어요?'
+              ? '잠금 비밀번호가 설정되어 있어요. 삭제하시겠어요?'
               : '잠금 비밀번호를 설정하시겠어요?'
         }
         description={
