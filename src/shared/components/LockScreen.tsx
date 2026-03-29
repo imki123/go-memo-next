@@ -3,12 +3,10 @@ import { Loader2, X } from 'lucide-react'
 import { useCallback, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 
+import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
 import { useThemeStore } from '@/infra/store/useThemeStore'
 import { zIndex } from '@/shared/util/util'
-
-const MIN_PASSWORD_LENGTH = 4
-const MAX_PASSWORD_LENGTH = 4
 
 export function LockScreen() {
   const {
@@ -28,7 +26,7 @@ export function LockScreen() {
 
   const sendPassword = useCallback(
     async (currentPassword: string) => {
-      if (currentPassword.length < MIN_PASSWORD_LENGTH) {
+      if (!lockEntity.isPasswordReady(currentPassword)) {
         return
       }
 
@@ -119,43 +117,8 @@ export function LockScreen() {
 
   const [password, dispatchPassword] = useReducer(
     (state: string, payload: string) => {
-      const validValues = [
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '0',
-        'DEL',
-        'CLEAR',
-        'SEND', // NOTE: 4자리 입력시 자동 전송되기에 SEND 사용하지 않음
-      ]
-
-      if (!validValues.includes(payload)) {
-        return state
-      }
-
-      if (payload === 'DEL') {
-        return state.slice(0, -1)
-      }
-
-      if (payload === 'SEND') {
-        return state
-      }
-
-      if (payload === 'CLEAR') {
-        return ''
-      }
-
-      if ((state + payload).length > MAX_PASSWORD_LENGTH) {
-        return state
-      }
-
-      return state + payload
+      if (!lockEntity.isValidPasswordInput(payload)) return state
+      return lockEntity.applyPasswordInput(state, payload)
     },
     ''
   )
@@ -163,10 +126,7 @@ export function LockScreen() {
   const asteriskPassword =
     password.length > 0 ? '*'.repeat(password.length) : ''
 
-  const passwordLengthText =
-    MAX_PASSWORD_LENGTH === MIN_PASSWORD_LENGTH
-      ? `${MIN_PASSWORD_LENGTH}자리`
-      : `${MIN_PASSWORD_LENGTH}~${MAX_PASSWORD_LENGTH}자리`
+  const passwordLengthText = `${lockEntity.PASSWORD_LENGTH}자리`
 
   if (!isLockedLocal && !isLockScreenOpened) {
     return null
@@ -229,7 +189,7 @@ export function LockScreen() {
 
           const newPassword = password + inputNumberText
 
-          if (newPassword.length === MAX_PASSWORD_LENGTH) {
+          if (lockEntity.isPasswordReady(newPassword)) {
             sendPassword(newPassword)
           }
 

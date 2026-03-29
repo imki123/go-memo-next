@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
 import { userApi } from '@/apis/userApi'
+import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useThemeStore } from '@/infra/store/useThemeStore'
@@ -94,7 +95,7 @@ export default function Header({
     },
   ]
 
-  if (isLockedRemote) {
+  if (lockEntity.canDisableLock(isLockedRemote)) {
     modalButtons.push({
       children: '비밀번호 삭제',
       variant: 'destructive',
@@ -103,7 +104,9 @@ export default function Header({
         showLockScreen('disable')
       },
     })
-  } else {
+  }
+
+  if (lockEntity.canEnableLock(isLockedRemote)) {
     modalButtons.push({
       children: '비밀번호 설정',
       onClick: () => {
