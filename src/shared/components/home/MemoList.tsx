@@ -1,14 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { memoApi } from '@/apis/memoApi'
 import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
-import { queryKeys } from '@/infra/query/queryKeys'
+import { useMemoService } from '@/domain/memo/hook'
 import { Memo } from '@/shared/components/home/Memo'
 import { texts } from '@/shared/constants/texts'
 import { Button } from '@/shared/ui/button'
@@ -23,19 +21,14 @@ export function MemoList() {
   const { data: checkLoginData } = checkLoginQueryResult
   const isLockedRemote = checkLoginData?.locked ?? false
 
-  const {
-    data: allMemosData,
-    refetch,
-    isLoading,
-    isFetching,
-  } = useQuery({
-    queryKey: queryKeys.memoKeys.list(),
-    queryFn: memoApi.getAllMemo,
+  const { allMemosQuery, createMemo, isLoading, isFetching } = useMemoService({
     enabled: lockEntity.isApiCallAllowed({
       isLockedRemote,
       isLockedLocal,
     }),
+    shouldFetchAllMemos: true,
   })
+  const { data: allMemosData, refetch: allMemosRefetch } = allMemosQuery
 
   const sortedMemos = useMemo(
     () =>
@@ -64,9 +57,9 @@ export function MemoList() {
     }
 
     try {
-      const response = await memoApi.postMemo()
+      const response = await createMemo.mutateAsync()
       router.push(`/memo?memoId=${response.memoId}`)
-      await refetch()
+      await allMemosRefetch()
       toast.success('메모 추가 성공')
     } catch (err) {
       console.error(err)
@@ -112,7 +105,7 @@ export function MemoList() {
           isReloading={isFetching}
           onClick={() => {
             if (!isFetching) {
-              refetch().then(() => toast.success('새로고침 성공'))
+              allMemosRefetch().then(() => toast.success('새로고침 성공'))
             }
           }}
         />

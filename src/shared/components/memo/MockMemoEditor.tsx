@@ -5,7 +5,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { routePaths } from '@/app/routePaths'
-import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
+import { useMemoService } from '@/domain/memo/hook'
 import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
 import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
 import { MemoType } from '@/shared/components/home/Memo'
@@ -26,7 +26,8 @@ export function MockMemoEditor({
   const router = useRouter()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { increaseFontSize, decreaseFontSize, fontSize } = useFontSizeStore()
-  const { allMemos, setMemo, deleteMemo } = useAllMemosStore()
+  const { getAllMemosLocal, setMemo, deleteMemoLocal } = useMemoService()
+  const allMemos = getAllMemosLocal()
   const memo = allMemos?.find((m: MemoType) => m.memoId === memoId)
 
   const {
@@ -164,7 +165,7 @@ export function MockMemoEditor({
           {
             children: '삭제',
             onClick: () => {
-              deleteMemo(memoId)
+              deleteMemoLocal(memoId)
               closeModal()
               toast.success('메모 삭제 성공')
               router.replace(routePaths.root)

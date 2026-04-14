@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
+import { useMemoService } from '@/domain/memo/hook'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 
@@ -11,7 +11,8 @@ import { Memo } from './Memo'
 
 export function MockMemoList() {
   const router = useRouter()
-  const { allMemos, setAllMemos } = useAllMemosStore()
+  const { getAllMemosLocal, setAllMemosLocal } = useMemoService()
+  const allMemos = getAllMemosLocal()
 
   const sortedMemos = useMemo(
     () =>
@@ -28,10 +29,10 @@ export function MockMemoList() {
     memo.text?.includes(searchValue)
   )
 
-  async function addMemo() {
+  function addMemo() {
     const newId =
       allMemos.reduce((max, memo) => Math.max(max, memo.memoId), 0) + 1 || 1
-    setAllMemos([
+    setAllMemosLocal([
       ...allMemos,
       {
         memoId: newId,

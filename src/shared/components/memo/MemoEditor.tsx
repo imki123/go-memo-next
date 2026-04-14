@@ -1,13 +1,11 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { memoApi } from '@/apis/memoApi'
 import { routePaths } from '@/app/routePaths'
-import { queryKeys } from '@/infra/query/queryKeys'
+import { useMemoService } from '@/domain/memo/hook'
 import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
 import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
 import { MemoType } from '@/shared/components/home/Memo'
@@ -34,33 +32,27 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
   } = useMemoHistoryStore()
 
   useEffect(() => {
-    // NOTE: 메모 아이디가 변경되면 히스토리 초기화
     if (memoId > 0) {
       resetHistory()
     }
   }, [memoId, resetHistory])
 
-  const {
-    data: memoData,
-    isError,
-    isLoading,
-  } = useQuery({
-    queryKey: queryKeys.memoKeys.detail(memoId),
-    queryFn: () => memoApi.getMemo(memoId),
+  const { getMemoQuery, updateMemo, deleteMemo } = useMemoService({
     enabled: memoId > 0,
+    memoId,
+    shouldFetchAllMemos: false,
   })
+  const { data: memoData, isError, isLoading } = getMemoQuery
 
   const [text, setText] = useState('')
   const textValue = text || memoData?.text || ''
 
   useEffect(() => {
-    // NOTE: 타이틀 설정
     if (textValue) {
       setTitle?.(textValue.split('\n')[0].slice(0, 50))
     }
   }, [textValue, setTitle])
 
-  const queryClient = useQueryClient()
   const debounceHistoryTimeoutRef = useRef<NodeJS.Timeout>()
   const debouncePostTimeoutRef = useRef<NodeJS.Timeout>()
 
@@ -89,11 +81,7 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
       }
 
       try {
-        await memoApi.patchMemo(newMemo)
-        queryClient.invalidateQueries({ queryKey: queryKeys.memoKeys.list() })
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.memoKeys.detail(memoId),
-        })
+        await updateMemo.mutateAsync(newMemo)
         toast.success('수정완료', {
           duration: 1000 * 0.5,
         })
@@ -190,16 +178,9 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
               closeModal()
 
               try {
-                await memoApi.deleteMemo(memoId)
+                await deleteMemo.mutateAsync(memoId)
 
                 toast.success('메모 삭제 성공')
-
-                queryClient.invalidateQueries({
-                  queryKey: queryKeys.memoKeys.list(),
-                })
-                queryClient.invalidateQueries({
-                  queryKey: queryKeys.memoKeys.detail(memoId),
-                })
 
                 router.replace(routePaths.root)
               } catch (err) {
