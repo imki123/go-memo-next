@@ -18,7 +18,7 @@ const Avatar = ({
 }) => {
   const router = useRouter()
   const {
-    action: { logout, deleteAccessToken },
+    action: { logout },
   } = useAuthService()
   const { setIsLockedLocal, hideLockScreen } = useLockService()
 
@@ -73,7 +73,6 @@ const Avatar = ({
 
               try {
                 await logout()
-                deleteAccessToken()
                 setIsLockedLocal(undefined)
                 hideLockScreen()
                 toast.success('로그아웃 성공')

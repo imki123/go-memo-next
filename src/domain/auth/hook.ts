@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
-
+import { queryClient } from '@/infra/query/queryClient'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useAuthStore } from '@/infra/store/useAuthStore'
 
@@ -18,11 +18,17 @@ export function useAuthService() {
 
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.userKeys.checkLogin(),
+      })
+    },
   })
 
   const logout = useCallback(async () => {
     await logoutMutation.mutateAsync()
-  }, [logoutMutation])
+    authStore.setAccessToken('')
+  }, [logoutMutation, authStore])
 
   const setAccessToken = useCallback((token: string) => {
     authService.setAccessToken(token)
