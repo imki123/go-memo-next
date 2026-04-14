@@ -1,13 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, Lock, Moon, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Children, ComponentProps, ReactNode } from 'react'
 
-import { userApi } from '@/apis/userApi'
+import { useAuthService } from '@/domain/auth/hook'
 import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
-import { queryKeys } from '@/infra/query/queryKeys'
 import { useThemeStore } from '@/infra/store/useThemeStore'
 import useCommonModal from '@/shared/hook/useCommonModal'
 
@@ -41,10 +39,8 @@ export default function Header({
     isLockedRemote,
     isLockedLocal,
   })
-  const { data: loginData } = useQuery({
-    queryKey: queryKeys.userKeys.checkLogin(),
-    queryFn: userApi.checkLogin,
-  })
+  const { raw } = useAuthService()
+  const loginData = raw.query.checkLoginQuery.data
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 

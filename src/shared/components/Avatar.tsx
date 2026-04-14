@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 
 import { LoginResponseType } from '@/apis/userApi'
 import { routePaths } from '@/app/routePaths'
-import { useAuthService } from '@/domain/auth/useAuthService'
+import { useAuthService } from '@/domain/auth/hook'
 import { useLockService } from '@/domain/lock/hook'
 import useCommonModal from '@/shared/hook/useCommonModal'
 

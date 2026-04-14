@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { authLocalRepository } from '@/domain/auth/infra/authLocalRepository'
+import { useAuthStore } from '@/infra/store/useAuthStore'
 
 export const BE_URL = process.env.NEXT_PUBLIC_BE_URL
 
@@ -12,7 +12,7 @@ export const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = authLocalRepository.getAccessToken()
+      const token = useAuthStore.getState().accessToken
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }

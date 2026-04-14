@@ -1,6 +1,6 @@
-import { JSX, ReactNode } from 'react'
+import { JSX, ReactNode, useEffect, useState } from 'react'
 
-import { useAuthService } from '@/domain/auth/useAuthService'
+import { useAuthService } from '@/domain/auth/hook'
 import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
 
@@ -13,6 +13,8 @@ export function AuthorizedContent({
   unauthorizedComponent?: ReactNode
   loadingComponent?: ReactNode
 }): JSX.Element {
+  const [isMounted, setIsMounted] = useState(false)
+
   const {
     state: { isAuthenticated },
   } = useAuthService()
@@ -20,6 +22,15 @@ export function AuthorizedContent({
   const { isLockedLocal, checkLoginQueryResult } = useLockService({
     enabled: isAuthenticated,
   })
+
+  useEffect(() => {
+    // NOTE: SSR/CSR 간 UI 불일치로 인한 hydration 에러를 방지
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return <>{loadingComponent ?? null}</>
+  }
 
   if (!isAuthenticated) {
     return <>{unauthorizedComponent ?? null}</>

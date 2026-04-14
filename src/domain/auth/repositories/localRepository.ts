@@ -1,14 +1,12 @@
-import { AuthLocalRepository } from '@/domain/auth/service'
+import type { AuthLocalRepositoryPort } from '@/domain/auth/port'
 import { useAuthStore } from '@/infra/store/useAuthStore'
 
-export const authStore: AuthLocalRepository = {
+export const authLocalRepository: AuthLocalRepositoryPort = {
   getAccessToken: () => useAuthStore.getState().accessToken,
-  setAccessToken: (accessToken: string) => {
+  setAccessToken: (accessToken) => {
     useAuthStore.setState({ accessToken })
   },
   deleteAccessToken: () => {
     useAuthStore.setState({ accessToken: '' })
   },
 }
-
-export const authLocalRepository: AuthLocalRepository = authStore

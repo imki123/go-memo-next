@@ -1,14 +1,18 @@
 import { useEffect } from 'react'
 
-import { authService } from '@/domain/auth/di'
+import { useAuthService } from '@/domain/auth/hook'
 import { useLoginStore } from '@/infra/store/useLoginStore'
 import Header from '@/shared/components/Header'
 import { texts } from '@/shared/constants/texts'
 
 export default function LoginPage() {
+  const {
+    action: { renderLoginUi },
+  } = useAuthService()
+
   useEffect(() => {
-    authService.renderLoginUi('googleLoginDiv')
-  }, [])
+    renderLoginUi('googleLoginDiv')
+  }, [renderLoginUi])
 
   const { isLoggingIn, secondsToLogin } = useLoginStore()
 

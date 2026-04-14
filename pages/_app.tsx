@@ -3,19 +3,15 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import Script from 'next/script'
 import { useEffect, useState } from 'react'
-import { Toaster, toast } from 'sonner'
+import { Toaster } from 'sonner'
 
-import { BE_URL, LoginResponseType } from '@/apis/userApi'
+import { BE_URL } from '@/apis/userApi'
+import { AuthAutoLoginController } from '@/app/providers/AuthAutoLoginController'
 import { LockScreenController } from '@/app/providers/LockScreenController'
 import '@/app/styles/globals.css'
 import GlobalStyle from '@/app/styles/GlobalStyle'
-import { authService } from '@/domain/auth/di'
 import { queryClient } from '@/infra/query/queryClient'
-import { useLockStore } from '@/infra/store/useLockStore'
-
-import { routePaths } from '../src/app/routePaths'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -41,24 +37,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     console.info('[MyApp]', router.pathname)
   }, [router.pathname])
 
-  function afterLogin(loginData: LoginResponseType) {
-    if (loginData.token) {
-      toast.success('로그인 성공 😄')
-      useLockStore.getState().setIsLockedLocal(false)
-      router.replace(routePaths.root)
-    } else {
-      toast.error('로그인 실패 😥')
-    }
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalStyle />
-
-      <Script
-        src='https://accounts.google.com/gsi/client'
-        onLoad={() => authService.autoLogin(afterLogin)}
-      ></Script>
 
       <Head>
         <title>고영이메모장🐈</title>
@@ -71,6 +52,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel='shortcut icon' href='/go-memo-next/favicon.ico' />
         <link rel='manifest' href='/go-memo-next/manifest.json' />
       </Head>
+
+      <AuthAutoLoginController />
 
       <LockScreenController />
 
