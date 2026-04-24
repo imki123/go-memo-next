@@ -16,11 +16,15 @@ export function AuthorizedContent({
   const [isMounted, setIsMounted] = useState(false)
 
   const {
-    state: { isAuthenticated },
+    raw: {
+      query: { checkLoginQuery },
+    },
   } = useAuthService()
+  const isServerAuthenticated =
+    checkLoginQuery.isSuccess && Boolean(checkLoginQuery.data?.token)
 
   const { isLockedLocal, checkLoginQueryResult } = useLockService({
-    enabled: isAuthenticated,
+    enabled: isServerAuthenticated,
   })
 
   useEffect(() => {
@@ -32,7 +36,11 @@ export function AuthorizedContent({
     return <>{loadingComponent ?? null}</>
   }
 
-  if (!isAuthenticated) {
+  if (checkLoginQuery.isPending) {
+    return <>{loadingComponent ?? null}</>
+  }
+
+  if (!isServerAuthenticated) {
     return <>{unauthorizedComponent ?? null}</>
   }
 

@@ -40,7 +40,9 @@ export default function Header({
     isLockedLocal,
   })
   const { raw } = useAuthService()
-  const loginData = raw.query.checkLoginQuery.data
+  const { checkLoginQuery } = raw.query
+  const loginData = checkLoginQuery.data
+  const isLoggedIn = checkLoginQuery.isSuccess && Boolean(loginData?.token)
 
   const { openModal, closeModal, Modal, visible } = useCommonModal()
 
@@ -64,14 +66,16 @@ export default function Header({
         />
       )}
     </>,
-    <Lock
-      size={20}
-      onClick={() => {
-        openModal()
-      }}
-      className='cursor-pointer'
-    />,
-    loginData?.token ? (
+    isLoggedIn ? (
+      <Lock
+        size={20}
+        onClick={() => {
+          openModal()
+        }}
+        className='cursor-pointer'
+      />
+    ) : null,
+    isLoggedIn && loginData ? (
       <Avatar avatar={loginData} />
     ) : (
       <span>
