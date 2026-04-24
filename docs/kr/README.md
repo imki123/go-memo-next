@@ -51,7 +51,10 @@ pnpm start    # 빌드 결과로 프로덕션 서버 실행
 - **`pnpm lint`**: ESLint 자동 수정 모드 실행 (`--fix`)
 - **`pnpm type`**: 단발성 TypeScript 타입 검사
 - **`pnpm test`**: RTL/Jest 기반 테스트 러너 (추후 설정 예정, 현재는 placeholder)
-- **`pnpm checkAll`**: lint → type → test 순서로 실행하며, 각 단계 완료 시 콘솔에 진행 상황을 출력
+- **`pnpm check:all`**: lint → type → test 순서로 실행하며, 각 단계 완료 시 콘솔에 진행 상황을 출력
+
+코드 변경 후 기본 품질 체크 명령어로 `pnpm check:all`을 사용합니다.
+코드 변경 직후 기본 검증 단계로 `pnpm build`를 사용하는 것은 지양합니다.
 
 ### gh-pages 배포
 

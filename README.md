@@ -53,7 +53,10 @@ pnpm start    # Run production server with the built output
 - **`pnpm lint`**: Run ESLint with `--fix`
 - **`pnpm type`**: Run one-off TypeScript type-check
 - **`pnpm test`**: Placeholder for RTL/Jest test runner (to be configured)
-- **`pnpm checkAll`**: Run lint → type-check → test with progress logs
+- **`pnpm check:all`**: Run lint → type-check → test with progress logs
+
+After code changes, use `pnpm check:all` as the default quality check command.
+Avoid using `pnpm build` as the default post-change verification step.
 
 ### Deploy to GitHub Pages
 
