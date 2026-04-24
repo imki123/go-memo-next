@@ -67,7 +67,8 @@ const Avatar = ({
             onClick: closeModal,
           },
           {
-            children: '확인',
+            children: '로그아웃',
+            variant: 'destructive',
             onClick: async () => {
               closeModal()
 
