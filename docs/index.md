@@ -5,5 +5,5 @@
 | [FE 아키텍처](./fe-architecture.md)      | 도메인 기반 클린 아키텍처 규칙 (레이어, 파일 역할, 상태 관리 전략) |
 | [shadcn/ui](./shadcn.md)                 | shadcn 컴포넌트 추가 방법                                          |
 | [커밋 컨벤션](./commit-convention.md)    | Conventional Commits 규칙 및 타입 정의                             |
-| [검증 프로세스](./verification.md)       | 코드 검증 명령어 및 단계 설명                                      |
+| [코드 품질 체크](./code-quality.md)      | 코드 변경 후 실행할 품질 체크 명령어 및 단계 설명                  |
 | [프로젝트 소개 (한국어)](./kr/README.md) | 프로젝트 개요 및 기능 설명                                         |
