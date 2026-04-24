@@ -19,7 +19,7 @@ export function AuthAutoLoginController() {
     (loginData: LoginResponseType) => {
       if (loginData.token) {
         toast.success('로그인 성공 😄')
-        useLockStore.getState().setIsLockedLocal(false)
+        useLockStore.getState().setIsLockedLocal(undefined)
         router.replace(routePaths.root)
         return
       }
