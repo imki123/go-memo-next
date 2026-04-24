@@ -9,7 +9,7 @@ const tryRun = (cmd) => {
 
 try {
   // 사전 검사
-  run('pnpm checkAll')
+  run('pnpm check:all')
   run('pnpm checkEnv')
   run('rm -rf node_modules/.cache')
 
