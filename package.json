@@ -12,7 +12,7 @@
     "test": "echo \"Test runner (RTL/Jest) will be configured later\"",
     "test:watch": "echo \"Test watch (RTL/Jest) will be configured later\"",
     "prettier": "prettier --write .",
-    "checkAll": "pnpm prettier && pnpm lint && echo \"lint 완료\" && pnpm type && echo \"type 체크 완료\" && pnpm test",
+    "check:all": "pnpm prettier && pnpm lint && echo \"lint 완료\" && pnpm type && echo \"type 체크 완료\" && pnpm test",
     "checkEnv": "node ./checkEnv.mjs",
     "gh-deploy": "node scripts/deploy-gh.mjs"
   },
