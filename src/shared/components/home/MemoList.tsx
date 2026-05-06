@@ -30,6 +30,8 @@ export function MemoList() {
   })
   const { data: allMemosData, refetch: allMemosRefetch } = allMemosQuery
 
+  const [addingMemo, setAddingMemo] = useState(false)
+
   const sortedMemos = useMemo(
     () =>
       [...(allMemosData ?? [])].sort((a, b) => {
@@ -57,6 +59,7 @@ export function MemoList() {
     }
 
     try {
+      setAddingMemo(true)
       const response = await createMemo.mutateAsync()
       router.push(`/memo?memoId=${response.memoId}`)
       await allMemosRefetch()
@@ -69,6 +72,8 @@ export function MemoList() {
           ? '로그인이 필요합니다. 😥'
           : '메모 추가에 실패했습니다. 😥'
       toast.error(title)
+    } finally {
+      setAddingMemo(false)
     }
   }
 
@@ -82,7 +87,7 @@ export function MemoList() {
           className='w-full max-w-[200px] flex-shrink'
         />
 
-        <Button onClick={addMemo} size='sm'>
+        <Button onClick={addMemo} size='sm' disabled={addingMemo}>
           메모추가
         </Button>
       </div>
