@@ -2,16 +2,16 @@ import { produce } from 'immer'
 import { create } from 'zustand/react'
 
 import { dummyMemos } from '@/apis/dummyMemos'
-import { MemoType } from '@/shared/components/home/Memo'
+import type { MemoEntity } from '@/domain/memo/entity'
 
 // 메모스토어
 export type AllMemoStateType = {
-  allMemos: MemoType[]
+  allMemos: MemoEntity[]
 }
 
 export type AllMemoActionType = {
-  setMemo: (memo: MemoType) => void
-  setAllMemos: (memos?: MemoType[]) => void
+  setMemo: (memo: MemoEntity) => void
+  setAllMemos: (memos?: MemoEntity[]) => void
   deleteMemo: (memoId: number) => void
 }
 
@@ -38,7 +38,7 @@ export const useAllMemosStore = create<AllMemoStateType & AllMemoActionType>()(
           return draft
         }),
       }),
-    setAllMemos: (memos?: MemoType[]) => set({ allMemos: memos }),
+    setAllMemos: (memos?: MemoEntity[]) => set({ allMemos: memos }),
     deleteMemo: (memoId: number) =>
       set({
         allMemos: produce(get().allMemos, (draft) =>

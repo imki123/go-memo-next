@@ -1,4 +1,4 @@
-import type { MemoType } from '@/shared/components/home/Memo'
+import type { MemoEntity } from '@/domain/memo/entity'
 
 import { MemoLocalRepositoryPort, MemoRemoteRepositoryPort } from './port'
 import { memoLocalRepository } from './repositories/localRepository'
@@ -10,35 +10,35 @@ export class MemoService {
     private readonly localMemoRepository: MemoLocalRepositoryPort
   ) {}
 
-  async getAllMemos(): Promise<MemoType[]> {
+  async getAllMemos(): Promise<MemoEntity[]> {
     return this.remoteMemoRepository.getAllMemos()
   }
 
-  async getMemo(memoId: number): Promise<MemoType | undefined> {
+  async getMemo(memoId: number): Promise<MemoEntity | undefined> {
     return this.remoteMemoRepository.getMemo(memoId)
   }
 
-  async createMemo(): Promise<MemoType> {
+  async createMemo(): Promise<MemoEntity> {
     return this.remoteMemoRepository.createMemo()
   }
 
-  async updateMemo(memo: MemoType): Promise<MemoType> {
+  async updateMemo(memo: MemoEntity): Promise<MemoEntity> {
     return this.remoteMemoRepository.updateMemo(memo)
   }
 
-  async deleteMemo(memoId: number): Promise<MemoType> {
+  async deleteMemo(memoId: number): Promise<MemoEntity> {
     return this.remoteMemoRepository.deleteMemo(memoId)
   }
 
-  getAllMemosLocal(): MemoType[] {
+  getAllMemosLocal(): MemoEntity[] {
     return this.localMemoRepository.getAllMemosLocal()
   }
 
-  setMemo(memo: MemoType): void {
+  setMemo(memo: MemoEntity): void {
     this.localMemoRepository.setMemo(memo)
   }
 
-  setAllMemosLocal(memos: MemoType[]): void {
+  setAllMemosLocal(memos: MemoEntity[]): void {
     this.localMemoRepository.setAllMemosLocal(memos)
   }
 

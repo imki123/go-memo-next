@@ -1,19 +1,13 @@
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 
-export type MemoType = {
-  memoId: number
-  text?: string
-  createdAt?: string
-  editedAt?: string
-  fetching?: boolean
+import type { MemoEntity } from '@/domain/memo/entity'
+
+type MemoCardProps = {
+  memo: MemoEntity
 }
 
-type MemoProps = {
-  memo: MemoType
-}
-
-export function Memo({ memo }: MemoProps) {
+export function MemoCard({ memo }: MemoCardProps) {
   const router = useRouter()
   const memoTime =
     memo.editedAt || memo.createdAt

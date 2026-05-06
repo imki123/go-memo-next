@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { lockEntity } from '@/domain/lock/entity'
 import { useLockService } from '@/domain/lock/hook'
 import { useMemoService } from '@/domain/memo/hook'
-import { Memo } from '@/shared/components/home/Memo'
+import { MemoCard } from '@/shared/components/home/MemoCard'
 import { texts } from '@/shared/constants/texts'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
@@ -100,7 +100,7 @@ export function MemoList() {
       ) : (
         <div className='flex flex-wrap gap-5 px-5 pb-5'>
           {filteredMemos.map((memo) => (
-            <Memo key={memo.memoId} memo={memo} />
+            <MemoCard key={memo.memoId} memo={memo} />
           ))}
         </div>
       )}

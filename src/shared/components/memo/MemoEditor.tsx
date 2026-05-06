@@ -5,10 +5,10 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { routePaths } from '@/app/routePaths'
+import type { MemoEntity } from '@/domain/memo/entity'
 import { useMemoService } from '@/domain/memo/hook'
 import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
 import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
-import { MemoType } from '@/shared/components/home/Memo'
 import useCommonModal from '@/shared/hook/useCommonModal'
 import { Button } from '@/shared/ui/button'
 
@@ -73,11 +73,11 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
     clearTimeout(debouncePostTimeoutRef.current)
     debouncePostTimeoutRef.current = setTimeout(async () => {
       const now = dayjs().format('YYYY-MM-DD HH:mm')
-      const newMemo: MemoType = {
+      const newMemo: MemoEntity = {
         memoId,
         text: newText,
         editedAt: now,
-        createdAt: (memoData as MemoType)?.createdAt || now,
+        createdAt: (memoData as MemoEntity)?.createdAt || now,
       }
 
       try {
@@ -94,7 +94,7 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
   const memoTime =
     memoData &&
     dayjs(
-      (memoData as MemoType).editedAt || (memoData as MemoType).createdAt
+      (memoData as MemoEntity).editedAt || (memoData as MemoEntity).createdAt
     ).format('YYYY-MM-DD HH:mm')
 
   return (

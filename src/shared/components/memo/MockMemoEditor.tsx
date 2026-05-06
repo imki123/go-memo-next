@@ -5,10 +5,10 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { routePaths } from '@/app/routePaths'
+import type { MemoEntity } from '@/domain/memo/entity'
 import { useMemoService } from '@/domain/memo/hook'
 import { useFontSizeStore } from '@/infra/store/useFontSizeStore'
 import { useMemoHistoryStore } from '@/infra/store/useMemoHistoryStore'
-import { MemoType } from '@/shared/components/home/Memo'
 import useCommonModal from '@/shared/hook/useCommonModal'
 import { Button } from '@/shared/ui/button'
 
@@ -28,7 +28,7 @@ export function MockMemoEditor({
   const { increaseFontSize, decreaseFontSize, fontSize } = useFontSizeStore()
   const { getAllMemosLocal, setMemo, deleteMemoLocal } = useMemoService()
   const allMemos = getAllMemosLocal()
-  const memo = allMemos?.find((m: MemoType) => m.memoId === memoId)
+  const memo = allMemos?.find((m: MemoEntity) => m.memoId === memoId)
 
   const {
     memoHistories,
@@ -81,7 +81,7 @@ export function MockMemoEditor({
         memoId,
         text: newText,
         editedAt: now,
-        createdAt: (memo as MemoType)?.createdAt || now,
+        createdAt: (memo as MemoEntity)?.createdAt || now,
       })
       toast.success('수정완료', {
         duration: 1000 * 0.5,
@@ -91,9 +91,9 @@ export function MockMemoEditor({
 
   const memoTime =
     memo &&
-    dayjs((memo as MemoType).editedAt || (memo as MemoType).createdAt).format(
-      'YYYY-MM-DD HH:mm'
-    )
+    dayjs(
+      (memo as MemoEntity).editedAt || (memo as MemoEntity).createdAt
+    ).format('YYYY-MM-DD HH:mm')
 
   return (
     <>

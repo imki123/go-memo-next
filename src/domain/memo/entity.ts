@@ -1,5 +1,3 @@
-import type { MemoType } from '@/shared/components/home/Memo'
-
 export type MemoEntity = {
   memoId: number
   text?: string
@@ -40,11 +38,11 @@ export const memoEntity = {
 
   canCreateMemo: (): boolean => true,
 
-  canEditMemo: (_memo: MemoType): boolean => true,
+  canEditMemo: (_memo: MemoEntity): boolean => true,
 
-  canDeleteMemo: (_memo: MemoType): boolean => true,
+  canDeleteMemo: (_memo: MemoEntity): boolean => true,
 
-  isMemoType: (value: unknown): value is MemoType => {
+  isMemoEntity: (value: unknown): value is MemoEntity => {
     if (!value || typeof value !== 'object') {
       return false
     }

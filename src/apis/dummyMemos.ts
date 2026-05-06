@@ -1,4 +1,4 @@
-import { MemoType } from '@/shared/components/home/Memo'
+import type { MemoEntity } from '@/domain/memo/entity'
 
 export const dummyMemos = [
   {
@@ -45,4 +45,4 @@ export const dummyMemos = [
     createdAt: '2022-10-25T23:10:20',
     editedAt: '2022-10-25T23:30:10',
   },
-] as MemoType[]
+] as MemoEntity[]

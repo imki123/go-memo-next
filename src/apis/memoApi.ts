@@ -1,4 +1,4 @@
-import { MemoType } from '@/shared/components/home/Memo'
+import type { MemoEntity } from '@/domain/memo/entity'
 
 import { axiosClient } from './axios'
 const baseUrl = '/memo/memos'
@@ -33,7 +33,7 @@ export const memoApi = {
     return res.data
   },
 
-  async patchMemo(memo: MemoType) {
+  async patchMemo(memo: MemoEntity) {
     const res = await axiosClient.patch<MemoResponse>(urls.root, {
       memo,
     })

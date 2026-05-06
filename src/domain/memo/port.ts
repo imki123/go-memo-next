@@ -1,16 +1,16 @@
-import type { MemoType } from '@/shared/components/home/Memo'
+import type { MemoEntity } from '@/domain/memo/entity'
 
 export interface MemoRemoteRepositoryPort {
-  getAllMemos(): Promise<MemoType[]>
-  getMemo(memoId: number): Promise<MemoType | undefined>
-  createMemo(): Promise<MemoType>
-  updateMemo(memo: MemoType): Promise<MemoType>
-  deleteMemo(memoId: number): Promise<MemoType>
+  getAllMemos(): Promise<MemoEntity[]>
+  getMemo(memoId: number): Promise<MemoEntity | undefined>
+  createMemo(): Promise<MemoEntity>
+  updateMemo(memo: MemoEntity): Promise<MemoEntity>
+  deleteMemo(memoId: number): Promise<MemoEntity>
 }
 
 export interface MemoLocalRepositoryPort {
-  getAllMemosLocal(): MemoType[]
-  setMemo(memo: MemoType): void
-  setAllMemosLocal(memos: MemoType[]): void
+  getAllMemosLocal(): MemoEntity[]
+  setMemo(memo: MemoEntity): void
+  setAllMemosLocal(memos: MemoEntity[]): void
   deleteMemoLocal(memoId: number): void
 }

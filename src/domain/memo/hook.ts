@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import type { MemoEntity } from '@/domain/memo/entity'
 import { queryClient } from '@/infra/query/queryClient'
 import { queryKeys } from '@/infra/query/queryKeys'
-import type { MemoType } from '@/shared/components/home/Memo'
 
 import { memoService } from './service'
 
@@ -35,7 +35,7 @@ export function useMemoService(options?: {
   })
 
   const updateMemo = useMutation({
-    mutationFn: (memo: MemoType) => memoService.updateMemo(memo),
+    mutationFn: (memo: MemoEntity) => memoService.updateMemo(memo),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.memoKeys.list() })
     },
@@ -49,8 +49,8 @@ export function useMemoService(options?: {
   })
 
   const getAllMemosLocal = () => memoService.getAllMemosLocal()
-  const setMemo = (memo: MemoType) => memoService.setMemo(memo)
-  const setAllMemosLocal = (memos: MemoType[]) =>
+  const setMemo = (memo: MemoEntity) => memoService.setMemo(memo)
+  const setAllMemosLocal = (memos: MemoEntity[]) =>
     memoService.setAllMemosLocal(memos)
   const deleteMemoLocal = (memoId: number) =>
     memoService.deleteMemoLocal(memoId)

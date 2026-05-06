@@ -7,7 +7,7 @@ import { useMemoService } from '@/domain/memo/hook'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 
-import { Memo } from './Memo'
+import { MemoCard } from './MemoCard'
 
 export function MockMemoList() {
   const router = useRouter()
@@ -62,7 +62,7 @@ export function MockMemoList() {
 
       <div className='flex flex-wrap gap-5 px-5 pb-5'>
         {filteredMemos.map((memo) => (
-          <Memo key={memo.memoId} memo={memo} />
+          <MemoCard key={memo.memoId} memo={memo} />
         ))}
       </div>
     </>
