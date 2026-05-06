@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useMemoService } from '@/domain/memo/hook'
+import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 
@@ -11,8 +12,8 @@ import { MemoCard } from './MemoCard'
 
 export function MockMemoList() {
   const router = useRouter()
-  const { getAllMemosLocal, setAllMemosLocal } = useMemoService()
-  const allMemos = getAllMemosLocal()
+  const allMemos = useAllMemosStore((state) => state.allMemos)
+  const { setAllMemosLocal } = useMemoService()
 
   const sortedMemos = useMemo(
     () =>
