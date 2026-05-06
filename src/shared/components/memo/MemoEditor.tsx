@@ -174,6 +174,7 @@ export function MemoEditor({ memoId, setTitle, textareaRef }: MemoEditorProps) {
           },
           {
             children: '삭제',
+            variant: 'destructive',
             onClick: async () => {
               closeModal()
 

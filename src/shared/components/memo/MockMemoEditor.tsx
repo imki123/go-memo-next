@@ -168,6 +168,7 @@ export function MockMemoEditor({
           },
           {
             children: '삭제',
+            variant: 'destructive',
             onClick: () => {
               deleteMemoLocal(memoId)
               closeModal()
