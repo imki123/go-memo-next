@@ -3,7 +3,7 @@ import { useAllMemosStore } from '@/infra/store/useAllMemosStore'
 
 export const memoLocalRepository: MemoLocalRepositoryPort = {
   getAllMemosLocal: () => useAllMemosStore.getState().allMemos,
-  setMemo: (memo) => useAllMemosStore.getState().setMemo(memo),
+  setMemoLocal: (memo) => useAllMemosStore.getState().setMemo(memo),
   setAllMemosLocal: (memos) => useAllMemosStore.getState().setAllMemos(memos),
   deleteMemoLocal: (memoId) => useAllMemosStore.getState().deleteMemo(memoId),
 }

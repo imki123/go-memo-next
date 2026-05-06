@@ -34,8 +34,8 @@ export class MemoService {
     return this.localMemoRepository.getAllMemosLocal()
   }
 
-  setMemo(memo: MemoEntity): void {
-    this.localMemoRepository.setMemo(memo)
+  setMemoLocal(memo: MemoEntity): void {
+    this.localMemoRepository.setMemoLocal(memo)
   }
 
   setAllMemosLocal(memos: MemoEntity[]): void {

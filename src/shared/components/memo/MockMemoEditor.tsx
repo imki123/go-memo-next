@@ -26,7 +26,11 @@ export function MockMemoEditor({
   const router = useRouter()
   const { openModal, closeModal, Modal, visible } = useCommonModal()
   const { increaseFontSize, decreaseFontSize, fontSize } = useFontSizeStore()
-  const { getAllMemosLocal, setMemo, deleteMemoLocal } = useMemoService()
+  const {
+    getAllMemosLocal,
+    setMemoLocal: setMemo,
+    deleteMemoLocal,
+  } = useMemoService()
   const allMemos = getAllMemosLocal()
   const memo = allMemos?.find((m: MemoEntity) => m.memoId === memoId)
 

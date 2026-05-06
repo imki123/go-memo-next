@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios'
+import { type AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
@@ -21,17 +21,15 @@ export function MemoList() {
   const { data: checkLoginData } = checkLoginQueryResult
   const isLockedRemote = checkLoginData?.locked ?? false
 
-  const { allMemosQuery, createMemo, isLoading, isFetching } = useMemoService({
-    enabled: lockEntity.isApiCallAllowed({
-      isLockedRemote,
-      isLockedLocal,
-    }),
-    shouldFetchAllMemos: true,
-  })
-  const { data: allMemosData, refetch: allMemosRefetch } = allMemosQuery
-
-  const [addingMemo, setAddingMemo] = useState(false)
-
+  const { getAllMemosQuery, createMemo, isLoading, isFetching } =
+    useMemoService({
+      enabled: lockEntity.isApiCallAllowed({
+        isLockedRemote,
+        isLockedLocal,
+      }),
+      shouldFetchAllMemos: true,
+    })
+  const { data: allMemosData, refetch: allMemosRefetch } = getAllMemosQuery
   const sortedMemos = useMemo(
     () =>
       [...(allMemosData ?? [])].sort((a, b) => {
@@ -42,8 +40,9 @@ export function MemoList() {
     [allMemosData]
   )
 
+  const [isAddingMemo, setIsAddingMemo] = useState(false)
   const [searchValue, setSearchValue] = useState('')
-  const filteredMemos = sortedMemos.filter((memo) =>
+  const searchedMemos = sortedMemos.filter((memo) =>
     memo.text?.includes(searchValue)
   )
 
@@ -59,7 +58,7 @@ export function MemoList() {
     }
 
     try {
-      setAddingMemo(true)
+      setIsAddingMemo(true)
       const response = await createMemo.mutateAsync()
       router.push(`/memo?memoId=${response.memoId}`)
       await allMemosRefetch()
@@ -73,7 +72,7 @@ export function MemoList() {
           : '메모 추가에 실패했습니다. 😥'
       toast.error(title)
     } finally {
-      setAddingMemo(false)
+      setIsAddingMemo(false)
     }
   }
 
@@ -87,7 +86,7 @@ export function MemoList() {
           className='w-full max-w-[200px] flex-shrink'
         />
 
-        <Button onClick={addMemo} size='sm' disabled={addingMemo}>
+        <Button onClick={addMemo} size='sm' disabled={isAddingMemo}>
           메모추가
         </Button>
       </div>
@@ -99,7 +98,7 @@ export function MemoList() {
         </div>
       ) : (
         <div className='flex flex-wrap gap-5 px-5 pb-5'>
-          {filteredMemos.map((memo) => (
+          {searchedMemos.map((memo) => (
             <MemoCard key={memo.memoId} memo={memo} />
           ))}
         </div>

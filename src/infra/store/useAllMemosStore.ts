@@ -41,8 +41,8 @@ export const useAllMemosStore = create<AllMemoStateType & AllMemoActionType>()(
     setAllMemos: (memos?: MemoEntity[]) => set({ allMemos: memos }),
     deleteMemo: (memoId: number) =>
       set({
-        allMemos: produce(get().allMemos, (draft) =>
-          draft?.filter((memo) => memo.memoId !== Number(memoId))
+        allMemos: get().allMemos.filter(
+          (memo) => memo.memoId !== Number(memoId)
         ),
       }),
   })

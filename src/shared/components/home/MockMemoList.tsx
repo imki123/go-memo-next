@@ -25,7 +25,7 @@ export function MockMemoList() {
   )
 
   const [searchValue, setSearchValue] = useState('')
-  const filteredMemos = sortedMemos.filter((memo) =>
+  const searchedMemos = sortedMemos.filter((memo) =>
     memo.text?.includes(searchValue)
   )
 
@@ -61,8 +61,8 @@ export function MockMemoList() {
       </div>
 
       <div className='flex flex-wrap gap-5 px-5 pb-5'>
-        {filteredMemos.map((memo) => (
-          <MemoCard key={memo.memoId} memo={memo} />
+        {searchedMemos.map((memo) => (
+          <MemoCard key={memo.memoId} memo={memo} isMock />
         ))}
       </div>
     </>

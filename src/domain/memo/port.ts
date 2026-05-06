@@ -10,7 +10,7 @@ export interface MemoRemoteRepositoryPort {
 
 export interface MemoLocalRepositoryPort {
   getAllMemosLocal(): MemoEntity[]
-  setMemo(memo: MemoEntity): void
+  setMemoLocal(memo: MemoEntity): void
   setAllMemosLocal(memos: MemoEntity[]): void
   deleteMemoLocal(memoId: number): void
 }

@@ -11,7 +11,7 @@ export function useMemoService(options?: {
   memoId?: number
   shouldFetchAllMemos?: boolean
 }) {
-  const allMemosQuery = useQuery({
+  const getAllMemosQuery = useQuery({
     queryKey: queryKeys.memoKeys.list(),
     queryFn: async () => await memoService.getAllMemos(),
     enabled: options?.enabled && options?.shouldFetchAllMemos,
@@ -49,24 +49,24 @@ export function useMemoService(options?: {
   })
 
   const getAllMemosLocal = () => memoService.getAllMemosLocal()
-  const setMemo = (memo: MemoEntity) => memoService.setMemo(memo)
+  const setMemoLocal = (memo: MemoEntity) => memoService.setMemoLocal(memo)
   const setAllMemosLocal = (memos: MemoEntity[]) =>
     memoService.setAllMemosLocal(memos)
   const deleteMemoLocal = (memoId: number) =>
     memoService.deleteMemoLocal(memoId)
 
   return {
-    allMemosQuery,
-    getMemo,
+    getAllMemosQuery,
     getMemoQuery,
+    getMemo,
     createMemo,
     updateMemo,
     deleteMemo,
     getAllMemosLocal,
-    setMemo,
+    setMemoLocal,
     setAllMemosLocal,
     deleteMemoLocal,
-    isLoading: allMemosQuery.isLoading,
-    isFetching: allMemosQuery.isFetching,
+    isLoading: getAllMemosQuery.isLoading,
+    isFetching: getAllMemosQuery.isFetching,
   }
 }
