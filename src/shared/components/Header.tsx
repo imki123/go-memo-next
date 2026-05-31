@@ -120,6 +120,7 @@ export default function Header({
   return (
     <>
       {fixed && <div className='h-[60px]' />}
+
       <div
         className={`fixed z-10 top-0 left-1/2 -translate-x-1/2 h-[60px] w-full max-w-[800px] mx-auto ${
           !fixed ? 'relative' : ''
@@ -131,22 +132,23 @@ export default function Header({
           }`}
         >
           <div
-            className='flex-shrink-0 select-none cursor-pointer flex items-center gap-2'
+            className='min-w-0 flex-1 select-none cursor-pointer flex items-center gap-2'
             onClick={() => window.scrollTo(0, 0)}
           >
             {backButton && (
               <ChevronLeft
                 size={backButtonSize}
                 onClick={router.back}
-                className='hover:cursor-pointer'
+                className='shrink-0 hover:cursor-pointer'
               />
             )}
-            <span className='flex-shrink-0' onClick={() => onTitleClick?.()}>
+
+            <span className='min-w-0 truncate' onClick={() => onTitleClick?.()}>
               {title}
             </span>
           </div>
 
-          <div className='flex flex-1 items-center justify-end gap-4'>
+          <div className='flex shrink-0 items-center justify-end gap-4'>
             {Children.toArray(allRightItems?.map((item) => item))}
           </div>
         </div>
