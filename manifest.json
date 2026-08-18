@@ -1,0 +1,17 @@
+{
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/go-memo-next",
+  "start_url": "/go-memo-next",
+  "name": "고영이메모장🐈",
+  "short_name": "고영이메모장🐈",
+  "description": "Unrich 에디터 메모장",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
