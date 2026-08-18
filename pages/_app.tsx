@@ -9,6 +9,7 @@ import { Toaster } from 'sonner'
 import { BE_URL } from '@/apis/userApi'
 import { AuthAutoLoginController } from '@/app/providers/AuthAutoLoginController'
 import { LockScreenController } from '@/app/providers/LockScreenController'
+import { ServerHealthCheckController } from '@/app/providers/ServerHealthCheckController'
 import '@/app/styles/globals.css'
 import GlobalStyle from '@/app/styles/GlobalStyle'
 import { queryClient } from '@/infra/query/queryClient'
@@ -68,6 +69,8 @@ function MyApp({ Component, pageProps }: AppProps) {
               maxWidth: '70vw',
             }}
           />
+
+          <ServerHealthCheckController />
 
           <a
             href='https://github.com/imki123'
